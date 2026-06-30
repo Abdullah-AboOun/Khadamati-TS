@@ -20,7 +20,14 @@ export default defineConfig([
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      'react-refresh/only-export-components': [
+        'warn',
+        {
+          allowConstantExport: true,
+          allowExportNames: ['badgeVariants', 'buttonVariants', 'tabsListVariants'],
+          extraHOCs: ['createFileRoute', 'createRootRoute'],
+        },
+      ],
       '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
     }
   },
