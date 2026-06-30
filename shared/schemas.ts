@@ -95,7 +95,7 @@ export const createReviewSchema = z.object({
 // ─── Admin ───────────────────────────────────────────────
 
 export const adminUpdateUserSchema = z.object({
-  userId: z.number().int().positive(),
+  userId: z.string(),
   isActive: z.boolean().optional(),
   role: z.enum(["client", "provider", "admin"]).optional(),
 })

@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
   "scripts": {
     "dev": "bun run dev:frontend & bun run dev:server",
     "dev:frontend": "vite",

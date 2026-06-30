@@ -38,12 +38,12 @@ async function seed() {
     await auth.api.signUpEmail({
       body: {
         email: adminEmail,
-        password: "adminpassword",
+        password: "Admin123!",
         name: "مدير النظام",
         role: "admin",
       },
     })
-    console.log("✅ Seeded default admin account (admin@khadamati.com / adminpassword)")
+    console.log("✅ Seeded default admin account (admin@khadamati.com / Admin123!)")
   } else {
     console.log("ℹ️ Admin account already exists, skipping")
   }

@@ -38,7 +38,7 @@ function AdminUsersComponent() {
   const handleToggleActive = async (userId: string, currentStatus: boolean) => {
     try {
       await toggleUserActiveMutation.mutateAsync({
-        userId: parseInt(userId),
+        userId,
         isActive: !currentStatus,
       })
       toast.success(
@@ -54,7 +54,7 @@ function AdminUsersComponent() {
   const handleRoleChange = async (userId: string, newRole: string) => {
     try {
       await toggleUserActiveMutation.mutateAsync({
-        userId: parseInt(userId),
+        userId,
         role: newRole as Parameters<
           typeof toggleUserActiveMutation.mutateAsync
         >[0]["role"],
