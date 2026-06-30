@@ -61,7 +61,7 @@ app.use(
 
 // ─── Serve static frontend (production) ──────────────────
 const distPath = resolve(process.cwd(), "dist")
-if (existsSync(distPath)) {
+if (process.env.NODE_ENV === "production" && existsSync(distPath)) {
   app.use(
     "/*",
     serveStatic({
@@ -74,7 +74,7 @@ if (existsSync(distPath)) {
 }
 
 // ─── Start server ────────────────────────────────────────
-const port = parseInt(process.env.PORT || "3000")
+const port = parseInt(process.env.PORT || "3001")
 
 console.log(`🚀 Khadamati API running on http://localhost:${port}`)
 

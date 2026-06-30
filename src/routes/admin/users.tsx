@@ -121,7 +121,6 @@ function AdminUsersComponent() {
                             <SelectItem
                               key={role}
                               value={role}
-                              className="flex justify-end text-right"
                             >
                               {ROLE_LABELS[role]}
                             </SelectItem>

@@ -141,16 +141,10 @@ function RegisterComponent() {
                     <SelectValue placeholder="اختر نوع الحساب" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem
-                      value="client"
-                      className="flex justify-end text-right"
-                    >
+                    <SelectItem value="client">
                       عميل (أبحث عن خدمات)
                     </SelectItem>
-                    <SelectItem
-                      value="provider"
-                      className="flex justify-end text-right"
-                    >
+                    <SelectItem value="provider">
                       مزود خدمة (أريد تقديم خدمات)
                     </SelectItem>
                   </SelectContent>
@@ -185,11 +179,7 @@ function RegisterComponent() {
                   </SelectTrigger>
                   <SelectContent>
                     {CITIES.map((c) => (
-                      <SelectItem
-                        key={c}
-                        value={c}
-                        className="flex justify-end text-right"
-                      >
+                      <SelectItem key={c} value={c}>
                         {c}
                       </SelectItem>
                     ))}

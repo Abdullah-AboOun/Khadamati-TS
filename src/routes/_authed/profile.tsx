@@ -124,11 +124,7 @@ function ProfileComponent() {
                 </SelectTrigger>
                 <SelectContent>
                   {CITIES.map((c) => (
-                    <SelectItem
-                      key={c}
-                      value={c}
-                      className="flex justify-end text-right"
-                    >
+                    <SelectItem key={c} value={c}>
                       {c}
                     </SelectItem>
                   ))}

@@ -351,7 +351,6 @@ function MyServicesComponent() {
                       <SelectItem
                         key={cat.id}
                         value={cat.id.toString()}
-                        className="flex justify-end text-right"
                       >
                         {cat.name}
                       </SelectItem>
@@ -371,7 +370,6 @@ function MyServicesComponent() {
                       <SelectItem
                         key={c}
                         value={c}
-                        className="flex justify-end text-right"
                       >
                         {c}
                       </SelectItem>
@@ -394,16 +392,10 @@ function MyServicesComponent() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem
-                      value="fixed"
-                      className="flex justify-end text-right"
-                    >
+                    <SelectItem value="fixed">
                       سعر ثابت
                     </SelectItem>
-                    <SelectItem
-                      value="quote"
-                      className="flex justify-end text-right"
-                    >
+                    <SelectItem value="quote">
                       طلب تسعير
                     </SelectItem>
                   </SelectContent>
