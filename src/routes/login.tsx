@@ -24,7 +24,7 @@ function LoginComponent() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault()
     if (!email || !password) {
       toast.error("الرجاء تعبئة جميع الحقول")

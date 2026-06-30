@@ -40,7 +40,7 @@ function CheckoutComponent() {
   // tRPC mutation to accept status/payment
   const updateStatusMutation = trpc.orders.updateStatus.useMutation()
 
-  const handlePayment = async (e: React.FormEvent) => {
+  const handlePayment = async (e: React.SubmitEvent) => {
     e.preventDefault()
     if (!cardNumber || !expiryDate || !cvv || !cardHolder) {
       toast.error("الرجاء تعبئة جميع معلومات البطاقة")

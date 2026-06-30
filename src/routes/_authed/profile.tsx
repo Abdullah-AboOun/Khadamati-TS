@@ -35,7 +35,7 @@ function ProfileComponent() {
   const [bio, setBio] = useState(() => user?.bio || "")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault()
     if (!name.trim()) {
       toast.error("الاسم الكامل مطلوب")

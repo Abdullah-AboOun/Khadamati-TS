@@ -35,7 +35,7 @@ function RegisterComponent() {
   const [city, setCity] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault()
     if (!name || !email || !password) {
       toast.error("الرجاء تعبئة الحقول الأساسية (الاسم، البريد، كلمة المرور)")

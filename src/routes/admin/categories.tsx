@@ -72,7 +72,7 @@ function AdminCategoriesComponent() {
     setDialogOpen(true)
   }
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.SubmitEvent) => {
     e.preventDefault()
     if (!name || !slug) {
       toast.error("الرجاء تعبئة حقول الاسم والمعرّف")

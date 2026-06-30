@@ -118,7 +118,7 @@ function MyServicesComponent() {
     }
   }
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.SubmitEvent) => {
     e.preventDefault()
     if (!title || !description || !categoryId || !city) {
       toast.error("الرجاء تعبئة جميع الحقول الإلزامية")

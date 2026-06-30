@@ -44,7 +44,7 @@ function AdminFinanceComponent() {
   // mutations
   const updateCommissionMutation = trpc.admin.updateCommissionRate.useMutation()
 
-  const handleUpdateCommission = async (e: React.FormEvent) => {
+  const handleUpdateCommission = async (e: React.SubmitEvent) => {
     e.preventDefault()
     const ratePercentage = parseFloat(commissionInput)
     if (isNaN(ratePercentage) || ratePercentage < 0 || ratePercentage > 100) {
