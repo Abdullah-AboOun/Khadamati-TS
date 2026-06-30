@@ -22,3 +22,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Database
+data/
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Uploads
+uploads/
+
+# TanStack Router
+.tanstack/
+
+# TS Build Cache
+*.tsbuildinfo
