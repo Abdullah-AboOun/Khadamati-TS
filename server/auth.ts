@@ -12,6 +12,7 @@ export const auth = betterAuth({
       verification: schema.verification,
     },
   }),
+  secret: process.env.BETTER_AUTH_SECRET || "development-secret-key-for-khadamati-local-marketplace",
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
