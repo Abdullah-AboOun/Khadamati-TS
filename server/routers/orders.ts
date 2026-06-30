@@ -6,8 +6,9 @@ import {
   respondToQuoteSchema,
   updateOrderStatusSchema,
 } from "../../shared/schemas"
-import { eq, and, desc } from "drizzle-orm"
+import { eq, and, desc, aliasedTable } from "drizzle-orm"
 import { TRPCError } from "@trpc/server"
+import { z } from "zod"
 
 export const ordersRouter = router({
   // Client places a fixed-price order
@@ -203,6 +204,9 @@ export const ordersRouter = router({
   getById: protectedProcedure
     .input(updateOrderStatusSchema.pick({ orderId: true }))
     .query(async ({ ctx, input }) => {
+      const clientUser = aliasedTable(schema.user, "client_user")
+      const providerUser = aliasedTable(schema.user, "provider_user")
+
       const [order] = await db
         .select({
           id: schema.order.id,
@@ -214,11 +218,26 @@ export const ordersRouter = router({
           updatedAt: schema.order.updatedAt,
           serviceId: schema.service.id,
           serviceTitle: schema.service.title,
+          categoryName: schema.category.name,
           clientId: schema.order.clientId,
+          clientName: clientUser.name,
+          clientPhone: clientUser.phone,
           providerId: schema.order.providerId,
+          providerName: providerUser.name,
+          providerPhone: providerUser.phone,
+          reviewId: schema.review.id,
+          reviewRating: schema.review.rating,
+          reviewComment: schema.review.comment,
         })
         .from(schema.order)
         .leftJoin(schema.service, eq(schema.order.serviceId, schema.service.id))
+        .leftJoin(
+          schema.category,
+          eq(schema.service.categoryId, schema.category.id)
+        )
+        .leftJoin(clientUser, eq(schema.order.clientId, clientUser.id))
+        .leftJoin(providerUser, eq(schema.order.providerId, providerUser.id))
+        .leftJoin(schema.review, eq(schema.order.id, schema.review.orderId))
         .where(eq(schema.order.id, input.orderId))
         .limit(1)
 
@@ -234,5 +253,42 @@ export const ordersRouter = router({
       }
 
       return order
+    }),
+
+  cancelOrder: providerProcedure
+    .input(z.object({ orderId: z.number().int().positive() }))
+    .mutation(async ({ ctx, input }) => {
+      const [order] = await db
+        .select()
+        .from(schema.order)
+        .where(
+          and(
+            eq(schema.order.id, input.orderId),
+            eq(schema.order.providerId, ctx.user.id)
+          )
+        )
+        .limit(1)
+
+      if (!order) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "الطلب غير موجود أو لا يخصك",
+        })
+      }
+
+      if (!["pending", "quoted"].includes(order.status)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "لا يمكن إلغاء الطلب في هذه الحالة",
+        })
+      }
+
+      const [updated] = await db
+        .update(schema.order)
+        .set({ status: "cancelled", updatedAt: new Date() })
+        .where(eq(schema.order.id, input.orderId))
+        .returning()
+
+      return updated
     }),
 })

@@ -1,5 +1,6 @@
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { Footer } from "@/components/Footer"
 import { useSession, signOut, type AuthUser } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import {
@@ -221,19 +222,7 @@ function RootLayout() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card py-8 text-center text-sm text-muted-foreground">
-        <div className="container mx-auto px-4">
-          <p>© {new Date().getFullYear()} خدماتي. جميع الحقوق محفوظة.</p>
-          <div className="mt-2 flex justify-center gap-4">
-            <a href="/terms" className="hover:underline">
-              الشروط والأحكام
-            </a>
-            <a href="/privacy" className="hover:underline">
-              سياسة الخصوصية
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Toasts */}
       <Toaster position="top-center" dir="rtl" />

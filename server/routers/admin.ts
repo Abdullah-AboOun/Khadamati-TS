@@ -4,7 +4,7 @@ import {
   adminUpdateUserSchema,
   adminUpdateSettingsSchema,
 } from "../../shared/schemas"
-import { eq, count, sql, desc } from "drizzle-orm"
+import { eq, count, sql, desc, and, gte, lte, aliasedTable } from "drizzle-orm"
 import { z } from "zod"
 
 export const adminRouter = router({
@@ -100,24 +100,102 @@ export const adminRouter = router({
     }),
 
   // Financial
-  financialReport: adminProcedure.query(async () => {
-    const orders = await db
-      .select({
-        id: schema.order.id,
-        amount: schema.order.amount,
-        status: schema.order.status,
-        createdAt: schema.order.createdAt,
-        serviceTitle: schema.service.title,
-        clientName: schema.user.name,
-      })
-      .from(schema.order)
-      .leftJoin(schema.service, eq(schema.order.serviceId, schema.service.id))
-      .leftJoin(schema.user, eq(schema.order.clientId, schema.user.id))
-      .where(eq(schema.order.status, "completed"))
-      .orderBy(desc(schema.order.createdAt))
+  financialReport: adminProcedure
+    .input(
+      z.object({
+        year: z.number().int().optional(),
+        month: z.number().int().min(1).max(12).optional(),
+      }).optional()
+    )
+    .query(async ({ input }) => {
+      const conditions = [eq(schema.order.status, "completed")]
 
-    return orders
-  }),
+      if (input?.year !== undefined && input?.month !== undefined) {
+        const startDate = new Date(input.year, input.month - 1, 1)
+        const endDate = new Date(input.year, input.month, 0, 23, 59, 59, 999)
+        conditions.push(
+          gte(schema.order.createdAt, startDate),
+          lte(schema.order.createdAt, endDate)
+        )
+      }
+
+      const orders = await db
+        .select({
+          id: schema.order.id,
+          amount: schema.order.amount,
+          status: schema.order.status,
+          createdAt: schema.order.createdAt,
+          serviceTitle: schema.service.title,
+          clientName: schema.user.name,
+        })
+        .from(schema.order)
+        .leftJoin(schema.service, eq(schema.order.serviceId, schema.service.id))
+        .leftJoin(schema.user, eq(schema.order.clientId, schema.user.id))
+        .where(and(...conditions))
+        .orderBy(desc(schema.order.createdAt))
+
+      return orders
+    }),
+
+  topProviders: adminProcedure
+    .input(
+      z.object({
+        year: z.number().int(),
+        month: z.number().int().min(1).max(12),
+      })
+    )
+    .query(async ({ input }) => {
+      // 1. Get commission rate
+      const [commissionSetting] = await db
+        .select()
+        .from(schema.setting)
+        .where(eq(schema.setting.key, "commission_rate"))
+        .limit(1)
+
+      const commissionRate = commissionSetting
+        ? parseFloat(commissionSetting.value)
+        : 0.1
+
+      const startDate = new Date(input.year, input.month - 1, 1)
+      const endDate = new Date(input.year, input.month, 0, 23, 59, 59, 999)
+
+      // 2. Group by provider
+      const providerUser = aliasedTable(schema.user, "provider_user")
+
+      const report = await db
+        .select({
+          providerId: schema.order.providerId,
+          providerName: providerUser.name,
+          orderCount: count(schema.order.id),
+          grossRevenue: sql<number>`COALESCE(SUM(${schema.order.amount}), 0)`,
+        })
+        .from(schema.order)
+        .leftJoin(providerUser, eq(schema.order.providerId, providerUser.id))
+        .where(
+          and(
+            eq(schema.order.status, "completed"),
+            gte(schema.order.createdAt, startDate),
+            lte(schema.order.createdAt, endDate)
+          )
+        )
+        .groupBy(schema.order.providerId, providerUser.name)
+        .orderBy(desc(sql`SUM(${schema.order.amount})`))
+        .limit(10)
+
+      return report.map((item) => {
+        const gross = item.grossRevenue || 0
+        const adminCut = gross * commissionRate
+        const net = gross - adminCut
+        return {
+          providerId: item.providerId,
+          providerName: item.providerName || "غير معروف",
+          orderCount: item.orderCount,
+          grossRevenue: gross,
+          adminCut,
+          netToProvider: net,
+        }
+      })
+    }),
 
   // All orders (admin view)
   listOrders: adminProcedure

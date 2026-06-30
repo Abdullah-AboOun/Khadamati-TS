@@ -117,6 +117,13 @@ export const updateCategorySchema = createCategorySchema.partial().extend({
   id: z.number().int().positive(),
 })
 
+export const contactFormSchema = z.object({
+  name: z.string().min(2, "الاسم يجب أن يكون حرفين على الأقل").max(100),
+  email: z.email({ message: "البريد الإلكتروني غير صالح" }),
+  subject: z.string().min(3, "الموضوع يجب أن يكون 3 أحرف على الأقل").max(200),
+  message: z.string().min(10, "الرسالة يجب أن تكون 10 أحرف على الأقل").max(2000),
+})
+
 // ─── Inferred Types ──────────────────────────────────────
 
 export type LoginInput = z.infer<typeof loginSchema>
@@ -134,3 +141,4 @@ export type AdminUpdateUserInput = z.infer<typeof adminUpdateUserSchema>
 export type AdminUpdateSettingsInput = z.infer<typeof adminUpdateSettingsSchema>
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>
+export type ContactFormInput = z.infer<typeof contactFormSchema>

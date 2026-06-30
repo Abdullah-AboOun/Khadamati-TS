@@ -177,6 +177,11 @@ function MyOrdersComponent() {
                     </div>
 
                     <div className="mt-2 flex items-center gap-2 sm:mt-0">
+                      <Button asChild size="sm" variant="outline">
+                        <Link to="/orders/$id" params={{ id: String(ord.id) }}>
+                          عرض التفاصيل
+                        </Link>
+                      </Button>
                       {/* Actions for quoted pricing state */}
                       {ord.status === "quoted" && (
                         <>

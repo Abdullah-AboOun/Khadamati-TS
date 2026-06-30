@@ -9,10 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProviderRouteImport } from './routes/provider'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
@@ -21,6 +26,7 @@ import { Route as ServicesIdRouteImport } from './routes/services.$id'
 import { Route as ProviderOrdersRouteImport } from './routes/provider/orders'
 import { Route as ProviderMyServicesRouteImport } from './routes/provider/my-services'
 import { Route as ProviderDashboardRouteImport } from './routes/provider/dashboard'
+import { Route as OrdersIdRouteImport } from './routes/orders.$id'
 import { Route as CheckoutIdRouteImport } from './routes/checkout.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminServicesRouteImport } from './routes/admin/services'
@@ -30,6 +36,11 @@ import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 import { Route as AuthedProfileRouteImport } from './routes/_authed/profile'
 import { Route as AuthedMyOrdersRouteImport } from './routes/_authed/my-orders'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -40,14 +51,34 @@ const ProviderRoute = ProviderRouteImport.update({
   path: '/provider',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthedRoute = AuthedRouteImport.update({
@@ -88,6 +119,11 @@ const ProviderDashboardRoute = ProviderDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => ProviderRoute,
+} as any)
+const OrdersIdRoute = OrdersIdRouteImport.update({
+  id: '/orders/$id',
+  path: '/orders/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutIdRoute = CheckoutIdRouteImport.update({
   id: '/checkout/$id',
@@ -132,10 +168,15 @@ const AuthedMyOrdersRoute = AuthedMyOrdersRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/provider': typeof ProviderRouteWithChildren
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/my-orders': typeof AuthedMyOrdersRoute
   '/profile': typeof AuthedProfileRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -144,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/admin/services': typeof AdminServicesRoute
   '/admin/users': typeof AdminUsersRoute
   '/checkout/$id': typeof CheckoutIdRoute
+  '/orders/$id': typeof OrdersIdRoute
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/provider/my-services': typeof ProviderMyServicesRoute
   '/provider/orders': typeof ProviderOrdersRoute
@@ -153,9 +195,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/provider': typeof ProviderRouteWithChildren
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/my-orders': typeof AuthedMyOrdersRoute
   '/profile': typeof AuthedProfileRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -164,6 +211,7 @@ export interface FileRoutesByTo {
   '/admin/services': typeof AdminServicesRoute
   '/admin/users': typeof AdminUsersRoute
   '/checkout/$id': typeof CheckoutIdRoute
+  '/orders/$id': typeof OrdersIdRoute
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/provider/my-services': typeof ProviderMyServicesRoute
   '/provider/orders': typeof ProviderOrdersRoute
@@ -175,10 +223,15 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authed': typeof AuthedRouteWithChildren
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/provider': typeof ProviderRouteWithChildren
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/_authed/my-orders': typeof AuthedMyOrdersRoute
   '/_authed/profile': typeof AuthedProfileRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -187,6 +240,7 @@ export interface FileRoutesById {
   '/admin/services': typeof AdminServicesRoute
   '/admin/users': typeof AdminUsersRoute
   '/checkout/$id': typeof CheckoutIdRoute
+  '/orders/$id': typeof OrdersIdRoute
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/provider/my-services': typeof ProviderMyServicesRoute
   '/provider/orders': typeof ProviderOrdersRoute
@@ -198,10 +252,15 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/admin'
+    | '/contact'
+    | '/faq'
     | '/login'
+    | '/privacy'
     | '/provider'
     | '/register'
+    | '/terms'
     | '/my-orders'
     | '/profile'
     | '/admin/categories'
@@ -210,6 +269,7 @@ export interface FileRouteTypes {
     | '/admin/services'
     | '/admin/users'
     | '/checkout/$id'
+    | '/orders/$id'
     | '/provider/dashboard'
     | '/provider/my-services'
     | '/provider/orders'
@@ -219,9 +279,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/contact'
+    | '/faq'
     | '/login'
+    | '/privacy'
     | '/provider'
     | '/register'
+    | '/terms'
     | '/my-orders'
     | '/profile'
     | '/admin/categories'
@@ -230,6 +295,7 @@ export interface FileRouteTypes {
     | '/admin/services'
     | '/admin/users'
     | '/checkout/$id'
+    | '/orders/$id'
     | '/provider/dashboard'
     | '/provider/my-services'
     | '/provider/orders'
@@ -240,10 +306,15 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authed'
+    | '/about'
     | '/admin'
+    | '/contact'
+    | '/faq'
     | '/login'
+    | '/privacy'
     | '/provider'
     | '/register'
+    | '/terms'
     | '/_authed/my-orders'
     | '/_authed/profile'
     | '/admin/categories'
@@ -252,6 +323,7 @@ export interface FileRouteTypes {
     | '/admin/services'
     | '/admin/users'
     | '/checkout/$id'
+    | '/orders/$id'
     | '/provider/dashboard'
     | '/provider/my-services'
     | '/provider/orders'
@@ -263,17 +335,30 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthedRoute: typeof AuthedRouteWithChildren
+  AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProviderRoute: typeof ProviderRouteWithChildren
   RegisterRoute: typeof RegisterRoute
+  TermsRoute: typeof TermsRoute
   CheckoutIdRoute: typeof CheckoutIdRoute
+  OrdersIdRoute: typeof OrdersIdRoute
   ServicesIdRoute: typeof ServicesIdRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -288,6 +373,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProviderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -295,11 +387,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authed': {
@@ -357,6 +470,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/provider/dashboard'
       preLoaderRoute: typeof ProviderDashboardRouteImport
       parentRoute: typeof ProviderRoute
+    }
+    '/orders/$id': {
+      id: '/orders/$id'
+      path: '/orders/$id'
+      fullPath: '/orders/$id'
+      preLoaderRoute: typeof OrdersIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/checkout/$id': {
       id: '/checkout/$id'
@@ -469,11 +589,17 @@ const ProviderRouteWithChildren = ProviderRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthedRoute: AuthedRouteWithChildren,
+  AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
   ProviderRoute: ProviderRouteWithChildren,
   RegisterRoute: RegisterRoute,
+  TermsRoute: TermsRoute,
   CheckoutIdRoute: CheckoutIdRoute,
+  OrdersIdRoute: OrdersIdRoute,
   ServicesIdRoute: ServicesIdRoute,
   ServicesIndexRoute: ServicesIndexRoute,
 }

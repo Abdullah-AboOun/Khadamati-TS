@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
 import { trpc } from "@/lib/trpc"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -52,6 +52,11 @@ function ProviderOrdersComponent() {
   // mutations
   const respondToQuoteMutation = trpc.orders.respondToQuote.useMutation()
   const updateStatusMutation = trpc.orders.updateStatus.useMutation()
+  const cancelOrderMutation = trpc.orders.cancelOrder.useMutation()
+
+  const [cancelOrderId, setCancelOrderId] = useState<number | null>(null)
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
+  const [isCancelling, setIsCancelling] = useState(false)
 
   const handleUpdateStatus = async (orderId: number, status: string) => {
     try {
@@ -92,6 +97,22 @@ function ProviderOrdersComponent() {
       toast.error(error.message || "حدث خطأ أثناء إرسال التسعيرة")
     } finally {
       setIsSubmittingQuote(false)
+    }
+  }
+
+  const handleCancelOrder = async () => {
+    if (!cancelOrderId) return
+    setIsCancelling(true)
+    try {
+      await cancelOrderMutation.mutateAsync({ orderId: cancelOrderId })
+      toast.success("تم إلغاء الطلب بنجاح")
+      setCancelDialogOpen(false)
+      refetch()
+    } catch (err) {
+      const error = err as Error
+      toast.error(error.message || "حدث خطأ أثناء إلغاء الطلب")
+    } finally {
+      setIsCancelling(false)
     }
   }
 
@@ -179,6 +200,11 @@ function ProviderOrdersComponent() {
                     </div>
 
                     <div className="mt-2 flex flex-wrap items-center gap-2 sm:mt-0">
+                      <Button asChild size="sm" variant="outline">
+                        <Link to="/orders/$id" params={{ id: String(ord.id) }}>
+                          عرض التفاصيل
+                        </Link>
+                      </Button>
                       {/* Quote pricing response button */}
                       {ord.status === "pending" && !ord.amount && (
                         <Dialog
@@ -254,6 +280,44 @@ function ProviderOrdersComponent() {
                         >
                           إكمال التنفيذ وتسليم العمل
                         </Button>
+                      )}
+
+                      {/* Cancel order action for provider */}
+                      {["pending", "quoted"].includes(ord.status) && (
+                        <Dialog
+                          open={cancelDialogOpen && cancelOrderId === ord.id}
+                          onOpenChange={(open) => {
+                            setCancelDialogOpen(open)
+                            if (open) setCancelOrderId(ord.id)
+                          }}
+                        >
+                          <DialogTrigger asChild>
+                            <Button size="sm" variant="destructive" className="font-semibold cursor-pointer">
+                              إلغاء الطلب
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="text-right" dir="rtl">
+                            <DialogHeader className="text-right">
+                              <DialogTitle>هل أنت متأكد من إلغاء الطلب؟</DialogTitle>
+                              <DialogDescription>
+                                سيتم إلغاء الطلب نهائياً ولا يمكن التراجع عن هذا الإجراء.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="mt-4 flex justify-end gap-3">
+                              <Button variant="ghost" onClick={() => setCancelDialogOpen(false)} className="cursor-pointer">
+                                تراجع
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                onClick={handleCancelOrder}
+                                disabled={isCancelling}
+                                className="cursor-pointer"
+                              >
+                                {isCancelling ? "جاري الإلغاء..." : "تأكيد الإلغاء"}
+                              </Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       )}
                     </div>
                   </div>
