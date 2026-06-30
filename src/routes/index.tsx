@@ -87,16 +87,12 @@ function HomeComponent() {
   return (
     <div className="flex flex-col gap-16 pb-20 bg-background text-foreground" dir="rtl">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-muted/30 py-24 text-foreground border-b border-border">
-        
+      <section className="relative overflow-hidden bg-background py-24 text-foreground border-b border-border">
+
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
             {/* Left Content Column */}
             <div className="text-right space-y-6 lg:col-span-7">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary border border-primary/20">
-                <Sparkles className="size-3.5 text-primary" />
-                منصتك الرقمية للخدمات المحلية
-              </span>
               <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-tight">
                 اعثر على أفضل الخبراء المحليين لخدمتك
               </h1>
@@ -105,10 +101,11 @@ function HomeComponent() {
               </p>
 
               {/* Search Box Inline */}
-              <form onSubmit={handleSearch} className="mt-8 max-w-2xl rounded-xl bg-card p-1.5 border border-border shadow-md flex flex-col sm:flex-row gap-2">
-                <div className="relative flex-1">
+              <form onSubmit={handleSearch} className="mt-8 max-w-2xl rounded-xl bg-card p-1.5 border border-border shadow-md flex flex-col sm:flex-row items-center gap-2">
+                <div className="relative flex-1 w-full">
                   <Search className="absolute right-3 top-3.5 size-4 text-muted-foreground" />
                   <Input
+                    dir="rtl"
                     type="text"
                     placeholder="ما الخدمة التي تبحث عنها اليوم؟"
                     value={searchText}
@@ -116,7 +113,7 @@ function HomeComponent() {
                     className="h-10 w-full border-0 bg-transparent pr-9 pl-4 text-foreground placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 text-right text-sm"
                   />
                 </div>
-                
+
                 <div className="w-full sm:w-44">
                   <Select value={searchCity} onValueChange={setSearchCity}>
                     <SelectTrigger className="h-10 border-0 bg-secondary hover:bg-secondary/80 text-foreground text-right text-sm flex justify-between items-center cursor-pointer">
@@ -178,11 +175,11 @@ function HomeComponent() {
             <div className="hidden lg:block lg:col-span-5 relative">
               <div className="space-y-4 pr-6">
                 {/* Floating Card 1 */}
-                <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-center gap-3 text-right">
+                <div dir="rtl" className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-center justify-start gap-3">
                   <div className="rounded-lg bg-secondary p-2 text-primary shrink-0">
                     <TrendingUp className="size-5" />
                   </div>
-                  <div>
+                  <div className="text-right flex-none">
                     <span className="text-xs text-muted-foreground block font-medium">الطلبات النشطة اليوم</span>
                     {statsLoading ? (
                       <Skeleton className="h-5 w-10 bg-secondary mt-1" />
@@ -195,11 +192,11 @@ function HomeComponent() {
                 </div>
 
                 {/* Floating Card 2 */}
-                <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-center gap-3 text-right mr-8">
+                <div dir="rtl" className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-center justify-start gap-3 mr-8">
                   <div className="rounded-lg bg-secondary p-2 text-primary shrink-0">
                     <Users className="size-5" />
                   </div>
-                  <div>
+                  <div className="text-right flex-none">
                     <span className="text-xs text-muted-foreground block font-medium">المزودون الجدد هذا الأسبوع</span>
                     {statsLoading ? (
                       <Skeleton className="h-5 w-10 bg-secondary mt-1" />
@@ -212,11 +209,11 @@ function HomeComponent() {
                 </div>
 
                 {/* Floating Card 3 */}
-                <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-center gap-3 text-right">
+                <div dir="rtl" className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-center justify-start gap-3">
                   <div className="rounded-lg bg-secondary p-2 text-primary shrink-0">
                     <Star className="size-5 fill-current" />
                   </div>
-                  <div>
+                  <div className="text-right flex-none">
                     <span className="text-xs text-muted-foreground block font-medium">مستوى رضا العملاء</span>
                     <span className="text-base font-bold text-foreground mt-0.5 block">
                       98.9% تقييمات إيجابية
@@ -239,26 +236,26 @@ function HomeComponent() {
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
           {catsLoading
             ? Array.from({ length: 10 }).map((_, i) => (
-                <Skeleton key={i} className="h-28 w-full rounded-xl" />
-              ))
+              <Skeleton key={i} className="h-28 w-full rounded-xl" />
+            ))
             : categories?.map((cat) => {
-                const IconComponent = cat.icon ? ICON_MAP[cat.icon] || Zap : Zap
-                return (
-                  <Link
-                    key={cat.id}
-                    to="/services"
-                    search={{ categoryId: cat.id }}
-                    className="group flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 text-center shadow-xs transition-all duration-200 hover:border-primary hover:shadow-sm cursor-pointer"
-                  >
-                    <div className="rounded-full bg-primary/10 p-3 text-primary transition-all duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
-                      <IconComponent className="size-5" />
-                    </div>
-                    <span className="mt-3 text-sm font-semibold">
-                      {cat.name}
-                    </span>
-                  </Link>
-                )
-              })}
+              const IconComponent = cat.icon ? ICON_MAP[cat.icon] || Zap : Zap
+              return (
+                <Link
+                  key={cat.id}
+                  to="/services"
+                  search={{ categoryId: cat.id }}
+                  className="group flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 text-center shadow-xs transition-all duration-200 hover:border-primary hover:shadow-sm cursor-pointer"
+                >
+                  <div className="rounded-full bg-primary/10 p-3 text-primary transition-all duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
+                    <IconComponent className="size-5" />
+                  </div>
+                  <span className="mt-3 text-sm font-semibold">
+                    {cat.name}
+                  </span>
+                </Link>
+              )
+            })}
         </div>
       </section>
 
