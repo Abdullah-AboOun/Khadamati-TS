@@ -51,7 +51,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
+        <ThemeProvider defaultTheme="light">
           <RouterProvider router={router} />
         </ThemeProvider>
       </QueryClientProvider>
