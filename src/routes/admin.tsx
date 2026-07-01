@@ -12,9 +12,7 @@ import {
   Tags,
   Landmark,
   Menu,
-  ChevronLeft,
-  ChevronRight,
-  Shield,
+  Sliders,
   X,
   LogOut,
 } from "lucide-react";
@@ -74,25 +72,15 @@ function AdminLayout() {
         }`}
       >
         {/* Sidebar Header */}
-        <div className="flex h-16 items-center justify-between px-4 border-b border-border">
-          {!collapsed && (
-            <div className="flex items-center gap-2 font-bold text-lg text-primary">
-              <Shield className="size-5 text-primary" />
-              <span>إدارة النظام</span>
-            </div>
-          )}
-          {collapsed && (
-            <div className="mx-auto">
-              <Shield className="size-6 text-primary" />
-            </div>
-          )}
+        <div className={`flex h-16 items-center border-b border-border ${collapsed ? "justify-center" : "justify-start px-4"}`}>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setCollapsed(!collapsed)}
-            className="hidden md:flex"
+            className="text-primary hover:bg-primary/5 hover:text-primary"
+            title={collapsed ? "توسيع القائمة" : "طي القائمة"}
           >
-            {collapsed ? <ChevronLeft className="size-4" /> : <ChevronRight className="size-4" />}
+            <Sliders className="size-5" />
           </Button>
         </div>
 
@@ -104,7 +92,9 @@ function AdminLayout() {
               <Link
                 key={item.path}
                 to={item.path}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-primary/5 hover:text-primary transition-all [&.active]:bg-primary/10 [&.active]:text-primary [&.active]:font-bold"
+                className={`flex items-center rounded-lg text-muted-foreground hover:bg-primary/5 hover:text-primary transition-all [&.active]:bg-primary/10 [&.active]:text-primary [&.active]:font-bold ${
+                  collapsed ? "justify-center p-2.5 w-10 mx-auto" : "gap-3 px-3 py-2.5"
+                }`}
                 activeOptions={{ exact: item.path === "/admin" }}
               >
                 <Icon className="size-5 flex-shrink-0" />
@@ -118,7 +108,9 @@ function AdminLayout() {
         <div className="p-3 border-t border-border">
           <Link
             to="/"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-destructive hover:bg-destructive/10 transition-all"
+            className={`flex items-center rounded-lg text-destructive hover:bg-destructive/10 transition-all ${
+              collapsed ? "justify-center p-2.5 w-10 mx-auto" : "gap-3 px-3 py-2.5"
+            }`}
           >
             <LogOut className="size-5 flex-shrink-0" />
             {!collapsed && <span className="text-sm font-semibold">الموقع الرئيسي</span>}
@@ -132,7 +124,7 @@ function AdminLayout() {
           <aside className="w-64 max-w-xs bg-card p-4 border-l border-border h-full flex flex-col animate-in slide-in-from-right duration-200">
             <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
               <div className="flex items-center gap-2 font-bold text-primary">
-                <Shield className="size-5" />
+                <Sliders className="size-5" />
                 <span>إدارة النظام</span>
               </div>
               <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)}>
@@ -181,7 +173,7 @@ function AdminLayout() {
             <Menu className="size-6" />
           </Button>
           <div className="mr-3 font-bold text-lg text-primary flex items-center gap-2">
-            <Shield className="size-5" />
+            <Sliders className="size-5" />
             <span>لوحة الإدارة</span>
           </div>
         </header>
