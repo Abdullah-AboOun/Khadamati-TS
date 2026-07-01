@@ -32,13 +32,8 @@ function RootLayout() {
     <div className="flex min-h-screen flex-col bg-background font-sans text-foreground" dir="rtl">
       {/* Navigation Header */}
       <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-md">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 relative">
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2.5 select-none">
-              <span className="text-2xl font-black tracking-tight text-primary">
-                خدماتي
-              </span>
-            </div>
             <nav className="hidden items-center gap-6 md:flex">
               <Link
                 to="/"
@@ -54,6 +49,16 @@ function RootLayout() {
               </Link>
             </nav>
           </div>
+
+          <Link
+            to="/"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 select-none hover:opacity-90 transition-opacity"
+          >
+            <img src="/khadamati-icon.svg" alt="Khadamati Logo" className="size-7" />
+            <span className="text-2xl font-black tracking-tight text-primary">
+              خدماتي
+            </span>
+          </Link>
 
           <div className="flex items-center gap-4">
             <ThemeToggle />
