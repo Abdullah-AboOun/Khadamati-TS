@@ -376,12 +376,12 @@ function HomeComponent() {
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {/* Item 1 */}
-          <Card className="border border-border bg-card p-6 shadow-xs flex gap-4 rounded-xl">
-            <div className="rounded-lg bg-secondary p-2.5 text-primary shrink-0 h-fit">
-              <ShieldCheck className="size-5" />
+          <Card className="flex flex-row items-start gap-4 p-5 sm:p-6 rounded-xl border border-border bg-card shadow-xs hover:-translate-y-1 hover:shadow-md hover:border-emerald-500/30 dark:hover:border-emerald-400/25 transition-all duration-300">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center shrink-0 text-emerald-600 dark:text-emerald-400 transition-all duration-300 group-hover/card:bg-emerald-500 group-hover/card:text-white dark:group-hover/card:bg-emerald-400 dark:group-hover/card:text-emerald-950">
+              <ShieldCheck className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
-            <div className="space-y-1 text-right">
-              <h3 className="font-bold text-base text-foreground">مزودون موثّقون</h3>
+            <div className="space-y-1.5 flex-1 min-w-0 text-right">
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-emerald-600 dark:group-hover/card:text-emerald-400">مزودون موثّقون</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 نتحقق من هوية وخبرة جميع مزودي الخدمات المسجلين لضمان الجودة والأمان.
               </p>
@@ -389,12 +389,12 @@ function HomeComponent() {
           </Card>
 
           {/* Item 2 */}
-          <Card className="border border-border bg-card p-6 shadow-xs flex gap-4 rounded-xl">
-            <div className="rounded-lg bg-secondary p-2.5 text-primary shrink-0 h-fit">
-              <ZapIcon className="size-5" />
+          <Card className="flex flex-row items-start gap-4 p-5 sm:p-6 rounded-xl border border-border bg-card shadow-xs hover:-translate-y-1 hover:shadow-md hover:border-amber-500/30 dark:hover:border-amber-400/25 transition-all duration-300">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center shrink-0 text-amber-600 dark:text-amber-400 transition-all duration-300 group-hover/card:bg-amber-500 group-hover/card:text-white dark:group-hover/card:bg-amber-400 dark:group-hover/card:text-amber-950">
+              <ZapIcon className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
-            <div className="space-y-1 text-right">
-              <h3 className="font-bold text-base text-foreground">استجابة فورية</h3>
+            <div className="space-y-1.5 flex-1 min-w-0 text-right">
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-amber-600 dark:group-hover/card:text-amber-400">استجابة فورية</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 تواصل مباشر وسريع مع مقدمي الخدمة واستلم عروض الأسعار خلال دقائق معدودة.
               </p>
@@ -402,12 +402,12 @@ function HomeComponent() {
           </Card>
 
           {/* Item 3 */}
-          <Card className="border border-border bg-card p-6 shadow-xs flex gap-4 rounded-xl">
-            <div className="rounded-lg bg-secondary p-2.5 text-primary shrink-0 h-fit">
-              <CreditCard className="size-5" />
+          <Card className="flex flex-row items-start gap-4 p-5 sm:p-6 rounded-xl border border-border bg-card shadow-xs hover:-translate-y-1 hover:shadow-md hover:border-blue-500/30 dark:hover:border-blue-400/25 transition-all duration-300">
+            <div className="w-12 h-12 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center shrink-0 text-blue-600 dark:text-blue-400 transition-all duration-300 group-hover/card:bg-blue-500 group-hover/card:text-white dark:group-hover/card:bg-blue-400 dark:group-hover/card:text-blue-950">
+              <CreditCard className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
-            <div className="space-y-1 text-right">
-              <h3 className="font-bold text-base text-foreground">دفع آمن</h3>
+            <div className="space-y-1.5 flex-1 min-w-0 text-right">
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400">دفع آمن</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 نحفظ حقوقك المالية؛ حيث لا يتم تحويل الأموال للمزود إلا بعد إتمام الخدمة وتأكيدك.
               </p>
@@ -415,12 +415,12 @@ function HomeComponent() {
           </Card>
 
           {/* Item 4 */}
-          <Card className="border border-border bg-card p-6 shadow-xs flex gap-4 rounded-xl">
-            <div className="rounded-lg bg-secondary p-2.5 text-primary shrink-0 h-fit">
-              <MessageSquare className="size-5" />
+          <Card className="flex flex-row items-start gap-4 p-5 sm:p-6 rounded-xl border border-border bg-card shadow-xs hover:-translate-y-1 hover:shadow-md hover:border-purple-500/30 dark:hover:border-purple-400/25 transition-all duration-300">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/10 dark:bg-purple-500/20 flex items-center justify-center shrink-0 text-purple-600 dark:text-purple-400 transition-all duration-300 group-hover/card:bg-purple-500 group-hover/card:text-white dark:group-hover/card:bg-purple-400 dark:group-hover/card:text-purple-950">
+              <MessageSquare className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
-            <div className="space-y-1 text-right">
-              <h3 className="font-bold text-base text-foreground">تقييمات حقيقية</h3>
+            <div className="space-y-1.5 flex-1 min-w-0 text-right">
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-purple-600 dark:group-hover/card:text-purple-400">تقييمات حقيقية</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 اعتمد على آراء وتقييمات العملاء السابقين لاتخاذ القرار الصحيح في اختيار المزود.
               </p>
@@ -428,12 +428,12 @@ function HomeComponent() {
           </Card>
 
           {/* Item 5 */}
-          <Card className="border border-border bg-card p-6 shadow-xs flex gap-4 rounded-xl">
-            <div className="rounded-lg bg-secondary p-2.5 text-primary shrink-0 h-fit">
-              <Clock className="size-5" />
+          <Card className="flex flex-row items-start gap-4 p-5 sm:p-6 rounded-xl border border-border bg-card shadow-xs hover:-translate-y-1 hover:shadow-md hover:border-rose-500/30 dark:hover:border-rose-400/25 transition-all duration-300">
+            <div className="w-12 h-12 rounded-xl bg-rose-500/10 dark:bg-rose-500/20 flex items-center justify-center shrink-0 text-rose-600 dark:text-rose-400 transition-all duration-300 group-hover/card:bg-rose-500 group-hover/card:text-white dark:group-hover/card:bg-rose-400 dark:group-hover/card:text-rose-950">
+              <Clock className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
-            <div className="space-y-1 text-right">
-              <h3 className="font-bold text-base text-foreground">دعم ٢٤/٧</h3>
+            <div className="space-y-1.5 flex-1 min-w-0 text-right">
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-rose-600 dark:group-hover/card:text-rose-400">دعم ٢٤/٧</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 فريق دعم فني متكامل جاهز لمساعدتك وحل أي استفسارات أو مشاكل على مدار الساعة.
               </p>
@@ -441,12 +441,12 @@ function HomeComponent() {
           </Card>
 
           {/* Item 6 */}
-          <Card className="border border-border bg-card p-6 shadow-xs flex gap-4 rounded-xl">
-            <div className="rounded-lg bg-secondary p-2.5 text-primary shrink-0 h-fit">
-              <Compass className="size-5" />
+          <Card className="flex flex-row items-start gap-4 p-5 sm:p-6 rounded-xl border border-border bg-card shadow-xs hover:-translate-y-1 hover:shadow-md hover:border-teal-500/30 dark:hover:border-teal-400/25 transition-all duration-300">
+            <div className="w-12 h-12 rounded-xl bg-teal-500/10 dark:bg-teal-500/20 flex items-center justify-center shrink-0 text-teal-600 dark:text-teal-400 transition-all duration-300 group-hover/card:bg-teal-500 group-hover/card:text-white dark:group-hover/card:bg-teal-400 dark:group-hover/card:text-teal-950">
+              <Compass className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
-            <div className="space-y-1 text-right">
-              <h3 className="font-bold text-base text-foreground">قُرب جغرافي</h3>
+            <div className="space-y-1.5 flex-1 min-w-0 text-right">
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-teal-600 dark:group-hover/card:text-teal-400">قُرب جغرافي</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 ابحث واعثر على الفنيين والخبراء الأقرب إليك جغرافياً لتوفير الوقت وتكاليف التنقل.
               </p>
