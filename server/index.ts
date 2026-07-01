@@ -4,7 +4,7 @@ import { serveStatic } from "hono/bun";
 import { trpcServer } from "@hono/trpc-server";
 import { appRouter } from "./router";
 import { createContext } from "./trpc";
-import { auth } from "./auth";
+import { auth, appUrl } from "./auth";
 import { uploadApp } from "./upload";
 import { existsSync } from "fs";
 import { resolve } from "path";
@@ -24,7 +24,7 @@ app.use("*", async (c, next) => {
 app.use(
   "/api/*",
   cors({
-    origin: process.env.APP_URL || "http://localhost:3000",
+    origin: appUrl,
     credentials: true,
     allowMethods: ["GET", "POST"],
     allowHeaders: ["Content-Type", "Authorization"],

@@ -2,6 +2,11 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db, schema } from "./db";
 
+export const appUrl =
+  process.env.APP_URL ||
+  (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : undefined) ||
+  "http://localhost:3000";
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "sqlite",
@@ -12,6 +17,7 @@ export const auth = betterAuth({
       verification: schema.verification,
     },
   }),
+  baseURL: process.env.BETTER_AUTH_URL || appUrl,
   secret:
     process.env.BETTER_AUTH_SECRET || "development-secret-key-for-khadamati-local-marketplace",
   emailAndPassword: {
@@ -75,7 +81,18 @@ export const auth = betterAuth({
       maxAge: 60 * 5, // 5 minutes
     },
   },
-  trustedOrigins: [process.env.APP_URL || "http://localhost:3000"],
+  trustedOrigins: [
+    appUrl,
+    ...(process.env.APP_URL ? [process.env.APP_URL] : []),
+    ...(process.env.BETTER_AUTH_URL ? [process.env.BETTER_AUTH_URL] : []),
+    "http://localhost:3000",
+  ],
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["x-forwarded-for", "x-real-ip"],
+    },
+  },
 });
 
 export type Session = typeof auth.$Infer.Session;
+
