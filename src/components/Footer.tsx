@@ -12,7 +12,7 @@ export function Footer() {
               منصتك الموثوقة للخدمات المحلية والمستقلة. نربطك بنخبة من المحترفين لإنجاز أعمالك بسهولة
               وأمان.
             </p>
-            <div className="flex gap-4 justify-start" dir="ltr">
+            <div className="flex gap-4 justify-start">
               <a
                 href="https://facebook.com"
                 target="_blank"

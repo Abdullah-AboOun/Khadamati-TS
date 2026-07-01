@@ -69,14 +69,14 @@ export const CITIES = [
 // ─── Default Categories ─────────────────────────────────
 
 export const DEFAULT_CATEGORIES = [
-  { name: "كهرباء", slug: "electrical", icon: "Zap" },
-  { name: "سباكة", slug: "plumbing", icon: "Droplets" },
-  { name: "تنظيف وتعقيم", slug: "cleaning", icon: "SprayCan" },
-  { name: "نجارة", slug: "carpentry", icon: "Hammer" },
-  { name: "تكييف وتبريد", slug: "ac", icon: "Snowflake" },
-  { name: "تصميم جرافيك", slug: "graphic-design", icon: "Palette" },
-  { name: "برمجة وتطوير مواقع", slug: "programming", icon: "Code" },
-  { name: "مونتاج فيديو", slug: "video-editing", icon: "Video" },
-  { name: "كتابة وترجمة", slug: "writing", icon: "PenTool" },
-  { name: "تسويق إلكتروني", slug: "digital-marketing", icon: "Megaphone" },
+  { id: 1, name: "كهرباء", slug: "electrical", icon: "Zap" },
+  { id: 2, name: "سباكة", slug: "plumbing", icon: "Droplets" },
+  { id: 3, name: "تنظيف وتعقيم", slug: "cleaning", icon: "SprayCan" },
+  { id: 4, name: "نجارة", slug: "carpentry", icon: "Hammer" },
+  { id: 5, name: "تكييف وتبريد", slug: "ac", icon: "Snowflake" },
+  { id: 6, name: "تصميم جرافيك", slug: "graphic-design", icon: "Palette" },
+  { id: 7, name: "برمجة وتطوير مواقع", slug: "programming", icon: "Code" },
+  { id: 8, name: "مونتاج فيديو", slug: "video-editing", icon: "Video" },
+  { id: 9, name: "كتابة وترجمة", slug: "writing", icon: "PenTool" },
+  { id: 10, name: "تسويق إلكتروني", slug: "digital-marketing", icon: "Megaphone" },
 ] as const;

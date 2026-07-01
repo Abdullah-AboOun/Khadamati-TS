@@ -102,15 +102,6 @@ export const adminUpdateSettingsSchema = z.object({
     .max(1, "نسبة العمولة يجب أن تكون أقل من 100%"),
 });
 
-export const createCategorySchema = z.object({
-  name: z.string().min(2, "اسم التصنيف قصير جداً").max(100),
-  slug: z.string().min(2).max(100),
-  icon: z.string().max(50).optional(),
-});
-
-export const updateCategorySchema = createCategorySchema.partial().extend({
-  id: z.number().int().positive(),
-});
 
 export const contactFormSchema = z.object({
   name: z.string().min(2, "الاسم يجب أن يكون حرفين على الأقل").max(100),
@@ -169,8 +160,6 @@ export type UpdateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;
 export type CreateReviewInput = z.infer<typeof createReviewSchema>;
 export type AdminUpdateUserInput = z.infer<typeof adminUpdateUserSchema>;
 export type AdminUpdateSettingsInput = z.infer<typeof adminUpdateSettingsSchema>;
-export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
-export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
 export type ContactFormInput = z.infer<typeof contactFormSchema>;
 export type AdminCreateUserInput = z.infer<typeof adminCreateUserSchema>;
 export type AdminEditUserInput = z.infer<typeof adminEditUserSchema>;

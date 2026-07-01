@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, Search, SlidersHorizontal, Trash2 } from "lucide-react";
-import { formatPrice, CITIES } from "../../shared/constants";
+import { formatPrice, CITIES, DEFAULT_CATEGORIES } from "../../shared/constants";
 import { z } from "zod";
 
 const serviceSearchSchema = z.object({
@@ -32,8 +32,8 @@ function ServicesBrowseComponent() {
   const navigate = useNavigate({ from: Route.fullPath });
   const searchParams = Route.useSearch();
 
-  // Queries
-  const { data: categories } = trpc.categories.list.useQuery();
+  // Use hardcoded categories
+  const categories = DEFAULT_CATEGORIES;
   const { data: servicesData, isLoading } = trpc.services.list.useQuery({
     search: searchParams.search,
     categoryId: searchParams.categoryId,

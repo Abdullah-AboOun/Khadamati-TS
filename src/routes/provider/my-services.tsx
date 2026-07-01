@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Plus, Trash2, Edit2, Upload, MapPin, Eye, EyeOff } from "lucide-react";
-import { formatPrice, CITIES } from "../../../shared/constants";
+import { formatPrice, CITIES, DEFAULT_CATEGORIES } from "../../../shared/constants";
 
 export interface ServiceItem {
   id: number;
@@ -42,7 +42,8 @@ export const Route = createFileRoute("/provider/my-services")({
 
 function MyServicesComponent() {
   const { data: services, isLoading, refetch } = trpc.services.getMyServices.useQuery();
-  const { data: categories } = trpc.categories.list.useQuery();
+  // Use hardcoded categories
+  const categories = DEFAULT_CATEGORIES;
 
   // Form states
   const [editingServiceId, setEditingServiceId] = useState<number | null>(null);

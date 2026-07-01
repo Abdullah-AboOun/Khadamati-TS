@@ -31,6 +31,7 @@ async function seed() {
     await db
       .insert(schema.category)
       .values({
+        id: cat.id,
         name: cat.name,
         slug: cat.slug,
         icon: cat.icon,

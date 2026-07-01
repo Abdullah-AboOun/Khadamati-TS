@@ -9,7 +9,6 @@ import {
   ClipboardList,
   Briefcase,
   Users,
-  Tags,
   Landmark,
   Menu,
   Sliders,
@@ -59,7 +58,6 @@ function AdminLayout() {
     { label: "إدارة الطلبات", path: "/admin/orders", icon: ClipboardList },
     { label: "إدارة الخدمات", path: "/admin/services", icon: Briefcase },
     { label: "إدارة المستخدمين", path: "/admin/users", icon: Users },
-    { label: "إدارة التصنيفات", path: "/admin/categories", icon: Tags },
     { label: "التقارير والعمولات", path: "/admin/finance", icon: Landmark },
   ];
 

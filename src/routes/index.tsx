@@ -35,7 +35,7 @@ import {
   ArrowLeft,
   TrendingUp,
 } from "lucide-react";
-import { formatPrice, CITIES } from "../../shared/constants";
+import { formatPrice, CITIES, DEFAULT_CATEGORIES } from "../../shared/constants";
 import { useState } from "react";
 
 export const Route = createFileRoute("/")({
@@ -63,8 +63,9 @@ function HomeComponent() {
   // Fetch live stats
   const { data: stats, isLoading: statsLoading } = trpc.stats.publicStats.useQuery();
 
-  // Fetch categories
-  const { data: categories, isLoading: catsLoading } = trpc.categories.list.useQuery();
+  // Use hardcoded categories
+  const categories = DEFAULT_CATEGORIES;
+  const catsLoading = false;
 
   // Fetch latest 6 services
   const { data: servicesData, isLoading: servicesLoading } = trpc.services.list.useQuery({

@@ -28,7 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { PRICING_LABELS, CITIES, formatPrice } from "../../../shared/constants";
+import { PRICING_LABELS, CITIES, formatPrice, DEFAULT_CATEGORIES } from "../../../shared/constants";
 import { useState } from "react";
 import {
   Plus,
@@ -67,7 +67,8 @@ function AdminServicesComponent() {
     limit: 100,
   });
 
-  const { data: categories } = trpc.categories.list.useQuery();
+  // Use hardcoded categories
+  const categories = DEFAULT_CATEGORIES;
   const { data: providers } = trpc.admin.listUsers.useQuery({
     role: "provider",
     limit: 100,

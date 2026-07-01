@@ -32,7 +32,6 @@ import { Route as CheckoutIdRouteImport } from './routes/checkout.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminServicesRouteImport } from './routes/admin/services'
 import { Route as AdminFinanceRouteImport } from './routes/admin/finance'
-import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 import { Route as AuthedProfileRouteImport } from './routes/_authed/profile'
 import { Route as AuthedMyOrdersRouteImport } from './routes/_authed/my-orders'
 import { Route as AdminOrdersIndexRouteImport } from './routes/admin/orders.index'
@@ -153,11 +152,6 @@ const AdminFinanceRoute = AdminFinanceRouteImport.update({
   path: '/finance',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
-  id: '/categories',
-  path: '/categories',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AuthedProfileRoute = AuthedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -197,7 +191,6 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/my-orders': typeof AuthedMyOrdersRoute
   '/profile': typeof AuthedProfileRoute
-  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/finance': typeof AdminFinanceRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/users': typeof AdminUsersRoute
@@ -226,7 +219,6 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/my-orders': typeof AuthedMyOrdersRoute
   '/profile': typeof AuthedProfileRoute
-  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/finance': typeof AdminFinanceRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/users': typeof AdminUsersRoute
@@ -258,7 +250,6 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authed/my-orders': typeof AuthedMyOrdersRoute
   '/_authed/profile': typeof AuthedProfileRoute
-  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/finance': typeof AdminFinanceRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/users': typeof AdminUsersRoute
@@ -290,7 +281,6 @@ export interface FileRouteTypes {
     | '/terms'
     | '/my-orders'
     | '/profile'
-    | '/admin/categories'
     | '/admin/finance'
     | '/admin/services'
     | '/admin/users'
@@ -319,7 +309,6 @@ export interface FileRouteTypes {
     | '/terms'
     | '/my-orders'
     | '/profile'
-    | '/admin/categories'
     | '/admin/finance'
     | '/admin/services'
     | '/admin/users'
@@ -350,7 +339,6 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authed/my-orders'
     | '/_authed/profile'
-    | '/admin/categories'
     | '/admin/finance'
     | '/admin/services'
     | '/admin/users'
@@ -550,13 +538,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFinanceRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/categories': {
-      id: '/admin/categories'
-      path: '/categories'
-      fullPath: '/admin/categories'
-      preLoaderRoute: typeof AdminCategoriesRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/_authed/profile': {
       id: '/_authed/profile'
       path: '/profile'
@@ -609,7 +590,6 @@ const AuthedRouteWithChildren =
   AuthedRoute._addFileChildren(AuthedRouteChildren)
 
 interface AdminRouteChildren {
-  AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminFinanceRoute: typeof AdminFinanceRoute
   AdminServicesRoute: typeof AdminServicesRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -620,7 +600,6 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminCategoriesRoute: AdminCategoriesRoute,
   AdminFinanceRoute: AdminFinanceRoute,
   AdminServicesRoute: AdminServicesRoute,
   AdminUsersRoute: AdminUsersRoute,
