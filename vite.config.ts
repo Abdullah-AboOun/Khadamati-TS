@@ -25,4 +25,44 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "react-vendor",
+              test: /node_modules[\\/](react|react-dom)/,
+              priority: 40,
+            },
+            {
+              name: "tanstack-vendor",
+              test: /node_modules[\\/]@tanstack/,
+              priority: 30,
+            },
+            {
+              name: "auth-vendor",
+              test: /node_modules[\\/]better-auth/,
+              priority: 20,
+            },
+            {
+              name: "trpc-vendor",
+              test: /node_modules[\\/](@trpc|@hono\/trpc-server)/,
+              priority: 20,
+            },
+            {
+              name: "zod-vendor",
+              test: /node_modules[\\/]zod/,
+              priority: 20,
+            },
+            {
+              name: "vendor",
+              test: /node_modules/,
+              priority: 10,
+            },
+          ],
+        },
+      },
+    },
+  },
 });
