@@ -3,7 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Mail, Phone, MapPin, Send, AlertCircle, Sparkles } from "lucide-react";
+import { Mail, Phone, MapPin, Send, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 

@@ -4,7 +4,6 @@
     "builder": "RAILPACK"
   },
   "deploy": {
-    "preDeployCommand": ["mkdir -p data && bun run db:push && bun run db:seed"],
     "startCommand": "bun run start",
     "healthcheckPath": "/",
     "healthcheckTimeout": 100

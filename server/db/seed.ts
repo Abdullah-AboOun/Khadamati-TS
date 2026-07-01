@@ -6,6 +6,14 @@ import { eq, ne } from "drizzle-orm";
 async function seed() {
   console.log("🌱 Seeding database...");
 
+  // Check if seeding is already done (unless forced via environment variable)
+  const existingCategories = await db.select().from(schema.category).limit(1);
+  if (existingCategories.length > 0 && process.env.FORCE_SEED !== "true") {
+    console.log("ℹ️ Database already contains data. Skipping seeding to prevent wiping production data.");
+    console.log("💡 Set FORCE_SEED=true to force re-seeding and wipe data.");
+    return;
+  }
+
   // Clean existing mock data
   console.log("🧹 Cleaning old mock data...");
   await db.delete(schema.review);
