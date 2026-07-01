@@ -23,6 +23,7 @@ import {
   TrendingUp,
   Clock,
   AlertCircle,
+  Wallet,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/orders/$id/")({
@@ -178,6 +179,16 @@ function AdminOrderDetailComponent() {
                     تفاصيل الطلب من العميل:
                   </span>
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">{order.details}</p>
+                </div>
+              )}
+
+              {order.paymentProof && (
+                <div className="bg-emerald-500/5 border border-emerald-500/10 p-4 rounded-xl mt-4">
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 mb-1.5">
+                    <Wallet className="size-4" />
+                    معلومات وإثبات الدفع:
+                  </span>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{order.paymentProof}</p>
                 </div>
               )}
 

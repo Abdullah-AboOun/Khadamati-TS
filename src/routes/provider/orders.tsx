@@ -227,6 +227,17 @@ function ProviderOrdersComponent() {
                         </Dialog>
                       )}
 
+                       {/* Provider accepts a pending order that has an amount (paid via wire transfer) */}
+                      {ord.status === "pending" && ord.amount && (
+                        <Button
+                          size="sm"
+                          onClick={() => handleUpdateStatus(ord.id, "accepted")}
+                          className="bg-emerald-600 font-semibold hover:bg-emerald-700 text-white cursor-pointer"
+                        >
+                          تأكيد الدفع وقبول الطلب
+                        </Button>
+                      )}
+
                       {/* State transitions managed by provider */}
                       {ord.status === "accepted" && (
                         <Button

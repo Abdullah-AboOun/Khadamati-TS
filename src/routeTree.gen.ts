@@ -23,6 +23,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ServicesIdRouteImport } from './routes/services.$id'
+import { Route as ProvidersIdRouteImport } from './routes/providers.$id'
 import { Route as ProviderOrdersRouteImport } from './routes/provider/orders'
 import { Route as ProviderMyServicesRouteImport } from './routes/provider/my-services'
 import { Route as ProviderDashboardRouteImport } from './routes/provider/dashboard'
@@ -105,6 +106,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const ServicesIdRoute = ServicesIdRouteImport.update({
   id: '/services/$id',
   path: '/services/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProvidersIdRoute = ProvidersIdRouteImport.update({
+  id: '/providers/$id',
+  path: '/providers/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProviderOrdersRoute = ProviderOrdersRouteImport.update({
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/provider/my-services': typeof ProviderMyServicesRoute
   '/provider/orders': typeof ProviderOrdersRoute
+  '/providers/$id': typeof ProvidersIdRoute
   '/services/$id': typeof ServicesIdRoute
   '/admin/': typeof AdminIndexRoute
   '/services/': typeof ServicesIndexRoute
@@ -228,6 +235,7 @@ export interface FileRoutesByTo {
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/provider/my-services': typeof ProviderMyServicesRoute
   '/provider/orders': typeof ProviderOrdersRoute
+  '/providers/$id': typeof ProvidersIdRoute
   '/services/$id': typeof ServicesIdRoute
   '/admin': typeof AdminIndexRoute
   '/services': typeof ServicesIndexRoute
@@ -259,6 +267,7 @@ export interface FileRoutesById {
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/provider/my-services': typeof ProviderMyServicesRoute
   '/provider/orders': typeof ProviderOrdersRoute
+  '/providers/$id': typeof ProvidersIdRoute
   '/services/$id': typeof ServicesIdRoute
   '/admin/': typeof AdminIndexRoute
   '/services/': typeof ServicesIndexRoute
@@ -290,6 +299,7 @@ export interface FileRouteTypes {
     | '/provider/dashboard'
     | '/provider/my-services'
     | '/provider/orders'
+    | '/providers/$id'
     | '/services/$id'
     | '/admin/'
     | '/services/'
@@ -318,6 +328,7 @@ export interface FileRouteTypes {
     | '/provider/dashboard'
     | '/provider/my-services'
     | '/provider/orders'
+    | '/providers/$id'
     | '/services/$id'
     | '/admin'
     | '/services'
@@ -348,6 +359,7 @@ export interface FileRouteTypes {
     | '/provider/dashboard'
     | '/provider/my-services'
     | '/provider/orders'
+    | '/providers/$id'
     | '/services/$id'
     | '/admin/'
     | '/services/'
@@ -370,6 +382,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   CheckoutIdRoute: typeof CheckoutIdRoute
   OrdersIdRoute: typeof OrdersIdRoute
+  ProvidersIdRoute: typeof ProvidersIdRoute
   ServicesIdRoute: typeof ServicesIdRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
 }
@@ -472,6 +485,13 @@ declare module '@tanstack/react-router' {
       path: '/services/$id'
       fullPath: '/services/$id'
       preLoaderRoute: typeof ServicesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/providers/$id': {
+      id: '/providers/$id'
+      path: '/providers/$id'
+      fullPath: '/providers/$id'
+      preLoaderRoute: typeof ProvidersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/provider/orders': {
@@ -642,6 +662,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   CheckoutIdRoute: CheckoutIdRoute,
   OrdersIdRoute: OrdersIdRoute,
+  ProvidersIdRoute: ProvidersIdRoute,
   ServicesIdRoute: ServicesIdRoute,
   ServicesIndexRoute: ServicesIndexRoute,
 }

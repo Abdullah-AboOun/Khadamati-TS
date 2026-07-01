@@ -28,6 +28,7 @@ import {
   ArrowRight,
   Shield,
   MessageSquare,
+  Wallet,
 } from "lucide-react";
 import { formatPrice, STATUS_LABELS } from "../../shared/constants";
 import { useState } from "react";
@@ -268,6 +269,16 @@ function OrderDetailComponent() {
                 </div>
               )}
 
+              {order.paymentProof && (
+                <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/10 p-4">
+                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 mb-2">
+                    <Wallet className="size-4" />
+                    معلومات وإثبات الدفع:
+                  </span>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{order.paymentProof}</p>
+                </div>
+              )}
+
               {order.notes && (
                 <div className="rounded-lg bg-amber-500/5 border border-amber-500/10 p-4">
                   <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 flex items-center gap-1.5 mb-2">
@@ -448,6 +459,18 @@ function OrderDetailComponent() {
               {/* PROVIDER ACTIONS */}
               {isProvider && (
                 <div className="flex flex-col gap-3">
+                  {/* Status pending and has amount (confirm payment/accept) */}
+                  {order.status === "pending" && order.amount && (
+                    <Button
+                      onClick={() => handleUpdateStatus("accepted")}
+                      disabled={isUpdatingStatus}
+                      className="w-full font-bold flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                    >
+                      <Check className="size-4" />
+                      تأكيد الدفع وقبول الطلب
+                    </Button>
+                  )}
+
                   {/* Status accepted -> in_progress */}
                   {order.status === "accepted" && (
                     <Button

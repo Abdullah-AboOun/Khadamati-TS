@@ -310,17 +310,23 @@ function ServiceDetailComponent() {
               <div className="mt-6 border-t border-border pt-4">
                 <span className="mb-3 block text-xs text-muted-foreground">حول مزود الخدمة</span>
                 <div className="flex items-center gap-3">
-                  <Avatar className="size-12">
-                    <AvatarImage
-                      src={service.providerImage || ""}
-                      alt={service.providerName || undefined}
-                    />
-                    <AvatarFallback className="bg-primary/10 font-bold text-primary">
-                      {(service.providerName || "؟").charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
+                  <Link to="/providers/$id" params={{ id: service.providerId || "" }} className="cursor-pointer">
+                    <Avatar className="size-12 hover:opacity-85 transition-opacity">
+                      <AvatarImage
+                        src={service.providerImage || undefined}
+                        alt={service.providerName || undefined}
+                      />
+                      <AvatarFallback className="bg-primary/10 font-bold text-primary">
+                        {(service.providerName || "؟").charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
                   <div>
-                    <h4 className="text-sm font-bold">{service.providerName || "مجهول"}</h4>
+                    <h4 className="text-sm font-bold">
+                      <Link to="/providers/$id" params={{ id: service.providerId || "" }} className="hover:text-primary transition-colors cursor-pointer">
+                        {service.providerName || "مجهول"}
+                      </Link>
+                    </h4>
                     <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
                       {service.providerBio || "لا توجد نبذة شخصية لمزود الخدمة."}
                     </p>
@@ -343,6 +349,11 @@ function ServiceDetailComponent() {
                     </div>
                   </div>
                 )}
+                <Button asChild variant="outline" size="sm" className="mt-4 w-full cursor-pointer font-semibold flex items-center justify-center gap-1.5 border-primary/20 hover:bg-primary/5 hover:text-primary text-xs">
+                  <Link to="/providers/$id" params={{ id: service.providerId || "" }}>
+                    عرض ملف المزود والتقييمات الكاملة
+                  </Link>
+                </Button>
               </div>
             </div>
           </Card>

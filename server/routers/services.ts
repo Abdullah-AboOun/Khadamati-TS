@@ -7,6 +7,7 @@ import {
 } from "../../shared/schemas";
 import { eq, and, like, gte, lte, desc, sql, count } from "drizzle-orm";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const servicesRouter = router({
   list: publicProcedure.input(serviceFilterSchema).query(async ({ input }) => {
@@ -101,7 +102,7 @@ export const servicesRouter = router({
           city: schema.service.city,
           isActive: schema.service.isActive,
           createdAt: schema.service.createdAt,
-          providerId: schema.user.id,
+          providerId: schema.service.providerId,
           providerName: schema.user.name,
           providerBio: schema.user.bio,
           providerImage: schema.user.image,
@@ -269,5 +270,85 @@ export const servicesRouter = router({
 
       await db.delete(schema.service).where(eq(schema.service.id, input.id));
       return { success: true };
+    }),
+
+  getProviderProfile: publicProcedure
+    .input(z.object({ providerId: z.string() }))
+    .query(async ({ input }) => {
+      // 1. Get provider details
+      const [provider] = await db
+        .select({
+          id: schema.user.id,
+          name: schema.user.name,
+          email: schema.user.email,
+          image: schema.user.image,
+          phone: schema.user.phone,
+          city: schema.user.city,
+          bio: schema.user.bio,
+        })
+        .from(schema.user)
+        .where(and(eq(schema.user.id, input.providerId), eq(schema.user.role, "provider")))
+        .limit(1);
+
+      if (!provider) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "مزود الخدمة غير موجود" });
+      }
+
+      // 2. Get provider's services
+      const services = await db
+        .select({
+          id: schema.service.id,
+          title: schema.service.title,
+          description: schema.service.description,
+          pricingType: schema.service.pricingType,
+          price: schema.service.price,
+          city: schema.service.city,
+        })
+        .from(schema.service)
+        .where(and(eq(schema.service.providerId, input.providerId), eq(schema.service.isActive, true)));
+
+      // Fetch images for each service
+      const servicesWithImages = await Promise.all(
+        services.map(async (svc) => {
+          const imgs = await db
+            .select({ url: schema.serviceImage.url })
+            .from(schema.serviceImage)
+            .where(eq(schema.serviceImage.serviceId, svc.id));
+          return {
+            ...svc,
+            images: imgs.map((im) => im.url),
+          };
+        })
+      );
+
+      // 3. Get all reviews on any of this provider's services
+      const reviews = await db
+        .select({
+          id: schema.review.id,
+          rating: schema.review.rating,
+          comment: schema.review.comment,
+          createdAt: schema.review.createdAt,
+          clientName: schema.user.name,
+          clientImage: schema.user.image,
+          serviceTitle: schema.service.title,
+          serviceId: schema.service.id,
+        })
+        .from(schema.review)
+        .leftJoin(schema.user, eq(schema.review.clientId, schema.user.id))
+        .leftJoin(schema.service, eq(schema.review.serviceId, schema.service.id))
+        .where(eq(schema.service.providerId, input.providerId))
+        .orderBy(desc(schema.review.createdAt));
+
+      const avgRating = reviews.length
+        ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+        : 0;
+
+      return {
+        provider,
+        services: servicesWithImages,
+        reviews,
+        avgRating,
+        reviewCount: reviews.length,
+      };
     }),
 });

@@ -72,6 +72,11 @@ export const respondToQuoteSchema = z.object({
 export const updateOrderStatusSchema = z.object({
   orderId: z.number().int().positive(),
   status: z.enum(["pending", "quoted", "accepted", "in_progress", "completed", "cancelled"]),
+  paymentMethod: z.string().optional(),
+  paymentProof: z.string().optional(),
+  accountNumber: z.string().optional(),
+  details: z.string().optional(),
+  paymentStatus: z.string().optional(),
 });
 
 // ─── Reviews ─────────────────────────────────────────────

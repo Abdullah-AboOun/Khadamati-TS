@@ -140,17 +140,33 @@ export const ordersRouter = router({
         throw new TRPCError({ code: "FORBIDDEN", message: "غير مصرح" });
       }
 
-      // Clients can only accept/reject quotes or cancel
-      if (isClient && !["accepted", "cancelled"].includes(input.status)) {
+      // Clients can only accept/reject quotes, cancel, or submit payment details (keeping status pending)
+      if (isClient && !["accepted", "cancelled", "pending"].includes(input.status)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "إجراء غير مسموح",
         });
       }
 
+      const updateData: any = {
+        status: input.status,
+        updatedAt: new Date(),
+      };
+
+      if (input.paymentMethod !== undefined) updateData.paymentMethod = input.paymentMethod;
+      if (input.paymentProof !== undefined) updateData.paymentProof = input.paymentProof;
+      if (input.accountNumber !== undefined) updateData.accountNumber = input.accountNumber;
+      if (input.details !== undefined) updateData.details = input.details;
+      if (input.paymentStatus !== undefined) updateData.paymentStatus = input.paymentStatus;
+
+      // Automatically complete payment status if order status is updated to accepted and no status is provided
+      if (input.status === "accepted" && !updateData.paymentStatus) {
+        updateData.paymentStatus = "completed";
+      }
+
       const [updated] = await db
         .update(schema.order)
-        .set({ status: input.status, updatedAt: new Date() })
+        .set(updateData)
         .where(eq(schema.order.id, input.orderId))
         .returning();
 
@@ -210,6 +226,10 @@ export const ordersRouter = router({
           notes: schema.order.notes,
           createdAt: schema.order.createdAt,
           updatedAt: schema.order.updatedAt,
+          paymentMethod: schema.order.paymentMethod,
+          paymentProof: schema.order.paymentProof,
+          accountNumber: schema.order.accountNumber,
+          paymentStatus: schema.order.paymentStatus,
           serviceId: schema.service.id,
           serviceTitle: schema.service.title,
           categoryName: schema.category.name,

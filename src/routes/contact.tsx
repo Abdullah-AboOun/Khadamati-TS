@@ -75,10 +75,6 @@ function ContactComponent() {
     <div className="container mx-auto px-4 py-12 sm:px-6 max-w-5xl space-y-12" dir="rtl">
       {/* Header */}
       <div className="text-center space-y-3">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
-          <Sparkles className="size-4" />
-          تواصل معنا
-        </span>
         <h1 className="text-3xl font-bold sm:text-4xl tracking-tight">كيف يمكننا مساعدتك اليوم؟</h1>
         <p className="text-muted-foreground max-w-xl mx-auto">
           يسعدنا الرد على استفساراتك واقتراحاتك. املأ النموذج أدناه وسيتواصل معك فريقنا في أقرب وقت.
