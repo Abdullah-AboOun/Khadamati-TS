@@ -1,8 +1,8 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { Footer } from "@/components/Footer"
-import { useSession, signOut, type AuthUser } from "@/lib/auth-client"
-import { Button } from "@/components/ui/button"
+import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Footer } from "@/components/Footer";
+import { useSession, signOut, type AuthUser } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,44 +10,32 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Toaster } from "sonner"
-import {
-  LogOut,
-  User,
-  Briefcase,
-  ClipboardList,
-  ShieldAlert,
-  LayoutDashboard,
-} from "lucide-react"
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Toaster } from "sonner";
+import { LogOut, User, Briefcase, ClipboardList, ShieldAlert, LayoutDashboard } from "lucide-react";
 
 export const Route = createRootRoute({
   component: RootLayout,
-})
+});
 
 function RootLayout() {
-  const { data: session, isPending } = useSession()
-  const user = session?.user as AuthUser | null | undefined
+  const { data: session, isPending } = useSession();
+  const user = session?.user as AuthUser | null | undefined;
 
   const handleLogout = async () => {
-    await signOut()
-    window.location.href = "/"
-  }
+    await signOut();
+    window.location.href = "/";
+  };
 
   return (
-    <div
-      className="flex min-h-screen flex-col bg-background font-sans text-foreground"
-      dir="rtl"
-    >
+    <div className="flex min-h-screen flex-col bg-background font-sans text-foreground" dir="rtl">
       {/* Navigation Header */}
       <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-md">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-6">
             <Link to="/" className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-foreground">
-                خدماتي
-              </span>
+              <span className="text-2xl font-bold text-foreground">خدماتي</span>
             </Link>
             <nav className="hidden items-center gap-6 md:flex">
               <Link
@@ -73,15 +61,9 @@ function RootLayout() {
             ) : session?.user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="relative size-8 rounded-full p-0"
-                  >
+                  <Button variant="ghost" className="relative size-8 rounded-full p-0">
                     <Avatar className="size-8">
-                      <AvatarImage
-                        src={session.user.image || ""}
-                        alt={session.user.name}
-                      />
+                      <AvatarImage src={session.user.image || ""} alt={session.user.name} />
                       <AvatarFallback className="bg-primary/10 font-bold text-primary">
                         {session.user.name.charAt(0)}
                       </AvatarFallback>
@@ -91,9 +73,7 @@ function RootLayout() {
                 <DropdownMenuContent className="w-56" align="start">
                   <DropdownMenuLabel className="text-right font-semibold">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm leading-none">
-                        {session.user.name}
-                      </p>
+                      <p className="text-sm leading-none">{session.user.name}</p>
                       <p className="text-xs leading-none text-muted-foreground">
                         {session.user.email}
                       </p>
@@ -103,20 +83,14 @@ function RootLayout() {
 
                   {/* Client Roles Links */}
                   <DropdownMenuItem asChild className="justify-end text-right">
-                    <Link
-                      to="/profile"
-                      className="flex w-full items-center justify-between"
-                    >
+                    <Link to="/profile" className="flex w-full items-center justify-between">
                       <span>الملف الشخصي</span>
                       <User className="size-4 text-muted-foreground" />
                     </Link>
                   </DropdownMenuItem>
 
                   <DropdownMenuItem asChild className="justify-end text-right">
-                    <Link
-                      to="/my-orders"
-                      className="flex w-full items-center justify-between"
-                    >
+                    <Link to="/my-orders" className="flex w-full items-center justify-between">
                       <span>طلباتي</span>
                       <ClipboardList className="size-4 text-muted-foreground" />
                     </Link>
@@ -129,10 +103,7 @@ function RootLayout() {
                       <DropdownMenuLabel className="text-right text-xs font-semibold text-muted-foreground">
                         مزود الخدمة
                       </DropdownMenuLabel>
-                      <DropdownMenuItem
-                        asChild
-                        className="justify-end text-right"
-                      >
+                      <DropdownMenuItem asChild className="justify-end text-right">
                         <Link
                           to="/provider/dashboard"
                           className="flex w-full items-center justify-between"
@@ -141,10 +112,7 @@ function RootLayout() {
                           <LayoutDashboard className="size-4 text-muted-foreground" />
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        asChild
-                        className="justify-end text-right"
-                      >
+                      <DropdownMenuItem asChild className="justify-end text-right">
                         <Link
                           to="/provider/my-services"
                           className="flex w-full items-center justify-between"
@@ -153,10 +121,7 @@ function RootLayout() {
                           <Briefcase className="size-4 text-muted-foreground" />
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        asChild
-                        className="justify-end text-right"
-                      >
+                      <DropdownMenuItem asChild className="justify-end text-right">
                         <Link
                           to="/provider/orders"
                           className="flex w-full items-center justify-between"
@@ -175,14 +140,8 @@ function RootLayout() {
                       <DropdownMenuLabel className="text-right text-xs font-semibold text-muted-foreground">
                         الإدارة
                       </DropdownMenuLabel>
-                      <DropdownMenuItem
-                        asChild
-                        className="justify-end text-right"
-                      >
-                        <Link
-                          to="/admin"
-                          className="flex w-full items-center justify-between"
-                        >
+                      <DropdownMenuItem asChild className="justify-end text-right">
+                        <Link to="/admin" className="flex w-full items-center justify-between">
                           <span>لوحة الإدارة</span>
                           <ShieldAlert className="size-4 text-muted-foreground" />
                         </Link>
@@ -227,5 +186,5 @@ function RootLayout() {
       {/* Toasts */}
       <Toaster position="top-center" dir="rtl" />
     </div>
-  )
+  );
 }

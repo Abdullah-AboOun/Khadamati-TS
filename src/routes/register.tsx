@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
-import { signUp } from "@/lib/auth-client"
-import { Button } from "@/components/ui/button"
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { signUp } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,41 +8,41 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { useState } from "react"
-import { toast } from "sonner"
-import { User, Mail, Lock, Phone } from "lucide-react"
-import { CITIES } from "../../shared/constants"
+} from "@/components/ui/select";
+import { useState } from "react";
+import { toast } from "sonner";
+import { User, Mail, Lock, Phone } from "lucide-react";
+import { CITIES } from "../../shared/constants";
 
 export const Route = createFileRoute("/register")({
   component: RegisterComponent,
-})
+});
 
 function RegisterComponent() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [role, setRole] = useState<"client" | "provider">("client")
-  const [phone, setPhone] = useState("")
-  const [city, setCity] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"client" | "provider">("client");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.SubmitEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!name || !email || !password) {
-      toast.error("الرجاء تعبئة الحقول الأساسية (الاسم، البريد، كلمة المرور)")
-      return
+      toast.error("الرجاء تعبئة الحقول الأساسية (الاسم، البريد، كلمة المرور)");
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     const { error } = await signUp.email({
       email,
       password,
@@ -51,26 +51,24 @@ function RegisterComponent() {
       phone: phone || undefined,
       city: city || undefined,
       isActive: true,
-    } as unknown as Parameters<typeof signUp.email>[0])
+    } as unknown as Parameters<typeof signUp.email>[0]);
 
-    setIsLoading(false)
+    setIsLoading(false);
 
     if (error) {
-      toast.error(error.message || "حدث خطأ أثناء إنشاء الحساب")
+      toast.error(error.message || "حدث خطأ أثناء إنشاء الحساب");
     } else {
-      toast.success("تم إنشاء الحساب بنجاح! جاري تسجيل الدخول...")
-      window.location.href = "/"
+      toast.success("تم إنشاء الحساب بنجاح! جاري تسجيل الدخول...");
+      window.location.href = "/";
     }
-  }
+  };
 
   return (
     <div className="flex min-h-[calc(100vh-12rem)] items-center justify-center px-4 py-12">
       <Card className="w-full max-w-lg border border-border shadow-lg">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">إنشاء حساب جديد</CardTitle>
-          <CardDescription>
-            انضم إلينا اليوم وابدأ باستخدام خدماتي
-          </CardDescription>
+          <CardDescription>انضم إلينا اليوم وابدأ باستخدام خدماتي</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -133,20 +131,13 @@ function RegisterComponent() {
                 <label className="text-sm font-medium" htmlFor="role">
                   نوع الحساب
                 </label>
-                <Select
-                  value={role}
-                  onValueChange={(val) => setRole(val as "client" | "provider")}
-                >
+                <Select value={role} onValueChange={(val) => setRole(val as "client" | "provider")}>
                   <SelectTrigger className="flex w-full justify-between text-right">
                     <SelectValue placeholder="اختر نوع الحساب" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="client">
-                      عميل (أبحث عن خدمات)
-                    </SelectItem>
-                    <SelectItem value="provider">
-                      مزود خدمة (أريد تقديم خدمات)
-                    </SelectItem>
+                    <SelectItem value="client">عميل (أبحث عن خدمات)</SelectItem>
+                    <SelectItem value="provider">مزود خدمة (أريد تقديم خدمات)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -188,27 +179,18 @@ function RegisterComponent() {
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="mt-4 w-full font-semibold"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="mt-4 w-full font-semibold" disabled={isLoading}>
               {isLoading ? "جاري إنشاء الحساب..." : "إنشاء الحساب"}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex flex-wrap items-center justify-center gap-2 border-t border-border pt-6">
-          <span className="text-sm text-muted-foreground">
-            لديك حساب بالفعل؟
-          </span>
-          <Link
-            to="/login"
-            className="text-sm font-semibold text-primary hover:underline"
-          >
+          <span className="text-sm text-muted-foreground">لديك حساب بالفعل؟</span>
+          <Link to="/login" className="text-sm font-semibold text-primary hover:underline">
             تسجيل الدخول
           </Link>
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }

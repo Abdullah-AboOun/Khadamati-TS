@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { trpc } from "@/lib/trpc"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { createFileRoute } from "@tanstack/react-router";
+import { trpc } from "@/lib/trpc";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -9,77 +9,71 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { useState } from "react"
-import { toast } from "sonner"
-import { Plus, Trash2, Edit2 } from "lucide-react"
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Plus, Trash2, Edit2 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/categories")({
   component: AdminCategoriesComponent,
-})
+});
 
 function AdminCategoriesComponent() {
-  const {
-    data: categories,
-    isLoading,
-    refetch,
-  } = trpc.categories.list.useQuery()
+  const { data: categories, isLoading, refetch } = trpc.categories.list.useQuery();
 
   // Form states
-  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(
-    null
-  )
-  const [name, setName] = useState("")
-  const [slug, setSlug] = useState("")
-  const [icon, setIcon] = useState("")
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(null);
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [icon, setIcon] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // mutations
-  const createCategoryMutation = trpc.categories.create.useMutation()
-  const updateCategoryMutation = trpc.categories.update.useMutation()
-  const deleteCategoryMutation = trpc.categories.delete.useMutation()
+  const createCategoryMutation = trpc.categories.create.useMutation();
+  const updateCategoryMutation = trpc.categories.update.useMutation();
+  const deleteCategoryMutation = trpc.categories.delete.useMutation();
 
   const handleOpenCreate = () => {
-    setEditingCategoryId(null)
-    setName("")
-    setSlug("")
-    setIcon("Zap")
-    setDialogOpen(true)
-  }
+    setEditingCategoryId(null);
+    setName("");
+    setSlug("");
+    setIcon("Zap");
+    setDialogOpen(true);
+  };
 
   interface CategoryItem {
-    id: number
-    name: string
-    slug: string
-    icon: string | null
+    id: number;
+    name: string;
+    slug: string;
+    icon: string | null;
   }
 
   const handleOpenEdit = (cat: CategoryItem) => {
-    setEditingCategoryId(cat.id)
-    setName(cat.name)
-    setSlug(cat.slug)
-    setIcon(cat.icon || "Zap")
-    setDialogOpen(true)
-  }
+    setEditingCategoryId(cat.id);
+    setName(cat.name);
+    setSlug(cat.slug);
+    setIcon(cat.icon || "Zap");
+    setDialogOpen(true);
+  };
 
   const handleSave = async (e: React.SubmitEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!name || !slug) {
-      toast.error("الرجاء تعبئة حقول الاسم والمعرّف")
-      return
+      toast.error("الرجاء تعبئة حقول الاسم والمعرّف");
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       if (editingCategoryId) {
         await updateCategoryMutation.mutateAsync({
@@ -87,42 +81,38 @@ function AdminCategoriesComponent() {
           name,
           slug,
           icon,
-        })
-        toast.success("تم تحديث التصنيف بنجاح")
+        });
+        toast.success("تم تحديث التصنيف بنجاح");
       } else {
         await createCategoryMutation.mutateAsync({
           name,
           slug,
           icon,
-        })
-        toast.success("تم إضافة التصنيف الجديد بنجاح")
+        });
+        toast.success("تم إضافة التصنيف الجديد بنجاح");
       }
-      setDialogOpen(false)
-      refetch()
+      setDialogOpen(false);
+      refetch();
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ في حفظ التصنيف")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ في حفظ التصنيف");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleDelete = async (id: number) => {
-    if (
-      !confirm(
-        "هل أنت متأكد من رغبتك في حذف هذا التصنيف؟ قد يؤثر ذلك على الخدمات التابعة له."
-      )
-    )
-      return
+    if (!confirm("هل أنت متأكد من رغبتك في حذف هذا التصنيف؟ قد يؤثر ذلك على الخدمات التابعة له."))
+      return;
     try {
-      await deleteCategoryMutation.mutateAsync({ id })
-      toast.success("تم حذف التصنيف بنجاح")
-      refetch()
+      await deleteCategoryMutation.mutateAsync({ id });
+      toast.success("تم حذف التصنيف بنجاح");
+      refetch();
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ أثناء حذف التصنيف")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ أثناء حذف التصنيف");
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -130,11 +120,11 @@ function AdminCategoriesComponent() {
         <Skeleton className="h-10 w-1/4" />
         <Skeleton className="h-64 w-full rounded-md" />
       </div>
-    )
+    );
   }
 
   return (
-    <div className="container mx-auto space-y-6 px-4 py-8 sm:px-6">
+    <div className="container mx-auto space-y-6 px-4 py-8 sm:px-6 text-right" dir="rtl">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">إدارة التصنيفات</h1>
@@ -142,7 +132,7 @@ function AdminCategoriesComponent() {
             أضف تصنيفات جديدة للمنصة أو عدل التصنيفات الحالية والرموز الخاصة بها
           </p>
         </div>
-        <Button onClick={handleOpenCreate} className="font-semibold">
+        <Button onClick={handleOpenCreate} className="font-semibold cursor-pointer">
           <Plus className="ml-1 size-4" />
           إضافة تصنيف جديد
         </Button>
@@ -154,45 +144,40 @@ function AdminCategoriesComponent() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-right">رقم التصنيف</TableHead>
-                  <TableHead className="text-right">الاسم</TableHead>
-                  <TableHead className="text-right">
-                    المعرف الرابط (Slug)
-                  </TableHead>
-                  <TableHead className="text-right">
-                    الرمز الإيقوني (Icon)
-                  </TableHead>
-                  <TableHead className="text-right">تاريخ الإضافة</TableHead>
-                  <TableHead className="text-left">الإجراءات</TableHead>
+                  <TableHead className="text-center">رقم التصنيف</TableHead>
+                  <TableHead className="text-center">الاسم</TableHead>
+                  <TableHead className="text-center">المعرف الرابط (Slug)</TableHead>
+                  <TableHead className="text-center">الرمز الإيقوني (Icon)</TableHead>
+                  <TableHead className="text-center">تاريخ الإضافة</TableHead>
+                  <TableHead className="text-center">الإجراءات</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {categories?.map((cat) => (
                   <TableRow key={cat.id}>
-                    <TableCell className="font-mono">#{cat.id}</TableCell>
-                    <TableCell className="font-bold">{cat.name}</TableCell>
-                    <TableCell>{cat.slug}</TableCell>
-                    <TableCell>{cat.icon || "Zap"}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-center font-mono">#{cat.id}</TableCell>
+                    <TableCell className="text-center font-bold">{cat.name}</TableCell>
+                    <TableCell className="text-center">{cat.slug}</TableCell>
+                    <TableCell className="text-center">{cat.icon || "Zap"}</TableCell>
+                    <TableCell className="text-center">
                       {new Date(cat.createdAt).toLocaleDateString("ar")}
                     </TableCell>
-                    <TableCell className="text-left">
-                      <div className="flex justify-end gap-2">
+                    <TableCell className="text-center">
+                      <div className="flex justify-center gap-2">
                         <Button
-                          size="icon"
-                          variant="ghost"
-                          className="size-8 rounded-full"
+                          size="sm"
+                          variant="outline"
+                          className="h-8 font-semibold cursor-pointer"
                           onClick={() => handleOpenEdit(cat)}
-                          title="تعديل التصنيف"
                         >
-                          <Edit2 className="size-4" />
+                          <Edit2 className="ml-1 size-3.5" />
+                          تعديل
                         </Button>
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="size-8 rounded-full text-destructive hover:bg-destructive/10"
+                          className="size-8 text-destructive hover:bg-destructive/10 hover:text-destructive cursor-pointer"
                           onClick={() => handleDelete(cat.id)}
-                          title="حذف التصنيف"
                         >
                           <Trash2 className="size-4" />
                         </Button>
@@ -213,15 +198,11 @@ function AdminCategoriesComponent() {
             <DialogTitle>
               {editingCategoryId ? "تعديل بيانات التصنيف" : "إضافة تصنيف جديد"}
             </DialogTitle>
-            <DialogDescription>
-              املأ الحقول لتحديث بيانات تصنيفات الخدمات بالمنصة.
-            </DialogDescription>
+            <DialogDescription>املأ الحقول لتحديث بيانات تصنيفات الخدمات بالمنصة.</DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSave} className="space-y-4 py-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">
-                اسم التصنيف (بالعربية)
-              </label>
+              <label className="text-sm font-medium">اسم التصنيف (بالعربية)</label>
               <Input
                 type="text"
                 placeholder="مثال: سباكة"
@@ -233,9 +214,7 @@ function AdminCategoriesComponent() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">
-                المعرّف الرابط (Slug - بالإنجليزية)
-              </label>
+              <label className="text-sm font-medium">المعرّف الرابط (Slug - بالإنجليزية)</label>
               <Input
                 type="text"
                 placeholder="example: plumbing"
@@ -247,9 +226,7 @@ function AdminCategoriesComponent() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">
-                رمز الأيقونة (من Lucide)
-              </label>
+              <label className="text-sm font-medium">رمز الأيقونة (من Lucide)</label>
               <Input
                 type="text"
                 placeholder="Zap, Hammer, Snowflake, Code, etc."
@@ -259,16 +236,12 @@ function AdminCategoriesComponent() {
               />
             </div>
 
-            <Button
-              type="submit"
-              className="mt-4 w-full font-bold"
-              disabled={isSubmitting}
-            >
+            <Button type="submit" className="mt-4 w-full font-bold" disabled={isSubmitting}>
               {isSubmitting ? "جاري الحفظ..." : "حفظ التصنيف"}
             </Button>
           </form>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

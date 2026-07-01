@@ -1,11 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
-import { trpc } from "@/lib/trpc"
-import { useSession, type AuthUser } from "@/lib/auth-client"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { trpc } from "@/lib/trpc";
+import { useSession, type AuthUser } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Calendar,
   User,
@@ -28,44 +28,41 @@ import {
   ArrowRight,
   Shield,
   MessageSquare,
-} from "lucide-react"
-import { formatPrice, STATUS_LABELS } from "../../shared/constants"
-import { useState } from "react"
-import { toast } from "sonner"
+} from "lucide-react";
+import { formatPrice, STATUS_LABELS } from "../../shared/constants";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/orders/$id")({
   component: OrderDetailComponent,
-})
+});
 
 const STATUS_COLOR_CLASSES: Record<string, string> = {
   pending:
     "bg-yellow-100 text-yellow-800 dark:bg-yellow-950/30 dark:text-yellow-400 border-yellow-200",
-  quoted:
-    "bg-blue-100 text-blue-800 dark:bg-blue-950/30 dark:text-blue-400 border-blue-200",
-  accepted:
-    "bg-green-100 text-green-800 dark:bg-green-950/30 dark:text-green-400 border-green-200",
+  quoted: "bg-blue-100 text-blue-800 dark:bg-blue-950/30 dark:text-blue-400 border-blue-200",
+  accepted: "bg-green-100 text-green-800 dark:bg-green-950/30 dark:text-green-400 border-green-200",
   in_progress:
     "bg-orange-100 text-orange-800 dark:bg-orange-950/30 dark:text-orange-400 border-orange-200",
   completed:
     "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400 border-emerald-200",
-  cancelled:
-    "bg-red-100 text-red-800 dark:bg-red-950/30 dark:text-red-400 border-red-200",
-}
+  cancelled: "bg-red-100 text-red-800 dark:bg-red-950/30 dark:text-red-400 border-red-200",
+};
 
 function OrderDetailComponent() {
-  const { id } = Route.useParams()
-  const parsedOrderId = parseInt(id)
-  const { data: session } = useSession()
-  const user = session?.user as AuthUser | null | undefined
+  const { id } = Route.useParams();
+  const parsedOrderId = parseInt(id);
+  const { data: session } = useSession();
+  const user = session?.user as AuthUser | null | undefined;
 
-  const [quotePrice, setQuotePrice] = useState("")
-  const [isSubmittingQuote, setIsSubmittingQuote] = useState(false)
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
-  const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
-  const [reviewDialogOpen, setReviewDialogOpen] = useState(false)
-  const [rating, setRating] = useState(5)
-  const [comment, setComment] = useState("")
-  const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+  const [quotePrice, setQuotePrice] = useState("");
+  const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   // tRPC query to fetch order details
   const {
@@ -74,13 +71,13 @@ function OrderDetailComponent() {
     refetch,
   } = trpc.orders.getById.useQuery({
     orderId: parsedOrderId,
-  })
+  });
 
   // tRPC mutations
-  const updateStatusMutation = trpc.orders.updateStatus.useMutation()
-  const respondToQuoteMutation = trpc.orders.respondToQuote.useMutation()
-  const cancelOrderMutation = trpc.orders.cancelOrder.useMutation()
-  const createReviewMutation = trpc.reviews.create.useMutation()
+  const updateStatusMutation = trpc.orders.updateStatus.useMutation();
+  const respondToQuoteMutation = trpc.orders.respondToQuote.useMutation();
+  const cancelOrderMutation = trpc.orders.cancelOrder.useMutation();
+  const createReviewMutation = trpc.reviews.create.useMutation();
 
   if (isLoading) {
     return (
@@ -94,21 +91,19 @@ function OrderDetailComponent() {
           <Skeleton className="h-80 w-full rounded-xl" />
         </div>
       </div>
-    )
+    );
   }
 
   if (!session?.user) {
     return (
       <div className="container mx-auto px-4 py-16 text-center" dir="rtl">
         <h2 className="text-2xl font-bold">الرجاء تسجيل الدخول أولاً</h2>
-        <p className="mt-2 text-muted-foreground">
-          يجب تسجيل الدخول لعرض تفاصيل الطلبات.
-        </p>
+        <p className="mt-2 text-muted-foreground">يجب تسجيل الدخول لعرض تفاصيل الطلبات.</p>
         <Button asChild className="mt-4">
           <Link to="/login">تسجيل الدخول</Link>
         </Button>
       </div>
-    )
+    );
   }
 
   if (!order) {
@@ -122,93 +117,93 @@ function OrderDetailComponent() {
           <Link to="/">العودة للرئيسية</Link>
         </Button>
       </div>
-    )
+    );
   }
 
-  const isClient = order.clientId === user?.id
-  const isProvider = order.providerId === user?.id
+  const isClient = order.clientId === user?.id;
+  const isProvider = order.providerId === user?.id;
 
   const handleUpdateStatus = async (status: typeof order.status) => {
-    setIsUpdatingStatus(true)
+    setIsUpdatingStatus(true);
     try {
       await updateStatusMutation.mutateAsync({
         orderId: parsedOrderId,
         status,
-      })
-      toast.success("تم تحديث حالة الطلب بنجاح")
-      refetch()
+      });
+      toast.success("تم تحديث حالة الطلب بنجاح");
+      refetch();
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ أثناء تحديث حالة الطلب")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ أثناء تحديث حالة الطلب");
     } finally {
-      setIsUpdatingStatus(false)
+      setIsUpdatingStatus(false);
     }
-  }
+  };
 
   const handleCancelOrder = async () => {
-    setIsUpdatingStatus(true)
+    setIsUpdatingStatus(true);
     try {
       if (isProvider) {
-        await cancelOrderMutation.mutateAsync({ orderId: parsedOrderId })
+        await cancelOrderMutation.mutateAsync({ orderId: parsedOrderId });
       } else {
         await updateStatusMutation.mutateAsync({
           orderId: parsedOrderId,
           status: "cancelled",
-        })
+        });
       }
-      toast.success("تم إلغاء الطلب بنجاح")
-      setCancelDialogOpen(false)
-      refetch()
+      toast.success("تم إلغاء الطلب بنجاح");
+      setCancelDialogOpen(false);
+      refetch();
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ أثناء إلغاء الطلب")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ أثناء إلغاء الطلب");
     } finally {
-      setIsUpdatingStatus(false)
+      setIsUpdatingStatus(false);
     }
-  }
+  };
 
-  const handleSubmitQuote = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const price = parseFloat(quotePrice)
+  const handleSubmitQuote = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const price = parseFloat(quotePrice);
     if (isNaN(price) || price <= 0) {
-      toast.error("الرجاء إدخال سعر صحيح أكبر من صفر")
-      return
+      toast.error("الرجاء إدخال سعر صحيح أكبر من صفر");
+      return;
     }
 
-    setIsSubmittingQuote(true)
+    setIsSubmittingQuote(true);
     try {
       await respondToQuoteMutation.mutateAsync({
         orderId: parsedOrderId,
         quotedPrice: price,
-      })
-      toast.success("تم تقديم عرض السعر بنجاح")
-      refetch()
+      });
+      toast.success("تم تقديم عرض السعر بنجاح");
+      refetch();
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ أثناء تقديم السعر")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ أثناء تقديم السعر");
     } finally {
-      setIsSubmittingQuote(false)
+      setIsSubmittingQuote(false);
     }
-  }
+  };
 
   const handleLeaveReview = async () => {
-    setIsSubmittingReview(true)
+    setIsSubmittingReview(true);
     try {
       await createReviewMutation.mutateAsync({
         orderId: parsedOrderId,
         rating,
         comment: comment || undefined,
-      })
-      toast.success("شكراً لك! تم إضافة تقييمك بنجاح")
-      setReviewDialogOpen(false)
-      refetch()
+      });
+      toast.success("شكراً لك! تم إضافة تقييمك بنجاح");
+      setReviewDialogOpen(false);
+      refetch();
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ أثناء تقديم التقييم")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ أثناء تقديم التقييم");
     } finally {
-      setIsSubmittingReview(false)
+      setIsSubmittingReview(false);
     }
-  }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6" dir="rtl">
@@ -349,9 +344,7 @@ function OrderDetailComponent() {
                       }`}
                     />
                   ))}
-                  <span className="text-sm font-bold mr-2">
-                    {order.reviewRating} من 5
-                  </span>
+                  <span className="text-sm font-bold mr-2">{order.reviewRating} من 5</span>
                 </div>
                 {order.reviewComment && (
                   <p className="text-sm text-foreground italic leading-relaxed">
@@ -368,7 +361,9 @@ function OrderDetailComponent() {
           {/* Amount Card */}
           <Card className="border border-border shadow-sm overflow-hidden">
             <CardHeader className="bg-primary/5 border-b border-border">
-              <CardTitle className="text-sm font-medium text-muted-foreground">التكلفة الإجمالية</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                التكلفة الإجمالية
+              </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
               {order.amount ? (
@@ -406,7 +401,10 @@ function OrderDetailComponent() {
                   <div>
                     <span className="text-sm font-bold block">{order.providerName}</span>
                     {order.providerPhone && (
-                      <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5" dir="ltr">
+                      <span
+                        className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"
+                        dir="ltr"
+                      >
                         <Phone className="size-3" />
                         {order.providerPhone}
                       </span>
@@ -427,7 +425,10 @@ function OrderDetailComponent() {
                   <div>
                     <span className="text-sm font-bold block">{order.clientName}</span>
                     {order.clientPhone && (
-                      <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5" dir="ltr">
+                      <span
+                        className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"
+                        dir="ltr"
+                      >
                         <Phone className="size-3" />
                         {order.clientPhone}
                       </span>
@@ -488,7 +489,9 @@ function OrderDetailComponent() {
                             disabled={isSubmittingQuote}
                             className="pl-8 text-right"
                           />
-                          <span className="absolute left-3 top-2 text-sm text-muted-foreground">₪</span>
+                          <span className="absolute left-3 top-2 text-sm text-muted-foreground">
+                            ₪
+                          </span>
                         </div>
                       </div>
                       <Button
@@ -522,7 +525,11 @@ function OrderDetailComponent() {
                           </DialogDescription>
                         </DialogHeader>
                         <div className="mt-4 flex justify-end gap-3">
-                          <Button variant="ghost" onClick={() => setCancelDialogOpen(false)} className="cursor-pointer">
+                          <Button
+                            variant="ghost"
+                            onClick={() => setCancelDialogOpen(false)}
+                            className="cursor-pointer"
+                          >
                             تراجع
                           </Button>
                           <Button
@@ -580,7 +587,11 @@ function OrderDetailComponent() {
                             </DialogDescription>
                           </DialogHeader>
                           <div className="mt-4 flex justify-end gap-3">
-                            <Button variant="ghost" onClick={() => setCancelDialogOpen(false)} className="cursor-pointer">
+                            <Button
+                              variant="ghost"
+                              onClick={() => setCancelDialogOpen(false)}
+                              className="cursor-pointer"
+                            >
                               تراجع
                             </Button>
                             <Button
@@ -618,7 +629,11 @@ function OrderDetailComponent() {
                           </DialogDescription>
                         </DialogHeader>
                         <div className="mt-4 flex justify-end gap-3">
-                          <Button variant="ghost" onClick={() => setCancelDialogOpen(false)} className="cursor-pointer">
+                          <Button
+                            variant="ghost"
+                            onClick={() => setCancelDialogOpen(false)}
+                            className="cursor-pointer"
+                          >
                             تراجع
                           </Button>
                           <Button
@@ -673,7 +688,9 @@ function OrderDetailComponent() {
                             </div>
                           </div>
                           <div className="space-y-1.5">
-                            <label className="text-sm font-semibold" htmlFor="review-comment">التعليق:</label>
+                            <label className="text-sm font-semibold" htmlFor="review-comment">
+                              التعليق:
+                            </label>
                             <textarea
                               id="review-comment"
                               placeholder="اكتب تجربتك مع مزود الخدمة هنا..."
@@ -685,7 +702,11 @@ function OrderDetailComponent() {
                           </div>
                         </div>
                         <div className="flex justify-end gap-3">
-                          <Button variant="ghost" onClick={() => setReviewDialogOpen(false)} className="cursor-pointer">
+                          <Button
+                            variant="ghost"
+                            onClick={() => setReviewDialogOpen(false)}
+                            className="cursor-pointer"
+                          >
                             تراجع
                           </Button>
                           <Button
@@ -713,5 +734,5 @@ function OrderDetailComponent() {
         </div>
       </div>
     </div>
-  )
+  );
 }

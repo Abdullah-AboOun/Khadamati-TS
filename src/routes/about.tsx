@@ -1,11 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Search, ClipboardList, CheckCircle2, Sparkles, Heart, ShieldCheck } from "lucide-react"
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Search, ClipboardList, CheckCircle2, Sparkles, Heart, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   component: AboutComponent,
-})
+});
 
 function AboutComponent() {
   return (
@@ -20,7 +20,8 @@ function AboutComponent() {
           نبسّط الخدمات المحلية والمستقلة
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed">
-          منصة "خدماتي" ولدت من رؤية واضحة: تسهيل العثور على مقدمي الخدمات المهرة في منطقتك الجغرافية وتمكين أصحاب المهن الحرة من كسب عيشهم بكرامة وأمان.
+          منصة "خدماتي" ولدت من رؤية واضحة: تسهيل العثور على مقدمي الخدمات المهرة في منطقتك
+          الجغرافية وتمكين أصحاب المهن الحرة من كسب عيشهم بكرامة وأمان.
         </p>
       </section>
 
@@ -32,7 +33,8 @@ function AboutComponent() {
           </div>
           <h2 className="text-2xl font-bold">رسالتنا</h2>
           <p className="text-muted-foreground leading-relaxed">
-            نسعى إلى تمكين المجتمعات المحلية من خلال بناء بيئة تقنية متكاملة وموثوقة تربط بين طالبي الخدمات ومقدميها، مع ضمان التميز المهني، النزاهة المالية، والسرعة الفائقة في التنفيذ.
+            نسعى إلى تمكين المجتمعات المحلية من خلال بناء بيئة تقنية متكاملة وموثوقة تربط بين طالبي
+            الخدمات ومقدميها، مع ضمان التميز المهني، النزاهة المالية، والسرعة الفائقة في التنفيذ.
           </p>
         </Card>
 
@@ -42,7 +44,8 @@ function AboutComponent() {
           </div>
           <h2 className="text-2xl font-bold">رؤيتنا</h2>
           <p className="text-muted-foreground leading-relaxed">
-            أن نصبح المنصة الريادية والأولى في تقديم وتسهيل الخدمات المحلية والمهنية الحرة، مع تعزيز الابتكار والتحول الرقمي لتمكين الخبراء ودعم الاقتصاد المحلي.
+            أن نصبح المنصة الريادية والأولى في تقديم وتسهيل الخدمات المحلية والمهنية الحرة، مع تعزيز
+            الابتكار والتحول الرقمي لتمكين الخبراء ودعم الاقتصاد المحلي.
           </p>
         </Card>
       </section>
@@ -62,7 +65,8 @@ function AboutComponent() {
             </div>
             <h3 className="text-xl font-bold">1. ابحث عن الخدمة</h3>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              تصفح الخدمات المتنوعة أو ابحث عن فني محدد، وقم بتصفية النتائج بناءً على مدينتك ونوع السعر.
+              تصفح الخدمات المتنوعة أو ابحث عن فني محدد، وقم بتصفية النتائج بناءً على مدينتك ونوع
+              السعر.
             </p>
           </div>
 
@@ -73,7 +77,8 @@ function AboutComponent() {
             </div>
             <h3 className="text-xl font-bold">2. اطلب وقدم التفاصيل</h3>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              أرسل طلبك للمزود مع التفاصيل والملاحظات. إذا كانت الخدمة تتطلب تسعيرًا، فستتلقى عرض سعر سريع للموافقة عليه.
+              أرسل طلبك للمزود مع التفاصيل والملاحظات. إذا كانت الخدمة تتطلب تسعيرًا، فستتلقى عرض سعر
+              سريع للموافقة عليه.
             </p>
           </div>
 
@@ -84,7 +89,8 @@ function AboutComponent() {
             </div>
             <h3 className="text-xl font-bold">3. استلم عملك وقيّم</h3>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              يتابع المزود التنفيذ ويسلّم الطلب عند اكتماله. بعد الدفع والتأكيد، يمكنك ترك تقييم حقيقي لمساعدة الآخرين.
+              يتابع المزود التنفيذ ويسلّم الطلب عند اكتماله. بعد الدفع والتأكيد، يمكنك ترك تقييم
+              حقيقي لمساعدة الآخرين.
             </p>
           </div>
         </div>
@@ -94,7 +100,8 @@ function AboutComponent() {
       <section className="rounded-3xl bg-muted/40 border border-border p-8 sm:p-12 text-center space-y-6 max-w-4xl mx-auto shadow-xs">
         <h2 className="text-3xl font-bold">ابدأ تجربتك مع خدماتي اليوم</h2>
         <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-          سواء كنت تبحث عن فني موثوق، مصمم محترف، أو ترغب في تقديم خدماتك وزيادة دخلك، منصتنا هي الخيار الأمثل.
+          سواء كنت تبحث عن فني موثوق، مصمم محترف، أو ترغب في تقديم خدماتك وزيادة دخلك، منصتنا هي
+          الخيار الأمثل.
         </p>
         <div className="flex justify-center gap-4 pt-2">
           <Button asChild size="lg" className="px-8 font-bold cursor-pointer">
@@ -106,5 +113,5 @@ function AboutComponent() {
         </div>
       </section>
     </div>
-  )
+  );
 }

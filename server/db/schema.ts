@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core"
+import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 
 // ─── Users (managed by BetterAuth) ───────────────────────
 // BetterAuth creates: user, session, account, verification tables.
@@ -14,7 +14,7 @@ export const category = sqliteTable("category", {
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-})
+});
 
 // ─── Services ────────────────────────────────────────────
 
@@ -40,7 +40,7 @@ export const service = sqliteTable("service", {
   updatedAt: integer("updated_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-})
+});
 
 // ─── Service Images ──────────────────────────────────────
 
@@ -55,7 +55,7 @@ export const serviceImage = sqliteTable("service_image", {
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-})
+});
 
 // ─── Orders ──────────────────────────────────────────────
 
@@ -72,14 +72,7 @@ export const order = sqliteTable("order", {
     .references(() => service.id),
   amount: real("amount"),
   status: text("status", {
-    enum: [
-      "pending",
-      "quoted",
-      "accepted",
-      "in_progress",
-      "completed",
-      "cancelled",
-    ],
+    enum: ["pending", "quoted", "accepted", "in_progress", "completed", "cancelled"],
   })
     .notNull()
     .default("pending"),
@@ -92,7 +85,7 @@ export const order = sqliteTable("order", {
   updatedAt: integer("updated_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-})
+});
 
 // ─── Reviews ─────────────────────────────────────────────
 
@@ -113,7 +106,7 @@ export const review = sqliteTable("review", {
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-})
+});
 
 // ─── Settings ────────────────────────────────────────────
 
@@ -121,7 +114,7 @@ export const setting = sqliteTable("setting", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   key: text("key").notNull().unique(),
   value: text("value").notNull(),
-})
+});
 
 // ─── BetterAuth tables ──────────────────────────────────
 // These must be defined so Drizzle can reference them.
@@ -131,9 +124,7 @@ export const user = sqliteTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: integer("email_verified", { mode: "boolean" })
-    .notNull()
-    .default(false),
+  emailVerified: integer("email_verified", { mode: "boolean" }).notNull().default(false),
   image: text("image"),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
@@ -149,7 +140,7 @@ export const user = sqliteTable("user", {
   city: text("city"),
   bio: text("bio"),
   isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
-})
+});
 
 export const session = sqliteTable("session", {
   id: text("id").primaryKey(),
@@ -166,7 +157,7 @@ export const session = sqliteTable("session", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-})
+});
 
 export const account = sqliteTable("account", {
   id: text("id").primaryKey(),
@@ -192,20 +183,16 @@ export const account = sqliteTable("account", {
   updatedAt: integer("updated_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-})
+});
 
 export const verification = sqliteTable("verification", {
   id: text("id").primaryKey(),
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
   expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
-    () => new Date()
-  ),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
-    () => new Date()
-  ),
-})
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
 
 export const contactMessage = sqliteTable("contact_message", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -216,4 +203,4 @@ export const contactMessage = sqliteTable("contact_message", {
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-})
+});

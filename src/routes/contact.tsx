@@ -1,75 +1,75 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { trpc } from "@/lib/trpc"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Mail, Phone, MapPin, Send, AlertCircle, Sparkles } from "lucide-react"
-import { useState } from "react"
-import { toast } from "sonner"
+import { createFileRoute } from "@tanstack/react-router";
+import { trpc } from "@/lib/trpc";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Mail, Phone, MapPin, Send, AlertCircle, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
   component: ContactComponent,
-})
+});
 
 function ContactComponent() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [subject, setSubject] = useState("")
-  const [message, setMessage] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [validationError, setValidationError] = useState<string | null>(null)
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   // tRPC mutation
-  const submitContactMutation = trpc.contact.submit.useMutation()
+  const submitContactMutation = trpc.contact.submit.useMutation();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setValidationError(null)
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    setValidationError(null);
 
     // Basic frontend validation
     if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
-      setValidationError("الرجاء تعبئة جميع الحقول المطلوبة.")
-      return
+      setValidationError("الرجاء تعبئة جميع الحقول المطلوبة.");
+      return;
     }
     if (name.length < 2) {
-      setValidationError("الاسم يجب أن يكون حرفين على الأقل.")
-      return
+      setValidationError("الاسم يجب أن يكون حرفين على الأقل.");
+      return;
     }
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setValidationError("البريد الإلكتروني المدخل غير صالح.")
-      return
+      setValidationError("البريد الإلكتروني المدخل غير صالح.");
+      return;
     }
     if (subject.length < 3) {
-      setValidationError("موضوع الرسالة قصير جداً.")
-      return
+      setValidationError("موضوع الرسالة قصير جداً.");
+      return;
     }
     if (message.length < 10) {
-      setValidationError("محتوى الرسالة يجب أن يكون 10 أحرف على الأقل.")
-      return
+      setValidationError("محتوى الرسالة يجب أن يكون 10 أحرف على الأقل.");
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       await submitContactMutation.mutateAsync({
         name,
         email,
         subject,
         message,
-      })
-      toast.success("تم إرسال رسالتك بنجاح! شكراً لك للتواصل معنا.")
-      
+      });
+      toast.success("تم إرسال رسالتك بنجاح! شكراً لك للتواصل معنا.");
+
       // Clear form
-      setName("")
-      setEmail("")
-      setSubject("")
-      setMessage("")
+      setName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ أثناء إرسال الرسالة، الرجاء المحاولة لاحقاً.")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ أثناء إرسال الرسالة، الرجاء المحاولة لاحقاً.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="container mx-auto px-4 py-12 sm:px-6 max-w-5xl space-y-12" dir="rtl">
@@ -100,7 +100,9 @@ function ContactComponent() {
                 </div>
                 <div>
                   <span className="text-xs text-muted-foreground block">رقم الهاتف</span>
-                  <span className="text-sm font-bold text-foreground" dir="ltr">+970 2-224-5678</span>
+                  <span className="text-sm font-bold text-foreground" dir="ltr">
+                    +970 2-224-5678
+                  </span>
                 </div>
               </div>
 
@@ -122,7 +124,9 @@ function ContactComponent() {
                 </div>
                 <div>
                   <span className="text-xs text-muted-foreground block">العنوان</span>
-                  <span className="text-sm font-bold text-foreground">فلسطين، رام الله، حي الإرسال، عمارة الإتقان</span>
+                  <span className="text-sm font-bold text-foreground">
+                    فلسطين، رام الله، حي الإرسال، عمارة الإتقان
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -132,7 +136,8 @@ function ContactComponent() {
           <Card className="border border-border bg-card p-6 shadow-xs text-right">
             <h3 className="font-bold text-lg mb-2">أوقات العمل الرسمي</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              نستقبل رسائلكم على مدار الساعة، ويقوم فريق الدعم الفني بالرد المباشر خلال أيام العمل من السبت إلى الخميس، من الساعة 9:00 صباحاً وحتى 5:00 مساءً.
+              نستقبل رسائلكم على مدار الساعة، ويقوم فريق الدعم الفني بالرد المباشر خلال أيام العمل من
+              السبت إلى الخميس، من الساعة 9:00 صباحاً وحتى 5:00 مساءً.
             </p>
           </Card>
         </div>
@@ -154,7 +159,9 @@ function ContactComponent() {
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium" htmlFor="contact-name">الاسم بالكامل <span className="text-destructive">*</span></label>
+                    <label className="text-sm font-medium" htmlFor="contact-name">
+                      الاسم بالكامل <span className="text-destructive">*</span>
+                    </label>
                     <Input
                       id="contact-name"
                       placeholder="مثال: أحمد محمد"
@@ -167,7 +174,9 @@ function ContactComponent() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium" htmlFor="contact-email">البريد الإلكتروني <span className="text-destructive">*</span></label>
+                    <label className="text-sm font-medium" htmlFor="contact-email">
+                      البريد الإلكتروني <span className="text-destructive">*</span>
+                    </label>
                     <Input
                       id="contact-email"
                       type="email"
@@ -182,7 +191,9 @@ function ContactComponent() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium" htmlFor="contact-subject">الموضوع <span className="text-destructive">*</span></label>
+                  <label className="text-sm font-medium" htmlFor="contact-subject">
+                    الموضوع <span className="text-destructive">*</span>
+                  </label>
                   <Input
                     id="contact-subject"
                     placeholder="مثال: استفسار حول تسوية الحساب"
@@ -195,7 +206,9 @@ function ContactComponent() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium" htmlFor="contact-message">محتوى الرسالة <span className="text-destructive">*</span></label>
+                  <label className="text-sm font-medium" htmlFor="contact-message">
+                    محتوى الرسالة <span className="text-destructive">*</span>
+                  </label>
                   <textarea
                     id="contact-message"
                     placeholder="اكتب رسالتك أو استفسارك بالتفصيل هنا..."
@@ -207,7 +220,11 @@ function ContactComponent() {
                   />
                 </div>
 
-                <Button type="submit" disabled={isSubmitting} className="w-full font-bold flex items-center justify-center gap-2 cursor-pointer">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full font-bold flex items-center justify-center gap-2 cursor-pointer"
+                >
                   <Send className="size-4" />
                   {isSubmitting ? "جاري إرسال الرسالة..." : "إرسال الرسالة"}
                 </Button>
@@ -217,5 +234,5 @@ function ContactComponent() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,140 +1,133 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { trpc } from "@/lib/trpc"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Input } from "@/components/ui/input"
+import { createFileRoute } from "@tanstack/react-router";
+import { trpc } from "@/lib/trpc";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
-import { useState } from "react"
-import { toast } from "sonner"
-import { Plus, Trash2, Edit2, Upload, MapPin, Eye, EyeOff } from "lucide-react"
-import { formatPrice, CITIES } from "../../../shared/constants"
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Plus, Trash2, Edit2, Upload, MapPin, Eye, EyeOff } from "lucide-react";
+import { formatPrice, CITIES } from "../../../shared/constants";
 
 export interface ServiceItem {
-  id: number
-  title: string
-  description: string | null
-  categoryId: number | null
-  pricingType: "fixed" | "quote"
-  price: number | null
-  city: string | null
-  isActive: boolean
-  images?: { id: number; url: string }[] | null
+  id: number;
+  title: string;
+  description: string | null;
+  categoryId: number | null;
+  pricingType: "fixed" | "quote";
+  price: number | null;
+  city: string | null;
+  isActive: boolean;
+  images?: { id: number; url: string }[] | null;
 }
 
 export const Route = createFileRoute("/provider/my-services")({
   component: MyServicesComponent,
-})
+});
 
 function MyServicesComponent() {
-  const {
-    data: services,
-    isLoading,
-    refetch,
-  } = trpc.services.getMyServices.useQuery()
-  const { data: categories } = trpc.categories.list.useQuery()
+  const { data: services, isLoading, refetch } = trpc.services.getMyServices.useQuery();
+  const { data: categories } = trpc.categories.list.useQuery();
 
   // Form states
-  const [editingServiceId, setEditingServiceId] = useState<number | null>(null)
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [categoryId, setCategoryId] = useState("")
-  const [pricingType, setPricingType] = useState<"fixed" | "quote">("fixed")
-  const [price, setPrice] = useState("")
-  const [city, setCity] = useState("")
-  const [images, setImages] = useState<string[]>([])
-  const [isUploading, setIsUploading] = useState(false)
-  const [formDialogOpen, setFormDialogOpen] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [pricingType, setPricingType] = useState<"fixed" | "quote">("fixed");
+  const [price, setPrice] = useState("");
+  const [city, setCity] = useState("");
+  const [images, setImages] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [formDialogOpen, setFormDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // mutations
-  const createServiceMutation = trpc.services.create.useMutation()
-  const updateServiceMutation = trpc.services.update.useMutation()
-  const deleteServiceMutation = trpc.services.delete.useMutation()
+  const createServiceMutation = trpc.services.create.useMutation();
+  const updateServiceMutation = trpc.services.update.useMutation();
+  const deleteServiceMutation = trpc.services.delete.useMutation();
 
   const handleOpenCreateDialog = () => {
-    setEditingServiceId(null)
-    setTitle("")
-    setDescription("")
-    setCategoryId("")
-    setPricingType("fixed")
-    setPrice("")
-    setCity("")
-    setImages([])
-    setFormDialogOpen(true)
-  }
+    setEditingServiceId(null);
+    setTitle("");
+    setDescription("");
+    setCategoryId("");
+    setPricingType("fixed");
+    setPrice("");
+    setCity("");
+    setImages([]);
+    setFormDialogOpen(true);
+  };
 
   const handleOpenEditDialog = (svc: ServiceItem) => {
-    setEditingServiceId(svc.id)
-    setTitle(svc.title)
-    setDescription(svc.description || "")
-    setCategoryId(svc.categoryId?.toString() || "")
-    setPricingType(svc.pricingType)
-    setPrice(svc.price?.toString() || "")
-    setCity(svc.city || "")
+    setEditingServiceId(svc.id);
+    setTitle(svc.title);
+    setDescription(svc.description || "");
+    setCategoryId(svc.categoryId?.toString() || "");
+    setPricingType(svc.pricingType);
+    setPrice(svc.price?.toString() || "");
+    setCity(svc.city || "");
     // Fetch and populate images if available (mocked/queried if not loaded here)
-    setImages(svc.images?.map((img) => img.url) || [])
-    setFormDialogOpen(true)
-  }
+    setImages(svc.images?.map((img) => img.url) || []);
+    setFormDialogOpen(true);
+  };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files || files.length === 0) return
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
-    setIsUploading(true)
-    const formData = new FormData()
-    formData.append("file", files[0])
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", files[0]);
 
     try {
       const res = await fetch("/api/upload", {
         method: "POST",
         body: formData,
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (res.ok && data.url) {
-        setImages((prev) => [...prev, data.url])
-        toast.success("تم رفع الصورة بنجاح")
+        setImages((prev) => [...prev, data.url]);
+        toast.success("تم رفع الصورة بنجاح");
       } else {
-        toast.error(data.error || "فشل رفع الصورة")
+        toast.error(data.error || "فشل رفع الصورة");
       }
     } catch {
-      toast.error("حدث خطأ أثناء رفع الصورة")
+      toast.error("حدث خطأ أثناء رفع الصورة");
     } finally {
-      setIsUploading(false)
+      setIsUploading(false);
     }
-  }
+  };
 
   const handleSave = async (e: React.SubmitEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!title || !description || !categoryId || !city) {
-      toast.error("الرجاء تعبئة جميع الحقول الإلزامية")
-      return
+      toast.error("الرجاء تعبئة جميع الحقول الإلزامية");
+      return;
     }
 
-    const priceNum = pricingType === "fixed" ? parseFloat(price) : null
-    if (
-      pricingType === "fixed" &&
-      (priceNum === null || isNaN(priceNum) || priceNum <= 0)
-    ) {
-      toast.error("الرجاء إدخال سعر صحيح أكبر من صفر")
-      return
+    const priceNum = pricingType === "fixed" ? parseFloat(price) : null;
+    if (pricingType === "fixed" && (priceNum === null || isNaN(priceNum) || priceNum <= 0)) {
+      toast.error("الرجاء إدخال سعر صحيح أكبر من صفر");
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       if (editingServiceId) {
         await updateServiceMutation.mutateAsync({
@@ -146,8 +139,8 @@ function MyServicesComponent() {
           price: priceNum,
           city,
           images,
-        })
-        toast.success("تم تحديث الخدمة بنجاح")
+        });
+        toast.success("تم تحديث الخدمة بنجاح");
       } else {
         await createServiceMutation.mutateAsync({
           title,
@@ -157,46 +150,44 @@ function MyServicesComponent() {
           price: priceNum,
           city,
           images,
-        })
-        toast.success("تم إضافة الخدمة بنجاح")
+        });
+        toast.success("تم إضافة الخدمة بنجاح");
       }
-      setFormDialogOpen(false)
-      refetch()
+      setFormDialogOpen(false);
+      refetch();
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ أثناء حفظ الخدمة")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ أثناء حفظ الخدمة");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("هل أنت متأكد من رغبتك في حذف هذه الخدمة؟")) return
+    if (!confirm("هل أنت متأكد من رغبتك في حذف هذه الخدمة؟")) return;
     try {
-      await deleteServiceMutation.mutateAsync({ id })
-      toast.success("تم حذف الخدمة بنجاح")
-      refetch()
+      await deleteServiceMutation.mutateAsync({ id });
+      toast.success("تم حذف الخدمة بنجاح");
+      refetch();
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ أثناء حذف الخدمة")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ أثناء حذف الخدمة");
     }
-  }
+  };
 
   const handleToggleActive = async (svc: ServiceItem) => {
     try {
       await updateServiceMutation.mutateAsync({
         id: svc.id,
         isActive: !svc.isActive,
-      })
-      toast.success(
-        svc.isActive ? "تم إخفاء الخدمة من المنصة" : "تم تنشيط الخدمة في المنصة"
-      )
-      refetch()
+      });
+      toast.success(svc.isActive ? "تم إخفاء الخدمة من المنصة" : "تم تنشيط الخدمة في المنصة");
+      refetch();
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ أثناء تعديل الخدمة")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ أثناء تعديل الخدمة");
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -204,19 +195,15 @@ function MyServicesComponent() {
         <Skeleton className="h-10 w-1/4" />
         <Skeleton className="h-48 w-full rounded-md" />
       </div>
-    )
+    );
   }
 
   return (
     <div className="container mx-auto space-y-6 px-4 py-8 sm:px-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            إدارة خدماتي المعروضة
-          </h1>
-          <p className="mt-2 text-muted-foreground">
-            أضف خدمات جديدة، عدل الأسعار، وتصفح ما تقدمه
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">إدارة خدماتي المعروضة</h1>
+          <p className="mt-2 text-muted-foreground">أضف خدمات جديدة، عدل الأسعار، وتصفح ما تقدمه</p>
         </div>
         <Button onClick={handleOpenCreateDialog} className="font-semibold">
           <Plus className="ml-1 size-4" />
@@ -242,9 +229,7 @@ function MyServicesComponent() {
               <CardContent className="p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-1">
-                    <h3 className="line-clamp-1 text-lg font-bold">
-                      {svc.title}
-                    </h3>
+                    <h3 className="line-clamp-1 text-lg font-bold">{svc.title}</h3>
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <MapPin className="size-3.5" />
                       <span>{svc.city}</span>
@@ -254,9 +239,7 @@ function MyServicesComponent() {
                     {svc.isActive ? "نشط" : "مخفي"}
                   </Badge>
                 </div>
-                <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">
-                  {svc.description}
-                </p>
+                <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{svc.description}</p>
                 <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
                   <span className="text-lg font-extrabold text-primary">
                     {svc.pricingType === "fixed" && svc.price
@@ -271,11 +254,7 @@ function MyServicesComponent() {
                       onClick={() => handleToggleActive(svc)}
                       title={svc.isActive ? "إخفاء الخدمة" : "تنشيط الخدمة"}
                     >
-                      {svc.isActive ? (
-                        <EyeOff className="size-4" />
-                      ) : (
-                        <Eye className="size-4" />
-                      )}
+                      {svc.isActive ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                     </Button>
                     <Button
                       size="icon"
@@ -348,10 +327,7 @@ function MyServicesComponent() {
                   </SelectTrigger>
                   <SelectContent>
                     {categories?.map((cat) => (
-                      <SelectItem
-                        key={cat.id}
-                        value={cat.id.toString()}
-                      >
+                      <SelectItem key={cat.id} value={cat.id.toString()}>
                         {cat.name}
                       </SelectItem>
                     ))}
@@ -367,10 +343,7 @@ function MyServicesComponent() {
                   </SelectTrigger>
                   <SelectContent>
                     {CITIES.map((c) => (
-                      <SelectItem
-                        key={c}
-                        value={c}
-                      >
+                      <SelectItem key={c} value={c}>
                         {c}
                       </SelectItem>
                     ))}
@@ -384,20 +357,14 @@ function MyServicesComponent() {
                 <label className="text-sm font-medium">طريقة التسعير</label>
                 <Select
                   value={pricingType}
-                  onValueChange={(val: "fixed" | "quote") =>
-                    setPricingType(val)
-                  }
+                  onValueChange={(val: "fixed" | "quote") => setPricingType(val)}
                 >
                   <SelectTrigger className="flex w-full justify-between text-right">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="fixed">
-                      سعر ثابت
-                    </SelectItem>
-                    <SelectItem value="quote">
-                      طلب تسعير
-                    </SelectItem>
+                    <SelectItem value="fixed">سعر ثابت</SelectItem>
+                    <SelectItem value="quote">طلب تسعير</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -437,9 +404,7 @@ function MyServicesComponent() {
                   <span>رفع صورة</span>
                 </label>
                 {isUploading && (
-                  <span className="text-xs text-muted-foreground">
-                    جاري الرفع...
-                  </span>
+                  <span className="text-xs text-muted-foreground">جاري الرفع...</span>
                 )}
               </div>
               {images.length > 0 && (
@@ -449,16 +414,10 @@ function MyServicesComponent() {
                       key={idx}
                       className="group relative size-16 overflow-hidden rounded-md border bg-muted"
                     >
-                      <img
-                        src={img}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
+                      <img src={img} alt="" className="h-full w-full object-cover" />
                       <button
                         type="button"
-                        onClick={() =>
-                          setImages((prev) => prev.filter((_, i) => i !== idx))
-                        }
+                        onClick={() => setImages((prev) => prev.filter((_, i) => i !== idx))}
                         className="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 transition-opacity group-hover:opacity-100"
                       >
                         <Trash2 className="size-4" />
@@ -469,16 +428,12 @@ function MyServicesComponent() {
               )}
             </div>
 
-            <Button
-              type="submit"
-              className="mt-4 w-full font-bold"
-              disabled={isSubmitting}
-            >
+            <Button type="submit" className="mt-4 w-full font-bold" disabled={isSubmitting}>
               {isSubmitting ? "جاري الحفظ..." : "حفظ الخدمة"}
             </Button>
           </form>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

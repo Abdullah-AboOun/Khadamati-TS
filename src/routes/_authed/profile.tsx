@@ -1,79 +1,68 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { useSession, authClient, type AuthUser } from "@/lib/auth-client"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { createFileRoute } from "@tanstack/react-router";
+import { useSession, authClient, type AuthUser } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { useState } from "react"
-import { toast } from "sonner"
-import { User, Phone } from "lucide-react"
-import { CITIES } from "../../../shared/constants"
+} from "@/components/ui/select";
+import { useState } from "react";
+import { toast } from "sonner";
+import { User, Phone } from "lucide-react";
+import { CITIES } from "../../../shared/constants";
 
 export const Route = createFileRoute("/_authed/profile")({
   component: ProfileComponent,
-})
+});
 
 function ProfileComponent() {
-  const { data: session } = useSession()
-  const user = session?.user as AuthUser | null | undefined
+  const { data: session } = useSession();
+  const user = session?.user as AuthUser | null | undefined;
 
-  const [name, setName] = useState(() => user?.name || "")
-  const [phone, setPhone] = useState(() => user?.phone || "")
-  const [city, setCity] = useState(() => user?.city || "")
-  const [bio, setBio] = useState(() => user?.bio || "")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [name, setName] = useState(() => user?.name || "");
+  const [phone, setPhone] = useState(() => user?.phone || "");
+  const [city, setCity] = useState(() => user?.city || "");
+  const [bio, setBio] = useState(() => user?.bio || "");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.SubmitEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!name.trim()) {
-      toast.error("الاسم الكامل مطلوب")
-      return
+      toast.error("الاسم الكامل مطلوب");
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       const { error } = await authClient.updateUser({
         name,
         phone: phone || null,
         city: city || null,
         bio: bio || null,
-      } as unknown as Parameters<typeof authClient.updateUser>[0])
+      } as unknown as Parameters<typeof authClient.updateUser>[0]);
 
       if (error) {
-        toast.error(error.message || "حدث خطأ أثناء تعديل الحساب")
+        toast.error(error.message || "حدث خطأ أثناء تعديل الحساب");
       } else {
-        toast.success("تم تحديث معلومات الحساب بنجاح!")
+        toast.success("تم تحديث معلومات الحساب بنجاح!");
       }
     } catch {
-      toast.error("حدث خطأ غير متوقع")
+      toast.error("حدث خطأ غير متوقع");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
-    <div
-      key={user?.id ?? "loading"}
-      className="container mx-auto max-w-xl px-4 py-8 sm:px-6"
-    >
+    <div key={user?.id ?? "loading"} className="container mx-auto max-w-xl px-4 py-8 sm:px-6">
       <Card className="border border-border shadow-md">
         <CardHeader className="text-right">
           <CardTitle className="text-2xl font-bold">الملف الشخصي</CardTitle>
-          <CardDescription>
-            تعديل بيانات حسابك الشخصية وبيانات التواصل
-          </CardDescription>
+          <CardDescription>تعديل بيانات حسابك الشخصية وبيانات التواصل</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,9 +81,7 @@ function ProfileComponent() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">
-                البريد الإلكتروني (غير قابل للتعديل)
-              </label>
+              <label className="text-sm font-medium">البريد الإلكتروني (غير قابل للتعديل)</label>
               <Input
                 type="email"
                 value={session?.user?.email || ""}
@@ -144,16 +131,12 @@ function ProfileComponent() {
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="mt-4 w-full font-semibold"
-              disabled={isSubmitting}
-            >
+            <Button type="submit" className="mt-4 w-full font-semibold" disabled={isSubmitting}>
               {isSubmitting ? "جاري الحفظ..." : "حفظ التغييرات"}
             </Button>
           </form>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

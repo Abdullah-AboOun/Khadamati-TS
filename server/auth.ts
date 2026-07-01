@@ -1,6 +1,6 @@
-import { betterAuth } from "better-auth"
-import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { db, schema } from "./db"
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db, schema } from "./db";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -12,7 +12,8 @@ export const auth = betterAuth({
       verification: schema.verification,
     },
   }),
-  secret: process.env.BETTER_AUTH_SECRET || "development-secret-key-for-khadamati-local-marketplace",
+  secret:
+    process.env.BETTER_AUTH_SECRET || "development-secret-key-for-khadamati-local-marketplace",
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
@@ -74,7 +75,7 @@ export const auth = betterAuth({
       maxAge: 60 * 5, // 5 minutes
     },
   },
-  trustedOrigins: [process.env.APP_URL || "http://localhost:5173"],
-})
+  trustedOrigins: [process.env.APP_URL || "http://localhost:3000"],
+});
 
-export type Session = typeof auth.$Infer.Session
+export type Session = typeof auth.$Infer.Session;

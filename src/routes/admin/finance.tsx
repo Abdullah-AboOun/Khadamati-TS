@@ -1,12 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { trpc } from "@/lib/trpc"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card"
+import { createFileRoute } from "@tanstack/react-router";
+import { trpc } from "@/lib/trpc";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -14,18 +8,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useState } from "react"
-import { toast } from "sonner"
-import { Settings, BarChart3, Users, Landmark } from "lucide-react"
-import { formatPrice } from "../../../shared/constants"
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Settings, BarChart3, Users, Landmark } from "lucide-react";
+import { formatPrice } from "../../../shared/constants";
+import { MonthPicker } from "@/components/ui/month-picker";
 
 export const Route = createFileRoute("/admin/finance")({
   component: AdminFinanceComponent,
-})
+});
 
 function AdminFinanceComponent() {
   // Lifetime stats for general context
@@ -33,57 +28,61 @@ function AdminFinanceComponent() {
     data: stats,
     isLoading: statsLoading,
     refetch: refetchStats,
-  } = trpc.admin.stats.useQuery()
+  } = trpc.admin.stats.useQuery();
 
   // Month Picker State
   const [selectedMonthStr, setSelectedMonthStr] = useState(() => {
-    const now = new Date()
-    const yyyy = now.getFullYear()
-    const mm = String(now.getMonth() + 1).padStart(2, "0")
-    return `${yyyy}-${mm}`
-  })
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    return `${yyyy}-${mm}`;
+  });
 
-  const [yearStr, monthStr] = selectedMonthStr.split("-")
-  const year = parseInt(yearStr) || new Date().getFullYear()
-  const month = parseInt(monthStr) || (new Date().getMonth() + 1)
+  const [yearStr, monthStr] = selectedMonthStr.split("-");
+  const year = parseInt(yearStr) || new Date().getFullYear();
+  const month = parseInt(monthStr) || new Date().getMonth() + 1;
 
   // tRPC monthly queries
-  const { data: report, isLoading: reportLoading } =
-    trpc.admin.financialReport.useQuery({ year, month })
+  const { data: report, isLoading: reportLoading } = trpc.admin.financialReport.useQuery({
+    year,
+    month,
+  });
 
-  const { data: topProviders, isLoading: topProvidersLoading } =
-    trpc.admin.topProviders.useQuery({ year, month })
+  const { data: topProviders, isLoading: topProvidersLoading } = trpc.admin.topProviders.useQuery({
+    year,
+    month,
+  });
 
   const [commissionInput, setCommissionInput] = useState(() => {
-    return stats ? (stats.commissionRate * 100).toString() : ""
-  })
-  const [isUpdating, setIsUpdating] = useState(false)
+    return stats ? (stats.commissionRate * 100).toString() : "";
+  });
+  const [isUpdating, setIsUpdating] = useState(false);
 
   // mutations
-  const updateCommissionMutation = trpc.admin.updateCommissionRate.useMutation()
+  const updateCommissionMutation = trpc.admin.updateCommissionRate.useMutation();
 
-  const handleUpdateCommission = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const ratePercentage = parseFloat(commissionInput)
+  const handleUpdateCommission = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const ratePercentage = parseFloat(commissionInput);
     if (isNaN(ratePercentage) || ratePercentage < 0 || ratePercentage > 100) {
-      toast.error("الرجاء إدخال نسبة صحيحة بين 0% و 100%")
-      return
+      toast.error("الرجاء إدخال نسبة صحيحة بين 0% و 100%");
+      return;
     }
 
-    setIsUpdating(true)
+    setIsUpdating(true);
     try {
       await updateCommissionMutation.mutateAsync({
         commissionRate: ratePercentage / 100,
-      })
-      toast.success("تم تحديث نسبة عمولة النظام بنجاح!")
-      refetchStats()
+      });
+      toast.success("تم تحديث نسبة عمولة النظام بنجاح!");
+      refetchStats();
     } catch (err) {
-      const error = err as Error
-      toast.error(error.message || "حدث خطأ أثناء تحديث نسبة العمولة")
+      const error = err as Error;
+      toast.error(error.message || "حدث خطأ أثناء تحديث نسبة العمولة");
     } finally {
-      setIsUpdating(false)
+      setIsUpdating(false);
     }
-  }
+  };
 
   if (statsLoading || reportLoading || topProvidersLoading) {
     return (
@@ -94,16 +93,16 @@ function AdminFinanceComponent() {
           <Skeleton className="h-48 w-full rounded-xl" />
         </div>
       </div>
-    )
+    );
   }
 
-  const commissionRate = stats?.commissionRate ?? 0.1
+  const commissionRate = stats?.commissionRate ?? 0.1;
 
   // Monthly stats calculations
-  const monthlyCompletedCount = report?.length ?? 0
-  const monthlyRevenue = report?.reduce((sum, ord) => sum + (ord.amount ?? 0), 0) ?? 0
-  const monthlyAdminCut = monthlyRevenue * commissionRate
-  const monthlyProviderNet = monthlyRevenue - monthlyAdminCut
+  const monthlyCompletedCount = report?.length ?? 0;
+  const monthlyRevenue = report?.reduce((sum, ord) => sum + (ord.amount ?? 0), 0) ?? 0;
+  const monthlyAdminCut = monthlyRevenue * commissionRate;
+  const monthlyProviderNet = monthlyRevenue - monthlyAdminCut;
 
   return (
     <div className="container mx-auto space-y-6 px-4 py-8 sm:px-6 text-right" dir="rtl">
@@ -120,12 +119,7 @@ function AdminFinanceComponent() {
           <h2 className="text-lg font-bold">فلترة التقارير المالية</h2>
           <p className="text-xs text-muted-foreground">اختر الشهر لعرض الإحصائيات وجدول المتصدرين</p>
         </div>
-        <Input
-          type="month"
-          value={selectedMonthStr}
-          onChange={(e) => setSelectedMonthStr(e.target.value)}
-          className="w-full sm:w-48 text-right bg-background cursor-pointer"
-        />
+        <MonthPicker value={selectedMonthStr} onChange={setSelectedMonthStr} />
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
@@ -135,7 +129,9 @@ function AdminFinanceComponent() {
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
             <Card className="border border-border shadow-xs">
               <CardContent className="p-4 space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground block">مبيعات الشهر</span>
+                <span className="text-xs font-semibold text-muted-foreground block">
+                  مبيعات الشهر
+                </span>
                 <span className="text-lg sm:text-xl font-extrabold text-foreground block">
                   {formatPrice(monthlyRevenue)}
                 </span>
@@ -144,7 +140,9 @@ function AdminFinanceComponent() {
 
             <Card className="border border-border shadow-xs">
               <CardContent className="p-4 space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground block">عمولة المنصة</span>
+                <span className="text-xs font-semibold text-muted-foreground block">
+                  عمولة المنصة
+                </span>
                 <span className="text-lg sm:text-xl font-extrabold text-primary block">
                   {formatPrice(monthlyAdminCut)}
                 </span>
@@ -153,7 +151,9 @@ function AdminFinanceComponent() {
 
             <Card className="border border-border shadow-xs">
               <CardContent className="p-4 space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground block">صافي المزودين</span>
+                <span className="text-xs font-semibold text-muted-foreground block">
+                  صافي المزودين
+                </span>
                 <span className="text-lg sm:text-xl font-extrabold text-emerald-600 dark:text-emerald-400 block">
                   {formatPrice(monthlyProviderNet)}
                 </span>
@@ -162,7 +162,9 @@ function AdminFinanceComponent() {
 
             <Card className="border border-border shadow-xs">
               <CardContent className="p-4 space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground block">الطلبات المكتملة</span>
+                <span className="text-xs font-semibold text-muted-foreground block">
+                  الطلبات المكتملة
+                </span>
                 <span className="text-lg sm:text-xl font-extrabold text-foreground block">
                   {monthlyCompletedCount} طلبات
                 </span>
@@ -177,7 +179,9 @@ function AdminFinanceComponent() {
                 <Users className="size-5 text-muted-foreground" />
                 متصدرو مقدمي الخدمات للشهر ({month} / {year})
               </CardTitle>
-              <CardDescription>أفضل 10 مزودين من حيث المبيعات والطلبات المكتملة في هذا الشهر</CardDescription>
+              <CardDescription>
+                أفضل 10 مزودين من حيث المبيعات والطلبات المكتملة في هذا الشهر
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {topProvidersLoading ? (
@@ -197,7 +201,9 @@ function AdminFinanceComponent() {
                         <TableHead className="text-right">مزود الخدمة</TableHead>
                         <TableHead className="text-right">عدد الطلبات</TableHead>
                         <TableHead className="text-right">إجمالي المبيعات</TableHead>
-                        <TableHead className="text-right">عمولة المنصة ({ (commissionRate * 100).toFixed(0) }%)</TableHead>
+                        <TableHead className="text-right">
+                          عمولة المنصة ({(commissionRate * 100).toFixed(0)}%)
+                        </TableHead>
                         <TableHead className="text-right">صافي أرباح المزود</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -206,8 +212,12 @@ function AdminFinanceComponent() {
                         <TableRow key={prov.providerId}>
                           <TableCell className="font-bold">{prov.providerName}</TableCell>
                           <TableCell>{prov.orderCount} طلبات</TableCell>
-                          <TableCell className="font-semibold">{formatPrice(prov.grossRevenue)}</TableCell>
-                          <TableCell className="text-primary">{formatPrice(prov.adminCut)}</TableCell>
+                          <TableCell className="font-semibold">
+                            {formatPrice(prov.grossRevenue)}
+                          </TableCell>
+                          <TableCell className="text-primary">
+                            {formatPrice(prov.adminCut)}
+                          </TableCell>
                           <TableCell className="font-bold text-emerald-600 dark:text-emerald-400">
                             {formatPrice(prov.netToProvider)}
                           </TableCell>
@@ -227,7 +237,9 @@ function AdminFinanceComponent() {
                 <BarChart3 className="size-5 text-muted-foreground" />
                 سجل المبيعات والعمولات التفصيلي للشهر ({month} / {year})
               </CardTitle>
-              <CardDescription>قائمة بالمعاملات المكتملة المسجلة خلال هذا الشهر وحصة المنصة منها</CardDescription>
+              <CardDescription>
+                قائمة بالمعاملات المكتملة المسجلة خلال هذا الشهر وحصة المنصة منها
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {report?.length === 0 ? (
@@ -257,7 +269,9 @@ function AdminFinanceComponent() {
                           <TableCell className="font-semibold text-primary">
                             {ord.amount ? formatPrice(ord.amount * commissionRate) : "0 ₪"}
                           </TableCell>
-                          <TableCell>{new Date(ord.createdAt).toLocaleDateString("ar-EG")}</TableCell>
+                          <TableCell>
+                            {new Date(ord.createdAt).toLocaleDateString("ar-EG")}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -299,7 +313,11 @@ function AdminFinanceComponent() {
                     </span>
                   </div>
                 </div>
-                <Button type="submit" className="w-full font-semibold cursor-pointer" disabled={isUpdating}>
+                <Button
+                  type="submit"
+                  className="w-full font-semibold cursor-pointer"
+                  disabled={isUpdating}
+                >
                   {isUpdating ? "جاري الحفظ..." : "حفظ التغييرات المالية"}
                 </Button>
               </form>
@@ -321,7 +339,9 @@ function AdminFinanceComponent() {
               </div>
               <div className="flex justify-between items-center border-b border-border pb-2">
                 <span className="text-sm text-muted-foreground">إجمالي عمولات المنصة:</span>
-                <span className="font-bold text-primary">{formatPrice(stats?.totalCommission ?? 0)}</span>
+                <span className="font-bold text-primary">
+                  {formatPrice(stats?.totalCommission ?? 0)}
+                </span>
               </div>
               <div className="flex justify-between items-center pb-1">
                 <span className="text-sm text-muted-foreground">إجمالي المستخدمين:</span>
@@ -332,5 +352,5 @@ function AdminFinanceComponent() {
         </div>
       </div>
     </div>
-  )
+  );
 }

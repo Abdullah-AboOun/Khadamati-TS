@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react"],
+  "ignorePatterns": ["dist/", "src/routeTree.gen.ts", "drizzle.config.ts"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "react/only-export-components": [
+      "warn",
+      {
+        "allowConstantExport": true,
+        "allowExportNames": ["badgeVariants", "buttonVariants", "tabsListVariants"],
+        "customHOCs": ["createFileRoute", "createRootRoute"]
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
-import { signIn } from "@/lib/auth-client"
-import { Button } from "@/components/ui/button"
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { signIn } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,53 +8,51 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { useState } from "react"
-import { toast } from "sonner"
-import { Mail, Lock, Eye, EyeOff } from "lucide-react"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
   component: LoginComponent,
-})
+});
 
 function LoginComponent() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.SubmitEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!email || !password) {
-      toast.error("الرجاء تعبئة جميع الحقول")
-      return
+      toast.error("الرجاء تعبئة جميع الحقول");
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     const { error } = await signIn.email({
       email,
       password,
-    })
+    });
 
-    setIsLoading(false)
+    setIsLoading(false);
 
     if (error) {
-      toast.error(error.message || "حدث خطأ أثناء تسجيل الدخول")
+      toast.error(error.message || "حدث خطأ أثناء تسجيل الدخول");
     } else {
-      toast.success("تم تسجيل الدخول بنجاح")
-      window.location.href = "/"
+      toast.success("تم تسجيل الدخول بنجاح");
+      window.location.href = "/";
     }
-  }
+  };
 
   return (
     <div className="flex min-h-[calc(100vh-12rem)] items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md border border-border shadow-lg">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">تسجيل الدخول</CardTitle>
-          <CardDescription>
-            سجل دخولك للوصول إلى حسابك في خدماتي
-          </CardDescription>
+          <CardDescription>سجل دخولك للوصول إلى حسابك في خدماتي</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -97,34 +95,23 @@ function LoginComponent() {
                   className="absolute top-1/2 left-2 size-8 -translate-y-1/2 rounded-full"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? (
-                    <EyeOff className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
-                  )}
+                  {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </Button>
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full font-semibold"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full font-semibold" disabled={isLoading}>
               {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex flex-wrap items-center justify-center gap-2 border-t border-border pt-6">
           <span className="text-sm text-muted-foreground">ليس لديك حساب؟</span>
-          <Link
-            to="/register"
-            className="text-sm font-semibold text-primary hover:underline"
-          >
+          <Link to="/register" className="text-sm font-semibold text-primary hover:underline">
             إنشاء حساب جديد
           </Link>
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }

@@ -1,16 +1,16 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
-import { trpc } from "@/lib/trpc"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Input } from "@/components/ui/input"
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { trpc } from "@/lib/trpc";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   Zap,
   Droplets,
@@ -34,13 +34,13 @@ import {
   Compass,
   ArrowLeft,
   TrendingUp,
-} from "lucide-react"
-import { formatPrice, CITIES } from "../../shared/constants"
-import { useState } from "react"
+} from "lucide-react";
+import { formatPrice, CITIES } from "../../shared/constants";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: HomeComponent,
-})
+});
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Zap,
@@ -53,42 +53,39 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Video,
   PenTool,
   Megaphone,
-}
+};
 
 function HomeComponent() {
-  const navigate = useNavigate()
-  const [searchText, setSearchText] = useState("")
-  const [searchCity, setSearchCity] = useState("all")
+  const navigate = useNavigate();
+  const [searchText, setSearchText] = useState("");
+  const [searchCity, setSearchCity] = useState("all");
 
   // Fetch live stats
-  const { data: stats, isLoading: statsLoading } = trpc.stats.publicStats.useQuery()
+  const { data: stats, isLoading: statsLoading } = trpc.stats.publicStats.useQuery();
 
   // Fetch categories
-  const { data: categories, isLoading: catsLoading } =
-    trpc.categories.list.useQuery()
+  const { data: categories, isLoading: catsLoading } = trpc.categories.list.useQuery();
 
   // Fetch latest 6 services
-  const { data: servicesData, isLoading: servicesLoading } =
-    trpc.services.list.useQuery({
-      limit: 6,
-    })
+  const { data: servicesData, isLoading: servicesLoading } = trpc.services.list.useQuery({
+    limit: 6,
+  });
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSearch = (e: React.SyntheticEvent) => {
+    e.preventDefault();
     navigate({
       to: "/services",
       search: {
         search: searchText || undefined,
         city: searchCity === "all" ? undefined : searchCity,
       },
-    })
-  }
+    });
+  };
 
   return (
     <div className="flex flex-col gap-16 pb-20 bg-background text-foreground" dir="rtl">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-background py-24 text-foreground border-b border-border">
-
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
             {/* Left Content Column */}
@@ -101,7 +98,10 @@ function HomeComponent() {
               </p>
 
               {/* Search Box Inline */}
-              <form onSubmit={handleSearch} className="mt-8 max-w-2xl rounded-xl bg-card p-1.5 border border-border shadow-md flex flex-col sm:flex-row items-center gap-2">
+              <form
+                onSubmit={handleSearch}
+                className="mt-8 max-w-2xl rounded-xl bg-card p-1.5 border border-border shadow-md flex flex-col sm:flex-row items-center gap-2"
+              >
                 <div className="relative flex-1 w-full">
                   <Search className="absolute right-3 top-3.5 size-4 text-muted-foreground" />
                   <Input
@@ -114,13 +114,15 @@ function HomeComponent() {
                   />
                 </div>
 
-                <div className="w-full sm:w-32">
+                <div className="w-full sm:w-28">
                   <Select value={searchCity} onValueChange={setSearchCity}>
-                    <SelectTrigger className="h-10 w-full border-0 bg-secondary hover:bg-secondary/80 text-foreground text-right text-sm flex justify-between items-center cursor-pointer">
+                    <SelectTrigger className="h-9 w-full border-0 bg-secondary hover:bg-secondary/80 text-foreground text-right text-sm flex justify-between items-center cursor-pointer">
                       <SelectValue placeholder="اختر المدينة" />
                     </SelectTrigger>
-                    <SelectContent className="bg-card border-border text-foreground text-right">
-                      <SelectItem value="all" className="cursor-pointer text-right">كل المدن</SelectItem>
+                    <SelectContent className="border-border text-foreground text-right">
+                      <SelectItem value="all" className="cursor-pointer text-right">
+                        كل المدن
+                      </SelectItem>
                       {CITIES.map((city) => (
                         <SelectItem key={city} value={city} className="cursor-pointer text-right">
                           {city}
@@ -130,7 +132,11 @@ function HomeComponent() {
                   </Select>
                 </div>
 
-                <Button type="submit" size="sm" className="h-10 bg-primary text-primary-foreground hover:bg-primary/95 font-bold px-6 shrink-0 cursor-pointer">
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="h-9 bg-primary text-primary-foreground hover:bg-primary/95 font-bold px-6 shrink-0 cursor-pointer"
+                >
                   بحث
                 </Button>
               </form>
@@ -174,7 +180,10 @@ function HomeComponent() {
             {/* Right Column (Desktop-only Stats Widget) */}
             <div className="hidden lg:block lg:col-span-5 relative">
               <div className="pr-6 flex justify-end">
-                <div dir="rtl" className="w-full max-w-sm bg-card border border-border rounded-2xl p-6 shadow-md">
+                <div
+                  dir="rtl"
+                  className="w-full max-w-sm bg-card border border-border rounded-2xl p-6 shadow-md"
+                >
                   <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
                     نشاط منصة خدماتي
                   </h3>
@@ -185,7 +194,9 @@ function HomeComponent() {
                         <div className="rounded-lg bg-primary/10 p-2 text-primary">
                           <TrendingUp className="size-4.5" />
                         </div>
-                        <span className="text-xs font-semibold text-foreground">الطلبات النشطة اليوم</span>
+                        <span className="text-xs font-semibold text-foreground">
+                          الطلبات النشطة اليوم
+                        </span>
                       </div>
                       {statsLoading ? (
                         <Skeleton className="h-5 w-12 bg-secondary" />
@@ -202,7 +213,9 @@ function HomeComponent() {
                         <div className="rounded-lg bg-primary/10 p-2 text-primary">
                           <Users className="size-4.5" />
                         </div>
-                        <span className="text-xs font-semibold text-foreground">مزودين جدد هذا الأسبوع</span>
+                        <span className="text-xs font-semibold text-foreground">
+                          مزودين جدد هذا الأسبوع
+                        </span>
                       </div>
                       {statsLoading ? (
                         <Skeleton className="h-5 w-12 bg-secondary" />
@@ -219,7 +232,9 @@ function HomeComponent() {
                         <div className="rounded-lg bg-primary/10 p-2 text-primary">
                           <Star className="size-4.5 fill-current" />
                         </div>
-                        <span className="text-xs font-semibold text-foreground">مستوى رضا العملاء</span>
+                        <span className="text-xs font-semibold text-foreground">
+                          مستوى رضا العملاء
+                        </span>
                       </div>
                       <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 dark:text-emerald-400 dark:bg-emerald-500/20 px-2.5 py-1 rounded-full">
                         98.9% إيجابي
@@ -243,26 +258,24 @@ function HomeComponent() {
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
           {catsLoading
             ? Array.from({ length: 10 }).map((_, i) => (
-              <Skeleton key={i} className="h-28 w-full rounded-xl" />
-            ))
+                <Skeleton key={i} className="h-28 w-full rounded-xl" />
+              ))
             : categories?.map((cat) => {
-              const IconComponent = cat.icon ? ICON_MAP[cat.icon] || Zap : Zap
-              return (
-                <Link
-                  key={cat.id}
-                  to="/services"
-                  search={{ categoryId: cat.id }}
-                  className="group flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 text-center shadow-xs transition-all duration-200 hover:border-primary hover:shadow-sm cursor-pointer"
-                >
-                  <div className="rounded-full bg-primary/10 p-3 text-primary transition-all duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
-                    <IconComponent className="size-5" />
-                  </div>
-                  <span className="mt-3 text-sm font-semibold">
-                    {cat.name}
-                  </span>
-                </Link>
-              )
-            })}
+                const IconComponent = cat.icon ? ICON_MAP[cat.icon] || Zap : Zap;
+                return (
+                  <Link
+                    key={cat.id}
+                    to="/services"
+                    search={{ categoryId: cat.id }}
+                    className="group flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 text-center shadow-xs transition-all duration-200 hover:border-primary hover:shadow-sm cursor-pointer"
+                  >
+                    <div className="rounded-full bg-primary/10 p-3 text-primary transition-all duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
+                      <IconComponent className="size-5" />
+                    </div>
+                    <span className="mt-3 text-sm font-semibold">{cat.name}</span>
+                  </Link>
+                );
+              })}
         </div>
       </section>
 
@@ -356,7 +369,9 @@ function HomeComponent() {
       <section className="container mx-auto px-4 sm:px-6">
         <div className="text-center space-y-1 mb-12">
           <h2 className="text-2xl font-bold tracking-tight">لماذا منصة خدماتي؟</h2>
-          <p className="text-sm text-muted-foreground">بيئة عمل آمنة ومريحة لطلب وتقديم الخدمات المحلية</p>
+          <p className="text-sm text-muted-foreground">
+            بيئة عمل آمنة ومريحة لطلب وتقديم الخدمات المحلية
+          </p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -443,9 +458,12 @@ function HomeComponent() {
       {/* CTA Banner */}
       <section className="container mx-auto px-4 sm:px-6">
         <div className="rounded-2xl border border-border bg-card p-8 sm:p-12 text-center space-y-6 max-w-4xl mx-auto shadow-xs">
-          <h2 className="text-2xl font-bold sm:text-3xl text-foreground">هل أنت خبير محترف؟ ابدأ بكسب دخل إضافي اليوم</h2>
+          <h2 className="text-2xl font-bold sm:text-3xl text-foreground">
+            هل أنت خبير محترف؟ ابدأ بكسب دخل إضافي اليوم
+          </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            انضم إلى آلاف المحترفين على منصة خدماتي، واعرض مهاراتك وخدماتك للعملاء في مدينتك بكل سهولة وحرية.
+            انضم إلى آلاف المحترفين على منصة خدماتي، واعرض مهاراتك وخدماتك للعملاء في مدينتك بكل سهولة
+            وحرية.
           </p>
           <div className="flex justify-center gap-3 flex-col sm:flex-row pt-2">
             <Button asChild className="font-bold px-8 cursor-pointer">
@@ -458,5 +476,5 @@ function HomeComponent() {
         </div>
       </section>
     </div>
-  )
+  );
 }

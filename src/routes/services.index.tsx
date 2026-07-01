@@ -1,19 +1,19 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
-import { trpc } from "@/lib/trpc"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { trpc } from "@/lib/trpc";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
-import { MapPin, Search, SlidersHorizontal, Trash2 } from "lucide-react"
-import { formatPrice, CITIES } from "../../shared/constants"
-import { z } from "zod"
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { MapPin, Search, SlidersHorizontal, Trash2 } from "lucide-react";
+import { formatPrice, CITIES } from "../../shared/constants";
+import { z } from "zod";
 
 const serviceSearchSchema = z.object({
   search: z.string().optional(),
@@ -21,19 +21,19 @@ const serviceSearchSchema = z.object({
   city: z.string().optional(),
   minPrice: z.coerce.number().optional(),
   maxPrice: z.coerce.number().optional(),
-})
+});
 
 export const Route = createFileRoute("/services/")({
   validateSearch: (search) => serviceSearchSchema.parse(search),
   component: ServicesBrowseComponent,
-})
+});
 
 function ServicesBrowseComponent() {
-  const navigate = useNavigate({ from: Route.fullPath })
-  const searchParams = Route.useSearch()
+  const navigate = useNavigate({ from: Route.fullPath });
+  const searchParams = Route.useSearch();
 
   // Queries
-  const { data: categories } = trpc.categories.list.useQuery()
+  const { data: categories } = trpc.categories.list.useQuery();
   const { data: servicesData, isLoading } = trpc.services.list.useQuery({
     search: searchParams.search,
     categoryId: searchParams.categoryId,
@@ -42,21 +42,19 @@ function ServicesBrowseComponent() {
     maxPrice: searchParams.maxPrice,
     page: 1,
     limit: 50,
-  })
+  });
 
-  const updateSearch = (
-    updates: Partial<z.infer<typeof serviceSearchSchema>>
-  ) => {
+  const updateSearch = (updates: Partial<z.infer<typeof serviceSearchSchema>>) => {
     navigate({
       search: { ...searchParams, ...updates },
-    } as unknown as Parameters<typeof navigate>[0])
-  }
+    } as unknown as Parameters<typeof navigate>[0]);
+  };
 
   const clearFilters = () => {
     navigate({
       search: {} as unknown as Parameters<typeof navigate>[0]["search"],
-    })
-  }
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6">
@@ -77,9 +75,7 @@ function ServicesBrowseComponent() {
                 type="text"
                 placeholder="بحث عن خدمات..."
                 value={searchParams.search || ""}
-                onChange={(e) =>
-                  updateSearch({ search: e.target.value || undefined })
-                }
+                onChange={(e) => updateSearch({ search: e.target.value || undefined })}
                 className="pr-10 text-right"
               />
               <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -102,11 +98,7 @@ function ServicesBrowseComponent() {
                   جميع التصنيفات
                 </SelectItem>
                 {categories?.map((cat) => (
-                  <SelectItem
-                    key={cat.id}
-                    value={cat.id.toString()}
-                    className="text-right"
-                  >
+                  <SelectItem key={cat.id} value={cat.id.toString()} className="text-right">
                     {cat.name}
                   </SelectItem>
                 ))}
@@ -116,9 +108,7 @@ function ServicesBrowseComponent() {
             {/* City Select */}
             <Select
               value={searchParams.city || "all"}
-              onValueChange={(val) =>
-                updateSearch({ city: val === "all" ? undefined : val })
-              }
+              onValueChange={(val) => updateSearch({ city: val === "all" ? undefined : val })}
             >
               <SelectTrigger className="flex w-full justify-between text-right">
                 <SelectValue placeholder="المدينة" />
@@ -137,11 +127,7 @@ function ServicesBrowseComponent() {
 
             {/* Clear Button */}
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={clearFilters}
-                className="w-full font-medium"
-              >
+              <Button variant="outline" onClick={clearFilters} className="w-full font-medium">
                 <Trash2 className="ml-2 size-4" />
                 إعادة ضبط
               </Button>
@@ -206,17 +192,11 @@ function ServicesBrowseComponent() {
                   </p>
                   <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
                     <div>
-                      <span className="block text-xs text-muted-foreground">
-                        مزود الخدمة
-                      </span>
-                      <span className="text-sm font-semibold">
-                        {svc.providerName}
-                      </span>
+                      <span className="block text-xs text-muted-foreground">مزود الخدمة</span>
+                      <span className="text-sm font-semibold">{svc.providerName}</span>
                     </div>
                     <div className="text-left">
-                      <span className="block text-xs text-muted-foreground">
-                        السعر
-                      </span>
+                      <span className="block text-xs text-muted-foreground">السعر</span>
                       <span className="text-lg font-extrabold text-primary">
                         {svc.pricingType === "fixed" && svc.price
                           ? formatPrice(svc.price)
@@ -231,5 +211,5 @@ function ServicesBrowseComponent() {
         )}
       </div>
     </div>
-  )
+  );
 }

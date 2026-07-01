@@ -1,16 +1,16 @@
-import { StrictMode } from "react"
-import { createRoot } from "react-dom/client"
-import { RouterProvider, createRouter } from "@tanstack/react-router"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { httpBatchLink } from "@trpc/client"
-import { trpc } from "@/lib/trpc"
-import { ThemeProvider } from "@/components/theme-provider"
-import superjson from "superjson"
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { httpBatchLink } from "@trpc/client";
+import { trpc } from "@/lib/trpc";
+import { ThemeProvider } from "@/components/theme-provider";
+import superjson from "superjson";
 
-import "./index.css"
+import "./index.css";
 
 // Import the auto-generated route tree
-import { routeTree } from "./routeTree.gen"
+import { routeTree } from "./routeTree.gen";
 
 // Create the Query Client
 const queryClient = new QueryClient({
@@ -20,7 +20,7 @@ const queryClient = new QueryClient({
       retry: false,
     },
   },
-})
+});
 
 // Create tRPC Client with superjson transformer
 const trpcClient = trpc.createClient({
@@ -30,7 +30,7 @@ const trpcClient = trpc.createClient({
       transformer: superjson,
     }),
   ],
-})
+});
 
 // Create the Router instance
 const router = createRouter({
@@ -38,12 +38,12 @@ const router = createRouter({
   context: {
     queryClient,
   },
-})
+});
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
   interface Register {
-    router: typeof router
+    router: typeof router;
   }
 }
 
@@ -56,5 +56,5 @@ createRoot(document.getElementById("root")!).render(
         </ThemeProvider>
       </QueryClientProvider>
     </trpc.Provider>
-  </StrictMode>
-)
+  </StrictMode>,
+);
