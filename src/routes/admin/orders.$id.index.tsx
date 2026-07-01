@@ -188,7 +188,9 @@ function AdminOrderDetailComponent() {
                     <Wallet className="size-4" />
                     معلومات وإثبات الدفع:
                   </span>
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{order.paymentProof}</p>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                    {order.paymentProof}
+                  </p>
                 </div>
               )}
 

@@ -310,7 +310,11 @@ function ServiceDetailComponent() {
               <div className="mt-6 border-t border-border pt-4">
                 <span className="mb-3 block text-xs text-muted-foreground">حول مزود الخدمة</span>
                 <div className="flex items-center gap-3">
-                  <Link to="/providers/$id" params={{ id: service.providerId || "" }} className="cursor-pointer">
+                  <Link
+                    to="/providers/$id"
+                    params={{ id: service.providerId || "" }}
+                    className="cursor-pointer"
+                  >
                     <Avatar className="size-12 hover:opacity-85 transition-opacity">
                       <AvatarImage
                         src={service.providerImage || undefined}
@@ -323,7 +327,11 @@ function ServiceDetailComponent() {
                   </Link>
                   <div>
                     <h4 className="text-sm font-bold">
-                      <Link to="/providers/$id" params={{ id: service.providerId || "" }} className="hover:text-primary transition-colors cursor-pointer">
+                      <Link
+                        to="/providers/$id"
+                        params={{ id: service.providerId || "" }}
+                        className="hover:text-primary transition-colors cursor-pointer"
+                      >
                         {service.providerName || "مجهول"}
                       </Link>
                     </h4>
@@ -349,7 +357,12 @@ function ServiceDetailComponent() {
                     </div>
                   </div>
                 )}
-                <Button asChild variant="outline" size="sm" className="mt-4 w-full cursor-pointer font-semibold flex items-center justify-center gap-1.5 border-primary/20 hover:bg-primary/5 hover:text-primary text-xs">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="mt-4 w-full cursor-pointer font-semibold flex items-center justify-center gap-1.5 border-primary/20 hover:bg-primary/5 hover:text-primary text-xs"
+                >
                   <Link to="/providers/$id" params={{ id: service.providerId || "" }}>
                     عرض ملف المزود والتقييمات الكاملة
                   </Link>

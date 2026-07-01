@@ -227,7 +227,7 @@ function ProviderOrdersComponent() {
                         </Dialog>
                       )}
 
-                       {/* Provider accepts a pending order that has an amount (paid via wire transfer) */}
+                      {/* Provider accepts a pending order that has an amount (paid via wire transfer) */}
                       {ord.status === "pending" && ord.amount && (
                         <Button
                           size="sm"

@@ -4,7 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, MapPin, Phone, Mail, ArrowRight, Briefcase, MessageSquare, Calendar } from "lucide-react";
+import {
+  Star,
+  MapPin,
+  Phone,
+  Mail,
+  ArrowRight,
+  Briefcase,
+  MessageSquare,
+  Calendar,
+} from "lucide-react";
 import { formatPrice } from "../../shared/constants";
 
 export const Route = createFileRoute("/providers/$id")({
@@ -93,7 +102,11 @@ function ProviderProfileComponent() {
                   </div>
                   <div>
                     <span className="text-xs text-muted-foreground block">رقم الهاتف</span>
-                    <a href={`tel:${provider.phone}`} className="text-sm font-bold hover:text-primary transition-colors" dir="ltr">
+                    <a
+                      href={`tel:${provider.phone}`}
+                      className="text-sm font-bold hover:text-primary transition-colors"
+                      dir="ltr"
+                    >
                       {provider.phone}
                     </a>
                   </div>
@@ -105,7 +118,9 @@ function ProviderProfileComponent() {
                 </div>
                 <div>
                   <span className="text-xs text-muted-foreground block">البريد الإلكتروني</span>
-                  <span className="text-sm font-bold text-foreground truncate max-w-[180px] block">{provider.email}</span>
+                  <span className="text-sm font-bold text-foreground truncate max-w-[180px] block">
+                    {provider.email}
+                  </span>
                 </div>
               </div>
             </div>
@@ -128,11 +143,18 @@ function ProviderProfileComponent() {
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 {services.map((svc) => (
-                  <Card key={svc.id} className="border border-border hover:shadow-md transition-all rounded-xl overflow-hidden bg-card flex flex-col justify-between">
+                  <Card
+                    key={svc.id}
+                    className="border border-border hover:shadow-md transition-all rounded-xl overflow-hidden bg-card flex flex-col justify-between"
+                  >
                     <div className="p-5 space-y-3">
                       {svc.images && svc.images.length > 0 ? (
                         <div className="aspect-video w-full rounded-lg overflow-hidden border border-border/50">
-                          <img src={svc.images[0]} alt={svc.title} className="h-full w-full object-cover" />
+                          <img
+                            src={svc.images[0]}
+                            alt={svc.title}
+                            className="h-full w-full object-cover"
+                          />
                         </div>
                       ) : (
                         <div className="aspect-video w-full rounded-lg bg-muted flex items-center justify-center text-muted-foreground text-xs">
@@ -140,7 +162,11 @@ function ProviderProfileComponent() {
                         </div>
                       )}
                       <div>
-                        <Link to="/services/$id" params={{ id: String(svc.id) }} className="font-bold text-base hover:text-primary transition-colors">
+                        <Link
+                          to="/services/$id"
+                          params={{ id: String(svc.id) }}
+                          className="font-bold text-base hover:text-primary transition-colors"
+                        >
                           {svc.title}
                         </Link>
                         <p className="mt-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
@@ -154,7 +180,9 @@ function ProviderProfileComponent() {
                         {svc.city}
                       </span>
                       <span className="text-sm font-black text-primary">
-                        {svc.pricingType === "fixed" && svc.price ? formatPrice(svc.price) : "طلب تسعيرة"}
+                        {svc.pricingType === "fixed" && svc.price
+                          ? formatPrice(svc.price)
+                          : "طلب تسعيرة"}
                       </span>
                     </div>
                   </Card>
@@ -177,10 +205,16 @@ function ProviderProfileComponent() {
             ) : (
               <div className="space-y-4">
                 {reviews.map((rev) => (
-                  <Card key={rev.id} className="border border-border p-5 shadow-xs rounded-xl bg-card space-y-3">
+                  <Card
+                    key={rev.id}
+                    className="border border-border p-5 shadow-xs rounded-xl bg-card space-y-3"
+                  >
                     <div className="flex items-center gap-3">
                       <Avatar className="size-10">
-                        <AvatarImage src={rev.clientImage || undefined} alt={rev.clientName || "مستخدم"} />
+                        <AvatarImage
+                          src={rev.clientImage || undefined}
+                          alt={rev.clientName || "مستخدم"}
+                        />
                         <AvatarFallback className="bg-primary/10 font-bold text-primary text-xs">
                           {(rev.clientName || "م").charAt(0)}
                         </AvatarFallback>
@@ -212,7 +246,11 @@ function ProviderProfileComponent() {
                     )}
                     <div className="text-xs text-muted-foreground pt-1 flex items-center gap-1.5 justify-start">
                       <span className="font-medium">على خدمة:</span>
-                      <Link to="/services/$id" params={{ id: String(rev.serviceId) }} className="font-semibold text-primary hover:underline">
+                      <Link
+                        to="/services/$id"
+                        params={{ id: String(rev.serviceId) }}
+                        className="font-semibold text-primary hover:underline"
+                      >
                         {rev.serviceTitle}
                       </Link>
                     </div>

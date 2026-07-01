@@ -55,9 +55,7 @@ function RootLayout() {
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 select-none hover:opacity-90 transition-opacity"
           >
             <img src="/khadamati-icon.svg" alt="Khadamati Logo" className="size-7" />
-            <span className="text-2xl font-black tracking-tight text-primary">
-              خدماتي
-            </span>
+            <span className="text-2xl font-black tracking-tight text-primary">خدماتي</span>
           </Link>
 
           <div className="flex items-center gap-4">

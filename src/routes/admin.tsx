@@ -72,7 +72,9 @@ function AdminLayout() {
         }`}
       >
         {/* Sidebar Header */}
-        <div className={`flex h-16 items-center border-b border-border ${collapsed ? "justify-center" : "justify-start px-4"}`}>
+        <div
+          className={`flex h-16 items-center border-b border-border ${collapsed ? "justify-center" : "justify-start px-4"}`}
+        >
           <Button
             variant="ghost"
             size="icon"

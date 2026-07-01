@@ -381,7 +381,9 @@ function HomeComponent() {
               <ShieldCheck className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
             <div className="space-y-1.5 flex-1 min-w-0 text-right">
-              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-emerald-600 dark:group-hover/card:text-emerald-400">مزودون موثّقون</h3>
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-emerald-600 dark:group-hover/card:text-emerald-400">
+                مزودون موثّقون
+              </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 نتحقق من هوية وخبرة جميع مزودي الخدمات المسجلين لضمان الجودة والأمان.
               </p>
@@ -394,7 +396,9 @@ function HomeComponent() {
               <ZapIcon className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
             <div className="space-y-1.5 flex-1 min-w-0 text-right">
-              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-amber-600 dark:group-hover/card:text-amber-400">استجابة فورية</h3>
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-amber-600 dark:group-hover/card:text-amber-400">
+                استجابة فورية
+              </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 تواصل مباشر وسريع مع مقدمي الخدمة واستلم عروض الأسعار خلال دقائق معدودة.
               </p>
@@ -407,7 +411,9 @@ function HomeComponent() {
               <CreditCard className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
             <div className="space-y-1.5 flex-1 min-w-0 text-right">
-              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400">دفع آمن</h3>
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400">
+                دفع آمن
+              </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 نحفظ حقوقك المالية؛ حيث لا يتم تحويل الأموال للمزود إلا بعد إتمام الخدمة وتأكيدك.
               </p>
@@ -420,7 +426,9 @@ function HomeComponent() {
               <MessageSquare className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
             <div className="space-y-1.5 flex-1 min-w-0 text-right">
-              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-purple-600 dark:group-hover/card:text-purple-400">تقييمات حقيقية</h3>
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-purple-600 dark:group-hover/card:text-purple-400">
+                تقييمات حقيقية
+              </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 اعتمد على آراء وتقييمات العملاء السابقين لاتخاذ القرار الصحيح في اختيار المزود.
               </p>
@@ -433,7 +441,9 @@ function HomeComponent() {
               <Clock className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
             <div className="space-y-1.5 flex-1 min-w-0 text-right">
-              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-rose-600 dark:group-hover/card:text-rose-400">دعم ٢٤/٧</h3>
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-rose-600 dark:group-hover/card:text-rose-400">
+                دعم ٢٤/٧
+              </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 فريق دعم فني متكامل جاهز لمساعدتك وحل أي استفسارات أو مشاكل على مدار الساعة.
               </p>
@@ -446,7 +456,9 @@ function HomeComponent() {
               <Compass className="size-6 transition-transform duration-300 group-hover/card:scale-110" />
             </div>
             <div className="space-y-1.5 flex-1 min-w-0 text-right">
-              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-teal-600 dark:group-hover/card:text-teal-400">قُرب جغرافي</h3>
+              <h3 className="font-bold text-base text-foreground transition-colors group-hover/card:text-teal-600 dark:group-hover/card:text-teal-400">
+                قُرب جغرافي
+              </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 ابحث واعثر على الفنيين والخبراء الأقرب إليك جغرافياً لتوفير الوقت وتكاليف التنقل.
               </p>

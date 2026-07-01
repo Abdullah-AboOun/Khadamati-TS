@@ -305,7 +305,9 @@ export const servicesRouter = router({
           city: schema.service.city,
         })
         .from(schema.service)
-        .where(and(eq(schema.service.providerId, input.providerId), eq(schema.service.isActive, true)));
+        .where(
+          and(eq(schema.service.providerId, input.providerId), eq(schema.service.isActive, true)),
+        );
 
       // Fetch images for each service
       const servicesWithImages = await Promise.all(
@@ -318,7 +320,7 @@ export const servicesRouter = router({
             ...svc,
             images: imgs.map((im) => im.url),
           };
-        })
+        }),
       );
 
       // 3. Get all reviews on any of this provider's services

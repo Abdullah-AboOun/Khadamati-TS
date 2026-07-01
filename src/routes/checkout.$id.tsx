@@ -7,7 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import { toast } from "sonner";
-import { CreditCard, Calendar, Key, User, Smartphone, Wallet, Landmark, FileText, Lock } from "lucide-react";
+import {
+  CreditCard,
+  Calendar,
+  Key,
+  User,
+  Smartphone,
+  Wallet,
+  Landmark,
+  FileText,
+  Lock,
+} from "lucide-react";
 import { formatPrice } from "../../shared/constants";
 
 export const Route = createFileRoute("/checkout/$id")({
@@ -152,11 +162,16 @@ function CheckoutComponent() {
   };
 
   return (
-    <div className="container mx-auto max-w-xl px-4 py-8 sm:px-6 text-right animate-in fade-in duration-300" dir="rtl">
+    <div
+      className="container mx-auto max-w-xl px-4 py-8 sm:px-6 text-right animate-in fade-in duration-300"
+      dir="rtl"
+    >
       <Card className="border border-border shadow-lg bg-card rounded-2xl overflow-hidden">
         <CardHeader className="border-b border-border bg-secondary/10 pb-6 pt-8">
           <CardTitle className="text-2xl font-black text-foreground">إتمام الدفع</CardTitle>
-          <CardDescription className="text-sm mt-1 text-muted-foreground">الخطوة الأخيرة لبدء تنفيذ طلبك</CardDescription>
+          <CardDescription className="text-sm mt-1 text-muted-foreground">
+            الخطوة الأخيرة لبدء تنفيذ طلبك
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 pt-6">
           {/* Order Summary */}
@@ -272,7 +287,9 @@ function CheckoutComponent() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-muted-foreground">رمز الأمان (CVV)</label>
+                    <label className="text-xs font-bold text-muted-foreground">
+                      رمز الأمان (CVV)
+                    </label>
                     <div className="relative">
                       <Input
                         type="text"
@@ -289,7 +306,9 @@ function CheckoutComponent() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground">اسم حامل البطاقة</label>
+                  <label className="text-xs font-bold text-muted-foreground">
+                    اسم حامل البطاقة
+                  </label>
                   <div className="relative">
                     <Input
                       type="text"
@@ -311,7 +330,9 @@ function CheckoutComponent() {
                 </h4>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground">{getDynamicLabel()}</label>
+                  <label className="text-xs font-bold text-muted-foreground">
+                    {getDynamicLabel()}
+                  </label>
                   <div className="relative">
                     <Input
                       type="text"
@@ -326,7 +347,9 @@ function CheckoutComponent() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground">متطلبات الطلب وملاحظاتك للمزود</label>
+                  <label className="text-xs font-bold text-muted-foreground">
+                    متطلبات الطلب وملاحظاتك للمزود
+                  </label>
                   <textarea
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
@@ -339,14 +362,19 @@ function CheckoutComponent() {
               </>
             )}
 
-            <Button type="submit" className="mt-8 w-full font-bold cursor-pointer flex items-center justify-center gap-2" size="lg" disabled={isPaying}>
+            <Button
+              type="submit"
+              className="mt-8 w-full font-bold cursor-pointer flex items-center justify-center gap-2"
+              size="lg"
+              disabled={isPaying}
+            >
               <Lock className="size-4" />
               <span>
                 {isPaying
                   ? "جاري معالجة الطلب والدفع..."
                   : paymentMethod === "card"
-                  ? `دفع ${order.amount ? formatPrice(order.amount) : "0 ₪"}`
-                  : `إتمام الطلب وتأكيد التحويل (${order.amount ? formatPrice(order.amount) : "0 ₪"})`}
+                    ? `دفع ${order.amount ? formatPrice(order.amount) : "0 ₪"}`
+                    : `إتمام الطلب وتأكيد التحويل (${order.amount ? formatPrice(order.amount) : "0 ₪"})`}
               </span>
             </Button>
           </form>
