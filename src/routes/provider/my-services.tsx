@@ -87,7 +87,7 @@ function MyServicesComponent() {
     setPrice(svc.price?.toString() || "")
     setCity(svc.city || "")
     // Fetch and populate images if available (mocked/queried if not loaded here)
-    setImages([])
+    setImages(svc.images?.map((img) => img.url) || [])
     setFormDialogOpen(true)
   }
 

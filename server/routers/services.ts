@@ -108,6 +108,7 @@ export const servicesRouter = router({
           providerName: schema.user.name,
           providerBio: schema.user.bio,
           providerImage: schema.user.image,
+          providerPhone: schema.user.phone,
           categoryId: schema.category.id,
           categoryName: schema.category.name,
         })
@@ -156,19 +157,62 @@ export const servicesRouter = router({
       .where(eq(schema.service.providerId, ctx.user.id))
       .orderBy(desc(schema.service.createdAt))
 
-    return services
+    const serviceIds = services.map((s) => s.id)
+    const images =
+      serviceIds.length > 0
+        ? await db
+            .select()
+            .from(schema.serviceImage)
+            .where(
+              sql`${schema.serviceImage.serviceId} IN (${sql.join(
+                serviceIds.map((id) => sql`${id}`),
+                sql`, `
+              )})`
+            )
+            .orderBy(schema.serviceImage.sortOrder)
+        : []
+
+    const imagesByServiceId = new Map<number, { id: number; url: string }[]>()
+    for (const img of images) {
+      if (!imagesByServiceId.has(img.serviceId)) {
+        imagesByServiceId.set(img.serviceId, [])
+      }
+      imagesByServiceId.get(img.serviceId)!.push({ id: img.id, url: img.url })
+    }
+
+    return services.map((s) => ({
+      ...s,
+      images: imagesByServiceId.get(s.id) ?? [],
+    }))
   }),
 
   create: providerProcedure
     .input(createServiceSchema)
     .mutation(async ({ ctx, input }) => {
-      const [svc] = await db
-        .insert(schema.service)
-        .values({
-          ...input,
-          providerId: ctx.user.id,
-        })
-        .returning()
+      const { images, ...serviceData } = input
+
+      const svc = await db.transaction(async (tx) => {
+        const [insertedSvc] = await tx
+          .insert(schema.service)
+          .values({
+            ...serviceData,
+            providerId: ctx.user.id,
+          })
+          .returning()
+
+        if (images && images.length > 0) {
+          await tx.insert(schema.serviceImage).values(
+            images.map((url, index) => ({
+              serviceId: insertedSvc.id,
+              url,
+              isMain: index === 0,
+              sortOrder: index,
+            }))
+          )
+        }
+
+        return insertedSvc
+      })
 
       return svc
     }),
@@ -176,7 +220,7 @@ export const servicesRouter = router({
   update: providerProcedure
     .input(updateServiceSchema)
     .mutation(async ({ ctx, input }) => {
-      const { id, ...data } = input
+      const { id, images, ...data } = input
 
       // Verify ownership
       const [existing] = await db
@@ -194,11 +238,34 @@ export const servicesRouter = router({
         throw new Error("الخدمة غير موجودة أو ليست ملكك")
       }
 
-      const [updated] = await db
-        .update(schema.service)
-        .set({ ...data, updatedAt: new Date() })
-        .where(eq(schema.service.id, id))
-        .returning()
+      const updated = await db.transaction(async (tx) => {
+        const [updatedSvc] = await tx
+          .update(schema.service)
+          .set({ ...data, updatedAt: new Date() })
+          .where(eq(schema.service.id, id))
+          .returning()
+
+        if (images !== undefined) {
+          // Delete old images
+          await tx
+            .delete(schema.serviceImage)
+            .where(eq(schema.serviceImage.serviceId, id))
+
+          // Insert new ones if any
+          if (images.length > 0) {
+            await tx.insert(schema.serviceImage).values(
+              images.map((url, index) => ({
+                serviceId: id,
+                url,
+                isMain: index === 0,
+                sortOrder: index,
+              }))
+            )
+          }
+        }
+
+        return updatedSvc
+      })
 
       return updated
     }),

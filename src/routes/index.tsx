@@ -114,9 +114,9 @@ function HomeComponent() {
                   />
                 </div>
 
-                <div className="w-full sm:w-44">
+                <div className="w-full sm:w-32">
                   <Select value={searchCity} onValueChange={setSearchCity}>
-                    <SelectTrigger className="h-10 border-0 bg-secondary hover:bg-secondary/80 text-foreground text-right text-sm flex justify-between items-center cursor-pointer">
+                    <SelectTrigger className="h-10 w-full border-0 bg-secondary hover:bg-secondary/80 text-foreground text-right text-sm flex justify-between items-center cursor-pointer">
                       <SelectValue placeholder="اختر المدينة" />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-border text-foreground text-right">
@@ -171,53 +171,60 @@ function HomeComponent() {
               </div>
             </div>
 
-            {/* Right Column (Desktop-only Dashboard Cards) */}
+            {/* Right Column (Desktop-only Stats Widget) */}
             <div className="hidden lg:block lg:col-span-5 relative">
-              <div className="space-y-4 pr-6">
-                {/* Floating Card 1 */}
-                <div dir="rtl" className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-center justify-start gap-3">
-                  <div className="rounded-lg bg-secondary p-2 text-primary shrink-0">
-                    <TrendingUp className="size-5" />
-                  </div>
-                  <div className="text-right flex-none">
-                    <span className="text-xs text-muted-foreground block font-medium">الطلبات النشطة اليوم</span>
-                    {statsLoading ? (
-                      <Skeleton className="h-5 w-10 bg-secondary mt-1" />
-                    ) : (
-                      <span className="text-base font-bold text-foreground mt-0.5 block">
-                        {stats?.todayOrdersCount ?? 0} طلبات
-                      </span>
-                    )}
-                  </div>
-                </div>
+              <div className="pr-6 flex justify-end">
+                <div dir="rtl" className="w-full max-w-sm bg-card border border-border rounded-2xl p-6 shadow-md">
+                  <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+                    نشاط منصة خدماتي
+                  </h3>
+                  <div className="space-y-3">
+                    {/* Item 1 */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/30 border border-border/30">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-lg bg-primary/10 p-2 text-primary">
+                          <TrendingUp className="size-4.5" />
+                        </div>
+                        <span className="text-xs font-semibold text-foreground">الطلبات النشطة اليوم</span>
+                      </div>
+                      {statsLoading ? (
+                        <Skeleton className="h-5 w-12 bg-secondary" />
+                      ) : (
+                        <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full">
+                          {stats?.todayOrdersCount ?? 0} طلبات
+                        </span>
+                      )}
+                    </div>
 
-                {/* Floating Card 2 */}
-                <div dir="rtl" className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-center justify-start gap-3 mr-8">
-                  <div className="rounded-lg bg-secondary p-2 text-primary shrink-0">
-                    <Users className="size-5" />
-                  </div>
-                  <div className="text-right flex-none">
-                    <span className="text-xs text-muted-foreground block font-medium">المزودون الجدد هذا الأسبوع</span>
-                    {statsLoading ? (
-                      <Skeleton className="h-5 w-10 bg-secondary mt-1" />
-                    ) : (
-                      <span className="text-base font-bold text-foreground mt-0.5 block">
-                        {stats?.recentProvidersCount ?? 0} مزودين
-                      </span>
-                    )}
-                  </div>
-                </div>
+                    {/* Item 2 */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/30 border border-border/30">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-lg bg-primary/10 p-2 text-primary">
+                          <Users className="size-4.5" />
+                        </div>
+                        <span className="text-xs font-semibold text-foreground">مزودين جدد هذا الأسبوع</span>
+                      </div>
+                      {statsLoading ? (
+                        <Skeleton className="h-5 w-12 bg-secondary" />
+                      ) : (
+                        <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full">
+                          {stats?.recentProvidersCount ?? 0} مزودين
+                        </span>
+                      )}
+                    </div>
 
-                {/* Floating Card 3 */}
-                <div dir="rtl" className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-center justify-start gap-3">
-                  <div className="rounded-lg bg-secondary p-2 text-primary shrink-0">
-                    <Star className="size-5 fill-current" />
-                  </div>
-                  <div className="text-right flex-none">
-                    <span className="text-xs text-muted-foreground block font-medium">مستوى رضا العملاء</span>
-                    <span className="text-base font-bold text-foreground mt-0.5 block">
-                      98.9% تقييمات إيجابية
-                    </span>
+                    {/* Item 3 */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/30 border border-border/30">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-lg bg-primary/10 p-2 text-primary">
+                          <Star className="size-4.5 fill-current" />
+                        </div>
+                        <span className="text-xs font-semibold text-foreground">مستوى رضا العملاء</span>
+                      </div>
+                      <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 dark:text-emerald-400 dark:bg-emerald-500/20 px-2.5 py-1 rounded-full">
+                        98.9% إيجابي
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -289,17 +296,17 @@ function HomeComponent() {
             {servicesData.services.map((svc) => (
               <Card
                 key={svc.id}
-                className="overflow-hidden border border-border bg-card shadow-xs transition-all duration-200 hover:shadow-sm"
+                className="relative overflow-hidden border border-border bg-card shadow-xs transition-all duration-200 hover:shadow-sm group pt-0"
               >
-                <div className="relative aspect-video w-full bg-muted">
+                <div className="relative aspect-video w-full overflow-hidden bg-muted rounded-t-xl">
                   {svc.mainImage ? (
                     <img
                       src={svc.mainImage}
                       alt={svc.title}
-                      className="h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-secondary/30 text-muted-foreground text-sm">
+                    <div className="absolute inset-0 flex items-center justify-center bg-secondary/30 text-muted-foreground text-sm">
                       لا توجد صورة
                     </div>
                   )}
@@ -312,8 +319,12 @@ function HomeComponent() {
                     <MapPin className="size-3.5" />
                     <span>{svc.city}</span>
                   </div>
-                  <h3 className="mt-3 line-clamp-1 text-lg font-bold transition-colors hover:text-primary">
-                    <Link to="/services/$id" params={{ id: String(svc.id) }} className="cursor-pointer">
+                  <h3 className="mt-3 line-clamp-1 text-lg font-bold transition-colors group-hover:text-primary">
+                    <Link
+                      to="/services/$id"
+                      params={{ id: String(svc.id) }}
+                      className="after:absolute after:inset-0 after:z-10 cursor-pointer"
+                    >
                       {svc.title}
                     </Link>
                   </h3>

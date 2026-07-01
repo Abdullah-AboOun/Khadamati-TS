@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MapPin, Star, MessageSquare, ArrowRight } from "lucide-react"
+import { MapPin, Star, MessageSquare, ArrowRight, Phone } from "lucide-react"
 import { formatPrice } from "../../shared/constants"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -159,12 +159,12 @@ function ServiceDetailComponent() {
 
           {/* Image Gallery */}
           <div className="space-y-4">
-            <div className="aspect-video w-full overflow-hidden rounded-xl border border-border bg-muted">
+            <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-border bg-muted">
               {currentMainImage ? (
                 <img
                   src={currentMainImage}
                   alt={service.title}
-                  className="h-full w-full object-cover"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center text-muted-foreground">
@@ -359,6 +359,21 @@ function ServiceDetailComponent() {
                     </p>
                   </div>
                 </div>
+                {service.providerPhone && (
+                  <div className="mt-4 flex items-center gap-2 rounded-lg bg-secondary/30 p-2.5 text-xs text-muted-foreground">
+                    <Phone className="size-4 text-primary shrink-0" />
+                    <div className="text-right">
+                      <span className="block font-medium text-muted-foreground">رقم الهاتف للتواصل:</span>
+                      <a
+                        href={`tel:${service.providerPhone}`}
+                        className="mt-0.5 block text-sm font-bold text-foreground hover:text-primary transition-colors"
+                        dir="ltr"
+                      >
+                        {service.providerPhone}
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </Card>

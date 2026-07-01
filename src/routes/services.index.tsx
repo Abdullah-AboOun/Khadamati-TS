@@ -169,17 +169,17 @@ function ServicesBrowseComponent() {
             {servicesData?.services.map((svc) => (
               <Card
                 key={svc.id}
-                className="overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md"
+                className="relative overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md group pt-0"
               >
-                <div className="relative aspect-video w-full bg-muted">
+                <div className="relative aspect-video w-full overflow-hidden bg-muted rounded-t-xl">
                   {svc.mainImage ? (
                     <img
                       src={svc.mainImage}
                       alt={svc.title}
-                      className="h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-secondary/30 text-muted-foreground">
+                    <div className="absolute inset-0 flex items-center justify-center bg-secondary/30 text-muted-foreground">
                       لا توجد صورة
                     </div>
                   )}
@@ -192,8 +192,12 @@ function ServicesBrowseComponent() {
                     <MapPin className="size-3.5" />
                     <span>{svc.city}</span>
                   </div>
-                  <h3 className="mt-3 line-clamp-1 text-lg font-bold transition-colors hover:text-primary">
-                    <Link to="/services/$id" params={{ id: String(svc.id) }}>
+                  <h3 className="mt-3 line-clamp-1 text-lg font-bold transition-colors group-hover:text-primary">
+                    <Link
+                      to="/services/$id"
+                      params={{ id: String(svc.id) }}
+                      className="after:absolute after:inset-0 after:z-10 cursor-pointer"
+                    >
                       {svc.title}
                     </Link>
                   </h3>
