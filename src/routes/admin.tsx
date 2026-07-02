@@ -13,7 +13,6 @@ import {
   Menu,
   Sliders,
   X,
-  LogOut,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -104,18 +103,6 @@ function AdminLayout() {
           })}
         </nav>
 
-        {/* Sidebar Footer */}
-        <div className="p-3 border-t border-border">
-          <Link
-            to="/"
-            className={`flex items-center rounded-lg text-destructive hover:bg-destructive/10 transition-all ${
-              collapsed ? "justify-center p-2.5 w-10 mx-auto" : "gap-3 px-3 py-2.5"
-            }`}
-          >
-            <LogOut className="size-5 flex-shrink-0" />
-            {!collapsed && <span className="text-sm font-semibold">الموقع الرئيسي</span>}
-          </Link>
-        </div>
       </aside>
 
       {/* ─── MOBILE DRAWER SIDEBAR ─── */}
@@ -150,16 +137,6 @@ function AdminLayout() {
               })}
             </nav>
 
-            <div className="pt-4 border-t border-border">
-              <Link
-                to="/"
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-destructive hover:bg-destructive/10 transition-all"
-              >
-                <LogOut className="size-5" />
-                <span className="text-sm font-semibold">الموقع الرئيسي</span>
-              </Link>
-            </div>
           </aside>
           <div className="flex-1" onClick={() => setMobileOpen(false)} />
         </div>

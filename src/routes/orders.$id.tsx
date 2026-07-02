@@ -213,7 +213,8 @@ function OrderDetailComponent() {
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <Link
-              to={isProvider ? "/provider/orders" : "/my-orders"}
+              to={isProvider ? "/provider/dashboard" : "/my-orders"}
+              search={isProvider ? { tab: "orders" } : undefined}
               className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
             >
               <ArrowRight className="size-4" />

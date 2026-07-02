@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Toaster } from "sonner";
-import { LogOut, User, Briefcase, ClipboardList, ShieldAlert, LayoutDashboard } from "lucide-react";
+import { LogOut, User, ClipboardList, ShieldAlert, LayoutDashboard } from "lucide-react";
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -115,24 +115,6 @@ function RootLayout() {
                         >
                           <span>لوحة التحكم للمزود</span>
                           <LayoutDashboard className="size-4 text-muted-foreground" />
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="justify-end text-right">
-                        <Link
-                          to="/provider/my-services"
-                          className="flex w-full items-center justify-between"
-                        >
-                          <span>خدماتي المعروضة</span>
-                          <Briefcase className="size-4 text-muted-foreground" />
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="justify-end text-right">
-                        <Link
-                          to="/provider/orders"
-                          className="flex w-full items-center justify-between"
-                        >
-                          <span>طلبات العملاء</span>
-                          <ClipboardList className="size-4 text-muted-foreground" />
                         </Link>
                       </DropdownMenuItem>
                     </>
