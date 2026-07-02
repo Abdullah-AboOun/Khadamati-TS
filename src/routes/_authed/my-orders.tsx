@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Star, MessageSquarePlus, ClipboardList, Check, X } from "lucide-react";
+import { Star, MessageSquarePlus, ClipboardList, X } from "lucide-react";
 import { formatPrice, STATUS_LABELS } from "../../../shared/constants";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -162,12 +162,13 @@ function MyOrdersComponent() {
                       {ord.status === "quoted" && (
                         <>
                           <Button
+                            asChild
                             size="sm"
-                            className="bg-green-600 font-semibold hover:bg-green-700"
-                            onClick={() => handleUpdateStatus(ord.id, "accepted")}
+                            className="bg-emerald-600 font-semibold hover:bg-emerald-700 text-white cursor-pointer animate-pulse"
                           >
-                            <Check className="ml-1 size-4" />
-                            قبول التسعيرة
+                            <Link to="/checkout/$id" params={{ id: String(ord.id) }}>
+                              قبول العرض والدفع
+                            </Link>
                           </Button>
                           <Button
                             size="sm"

@@ -17,10 +17,43 @@ export async function createContext(c: Context) {
   };
 }
 
+import { ZodError } from "zod";
+
 export type TRPCContext = Awaited<ReturnType<typeof createContext>>;
 
 const t = initTRPC.context<TRPCContext>().create({
   transformer: superjson,
+  errorFormatter({ shape, error }) {
+    let message = error.message;
+    try {
+      if (error.cause instanceof ZodError) {
+        const issues = error.cause.issues || (error.cause as any).errors || [];
+        if (issues.length > 0) {
+          message = issues.map((e: any) => e.message).join("، ");
+        }
+      } else if (error.cause && (error.cause.name === "ZodError" || "errors" in error.cause || "issues" in error.cause)) {
+        const causeErrors = (error.cause as any).issues || (error.cause as any).errors;
+        if (Array.isArray(causeErrors) && causeErrors.length > 0) {
+          message = causeErrors.map((e: any) => e.message).join("، ");
+        }
+      } else if (message.startsWith("[") && message.endsWith("]")) {
+        try {
+          const parsed = JSON.parse(message);
+          if (Array.isArray(parsed) && parsed.every((item) => item && typeof item === "object" && "message" in item)) {
+            message = parsed.map((e: any) => e.message).join("، ");
+          }
+        } catch {
+          // Ignore
+        }
+      }
+    } catch (err) {
+      console.error("Error in errorFormatter:", err);
+    }
+    return {
+      ...shape,
+      message,
+    };
+  },
 });
 
 export const router = t.router;

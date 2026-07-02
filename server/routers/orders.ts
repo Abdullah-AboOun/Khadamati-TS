@@ -148,6 +148,14 @@ export const ordersRouter = router({
         });
       }
 
+      // Clients cannot accept quote (status accepted) directly without completing the payment
+      if (isClient && input.status === "accepted" && input.paymentStatus !== "completed") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "يجب إتمام عملية الدفع أولاً لقبول الطلب",
+        });
+      }
+
       const updateData: any = {
         status: input.status,
         updatedAt: new Date(),
