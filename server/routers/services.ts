@@ -14,7 +14,10 @@ export const servicesRouter = router({
     const { search, categoryId, city, minPrice, maxPrice, page, limit } = input;
     const offset = (page - 1) * limit;
 
-    const conditions = [eq(schema.service.isActive, true)];
+    const conditions = [
+      eq(schema.service.isActive, true),
+      eq(schema.service.isDeleted, false),
+    ];
 
     if (search) {
       conditions.push(like(schema.service.title, `%${search}%`));
@@ -113,7 +116,12 @@ export const servicesRouter = router({
         .from(schema.service)
         .leftJoin(schema.user, eq(schema.service.providerId, schema.user.id))
         .leftJoin(schema.category, eq(schema.service.categoryId, schema.category.id))
-        .where(eq(schema.service.id, input.id))
+        .where(
+          and(
+            eq(schema.service.id, input.id),
+            eq(schema.service.isDeleted, false),
+          ),
+        )
         .limit(1);
 
       if (!svc) return null;
@@ -149,7 +157,12 @@ export const servicesRouter = router({
     const services = await db
       .select()
       .from(schema.service)
-      .where(eq(schema.service.providerId, ctx.user.id))
+      .where(
+        and(
+          eq(schema.service.providerId, ctx.user.id),
+          eq(schema.service.isDeleted, false),
+        ),
+      )
       .orderBy(desc(schema.service.createdAt));
 
     const serviceIds = services.map((s) => s.id);
@@ -217,7 +230,13 @@ export const servicesRouter = router({
     const [existing] = await db
       .select()
       .from(schema.service)
-      .where(and(eq(schema.service.id, id), eq(schema.service.providerId, ctx.user.id)))
+      .where(
+        and(
+          eq(schema.service.id, id),
+          eq(schema.service.providerId, ctx.user.id),
+          eq(schema.service.isDeleted, false),
+        ),
+      )
       .limit(1);
 
     if (!existing) {
@@ -261,14 +280,23 @@ export const servicesRouter = router({
       const [existing] = await db
         .select()
         .from(schema.service)
-        .where(and(eq(schema.service.id, input.id), eq(schema.service.providerId, ctx.user.id)))
+        .where(
+          and(
+            eq(schema.service.id, input.id),
+            eq(schema.service.providerId, ctx.user.id),
+            eq(schema.service.isDeleted, false),
+          ),
+        )
         .limit(1);
 
       if (!existing) {
         throw new Error("الخدمة غير موجودة أو ليست ملكك");
       }
 
-      await db.delete(schema.service).where(eq(schema.service.id, input.id));
+      await db
+        .update(schema.service)
+        .set({ isDeleted: true, isActive: false, updatedAt: new Date() })
+        .where(eq(schema.service.id, input.id));
       return { success: true };
     }),
 
@@ -306,7 +334,11 @@ export const servicesRouter = router({
         })
         .from(schema.service)
         .where(
-          and(eq(schema.service.providerId, input.providerId), eq(schema.service.isActive, true)),
+          and(
+            eq(schema.service.providerId, input.providerId),
+            eq(schema.service.isActive, true),
+            eq(schema.service.isDeleted, false),
+          ),
         );
 
       // Fetch images for each service

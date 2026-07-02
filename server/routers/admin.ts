@@ -16,7 +16,10 @@ export const adminRouter = router({
   // Dashboard stats
   stats: adminProcedure.query(async () => {
     const [usersCount] = await db.select({ total: count() }).from(schema.user);
-    const [servicesCount] = await db.select({ total: count() }).from(schema.service);
+    const [servicesCount] = await db
+      .select({ total: count() })
+      .from(schema.service)
+      .where(eq(schema.service.isDeleted, false));
     const [ordersCount] = await db.select({ total: count() }).from(schema.order);
     const [completedRevenue] = await db
       .select({
@@ -265,11 +268,15 @@ export const adminRouter = router({
         .from(schema.service)
         .leftJoin(schema.user, eq(schema.service.providerId, schema.user.id))
         .leftJoin(schema.category, eq(schema.service.categoryId, schema.category.id))
+        .where(eq(schema.service.isDeleted, false))
         .orderBy(desc(schema.service.createdAt))
         .limit(limit)
         .offset(offset);
 
-      const [{ total }] = await db.select({ total: count() }).from(schema.service);
+      const [{ total }] = await db
+        .select({ total: count() })
+        .from(schema.service)
+        .where(eq(schema.service.isDeleted, false));
 
       return { services, total, pages: Math.ceil(total / limit) };
     }),
@@ -450,7 +457,10 @@ export const adminRouter = router({
   deleteService: adminProcedure
     .input(z.object({ id: z.number().int().positive() }))
     .mutation(async ({ input }) => {
-      await db.delete(schema.service).where(eq(schema.service.id, input.id));
+      await db
+        .update(schema.service)
+        .set({ isDeleted: true, isActive: false, updatedAt: new Date() })
+        .where(eq(schema.service.id, input.id));
       return { success: true };
     }),
 });

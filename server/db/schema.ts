@@ -34,6 +34,7 @@ export const service = sqliteTable("service", {
   price: real("price"),
   city: text("city"),
   isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
+  isDeleted: integer("is_deleted", { mode: "boolean" }).notNull().default(false),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
