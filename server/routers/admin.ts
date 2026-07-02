@@ -199,6 +199,131 @@ export const adminRouter = router({
       });
     }),
 
+  financialCharts: adminProcedure.query(async () => {
+    // 1. Get commission rate
+    const [commissionSetting] = await db
+      .select()
+      .from(schema.setting)
+      .where(eq(schema.setting.key, "commission_rate"))
+      .limit(1);
+
+    const commissionRate = commissionSetting ? parseFloat(commissionSetting.value) : 0.1;
+
+    // 2. Fetch last 12 months trends
+    const now = new Date();
+    const startDate = new Date(now.getFullYear(), now.getMonth() - 11, 1, 0, 0, 0, 0);
+
+    const orders = await db
+      .select({
+        amount: schema.order.amount,
+        status: schema.order.status,
+        createdAt: schema.order.createdAt,
+      })
+      .from(schema.order)
+      .where(gte(schema.order.createdAt, startDate));
+
+    const monthsList = [];
+    const monthNamesAr = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+    
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const y = d.getFullYear();
+      const m = d.getMonth() + 1; // 1-indexed
+      const label = `${monthNamesAr[m - 1]} ${y}`;
+      monthsList.push({
+        label,
+        year: y,
+        month: m,
+        revenue: 0,
+        adminCut: 0,
+        providerNet: 0,
+        completedCount: 0,
+        cancelledCount: 0,
+        totalCount: 0,
+      });
+    }
+
+    for (const order of orders) {
+      const orderDate = new Date(order.createdAt);
+      const y = orderDate.getFullYear();
+      const m = orderDate.getMonth() + 1;
+      const monthBucket = monthsList.find((item) => item.year === y && item.month === m);
+      if (monthBucket) {
+        monthBucket.totalCount += 1;
+        if (order.status === "completed") {
+          monthBucket.completedCount += 1;
+          monthBucket.revenue += order.amount || 0;
+        } else if (order.status === "cancelled") {
+          monthBucket.cancelledCount += 1;
+        }
+      }
+    }
+
+    // Round values and calculate splits
+    const monthlyTrends = monthsList.map((item) => {
+      const rev = Math.round(item.revenue * 100) / 100;
+      const adminCut = Math.round(rev * commissionRate * 100) / 100;
+      const providerNet = Math.round((rev - adminCut) * 100) / 100;
+      return {
+        ...item,
+        revenue: rev,
+        adminCut,
+        providerNet,
+      };
+    });
+
+    // 3. Top 6 services by completed revenue
+    const topServices = await db
+      .select({
+        title: schema.service.title,
+        revenue: sql<number>`COALESCE(SUM(${schema.order.amount}), 0)`,
+        orderCount: count(schema.order.id),
+      })
+      .from(schema.order)
+      .leftJoin(schema.service, eq(schema.order.serviceId, schema.service.id))
+      .where(eq(schema.order.status, "completed"))
+      .groupBy(schema.order.serviceId, schema.service.title)
+      .orderBy(desc(sql`SUM(${schema.order.amount})`))
+      .limit(6);
+
+    const formattedTopServices = topServices.map(item => ({
+      title: item.title || "خدمة غير معروفة",
+      revenue: Math.round((item.revenue || 0) * 100) / 100,
+      orderCount: item.orderCount,
+    }));
+
+    // 4. Order statuses breakdown
+    const statusCounts = await db
+      .select({
+        status: schema.order.status,
+        count: count(schema.order.id),
+      })
+      .from(schema.order)
+      .groupBy(schema.order.status);
+
+    const orderStatuses: Record<string, number> = {
+      pending: 0,
+      quoted: 0,
+      accepted: 0,
+      in_progress: 0,
+      completed: 0,
+      cancelled: 0,
+    };
+
+    for (const row of statusCounts) {
+      if (row.status && row.status in orderStatuses) {
+        orderStatuses[row.status] = row.count;
+      }
+    }
+
+    return {
+      monthlyTrends,
+      topServices: formattedTopServices,
+      orderStatuses,
+      commissionRate,
+    };
+  }),
+
   // All orders (admin view)
   listOrders: adminProcedure
     .input(
