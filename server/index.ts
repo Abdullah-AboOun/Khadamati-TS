@@ -63,9 +63,9 @@ app.use(
   }),
 );
 
-// ─── Serve static frontend (production) ──────────────────
+// ─── Serve static frontend (production / built) ──────────
 const distPath = resolve(process.cwd(), "dist");
-if (process.env.NODE_ENV === "production" && existsSync(distPath)) {
+if (existsSync(distPath)) {
   app.use(
     "/*",
     serveStatic({
@@ -74,15 +74,16 @@ if (process.env.NODE_ENV === "production" && existsSync(distPath)) {
   );
 
   // SPA fallback
-  app.get("*", serveStatic({ root: "./dist", path: "index.html" }));
+  app.get("*", serveStatic({ path: "./dist/index.html" }));
 }
 
 // ─── Start server ────────────────────────────────────────
 const port = parseInt(process.env.PORT || "3001");
 
-console.log(`🚀 Khadamati API running on http://localhost:${port}`);
+console.log(`🚀 Khadamati API running on http://0.0.0.0:${port}`);
 
 export default {
   port,
+  hostname: "0.0.0.0",
   fetch: app.fetch,
 };
