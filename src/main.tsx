@@ -16,6 +16,8 @@ import { routeTree } from "./routeTree.gen";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      staleTime: 1000 * 30, // 30 seconds deduplication window
+      gcTime: 1000 * 60 * 5, // 5 minutes garbage collection time
       refetchOnWindowFocus: false,
       retry: false,
     },

@@ -15,7 +15,7 @@ sqlite.run("PRAGMA journal_mode = WAL");
 sqlite.run("PRAGMA foreign_keys = ON");
 try {
   sqlite.run('ALTER TABLE "order" ADD COLUMN "gateway_tx_id" TEXT;');
-} catch (_e) {
+} catch {
   // Column already exists
 }
 

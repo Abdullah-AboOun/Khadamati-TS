@@ -12,7 +12,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Settings, BarChart3, Users, Landmark, TrendingUp, PieChart as PieChartIcon, Activity } from "lucide-react";
 import { formatPrice, STATUS_LABELS } from "../../../shared/constants";
@@ -81,10 +81,14 @@ function AdminFinanceComponent() {
 
   const [monthPeriod, setMonthPeriod] = useState<6 | 12>(6);
 
-  const [commissionInput, setCommissionInput] = useState(() => {
-    return stats ? (stats.commissionRate * 100).toString() : "";
-  });
+  const [commissionInput, setCommissionInput] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    if (stats) {
+      setCommissionInput((stats.commissionRate * 100).toString());
+    }
+  }, [stats]);
 
   // mutations
   const updateCommissionMutation = trpc.admin.updateCommissionRate.useMutation();

@@ -26,41 +26,33 @@ export default defineConfig({
     },
   },
   build: {
-    rolldownOptions: {
+    rollupOptions: {
       output: {
-        codeSplitting: {
-          groups: [
-            {
-              name: "react-vendor",
-              test: /node_modules[\\/](react|react-dom)/,
-              priority: 40,
-            },
-            {
-              name: "tanstack-vendor",
-              test: /node_modules[\\/]@tanstack/,
-              priority: 30,
-            },
-            {
-              name: "auth-vendor",
-              test: /node_modules[\\/]better-auth/,
-              priority: 20,
-            },
-            {
-              name: "trpc-vendor",
-              test: /node_modules[\\/](@trpc|@hono\/trpc-server)/,
-              priority: 20,
-            },
-            {
-              name: "zod-vendor",
-              test: /node_modules[\\/]zod/,
-              priority: 20,
-            },
-            {
-              name: "vendor",
-              test: /node_modules/,
-              priority: 10,
-            },
-          ],
+        manualChunks(id) {
+          if (id.includes("node_modules/recharts")) {
+            return "recharts-vendor";
+          }
+          if (id.includes("node_modules/lucide-react")) {
+            return "lucide-vendor";
+          }
+          if (id.includes("node_modules/radix-ui") || id.includes("node_modules/@radix-ui")) {
+            return "radix-vendor";
+          }
+          if (id.includes("node_modules/@tanstack")) {
+            return "tanstack-vendor";
+          }
+          if (id.includes("node_modules/better-auth")) {
+            return "auth-vendor";
+          }
+          if (id.includes("node_modules/@trpc") || id.includes("node_modules/@hono/trpc-server")) {
+            return "trpc-vendor";
+          }
+          if (id.includes("node_modules/react/") || id.includes("node_modules/react-dom/")) {
+            return "react-vendor";
+          }
+          if (id.includes("node_modules/zod")) {
+            return "zod-vendor";
+          }
         },
       },
     },

@@ -488,7 +488,7 @@ function OrderDetailComponent() {
               {/* PROVIDER ACTIONS */}
               {isProvider && (
                 <div className="flex flex-col gap-3">
-                  {/* Status pending and has amount (confirm payment/accept) */}
+                  {/* Status pending and has amount (accept order) */}
                   {order.status === "pending" && order.amount && (
                     <Button
                       onClick={() => handleUpdateStatus("accepted")}
@@ -496,7 +496,7 @@ function OrderDetailComponent() {
                       className="w-full font-bold flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
                     >
                       <Check className="size-4" />
-                      تأكيد الدفع وقبول الطلب
+                      قبول الطلب
                     </Button>
                   )}
 
