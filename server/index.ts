@@ -6,6 +6,7 @@ import { appRouter } from "./router";
 import { createContext } from "./trpc";
 import { auth, appUrl } from "./auth";
 import { uploadApp } from "./upload";
+import { jawwalPayWebhookApp } from "./jawwalpay-webhook";
 import { existsSync } from "fs";
 import { resolve } from "path";
 
@@ -38,6 +39,9 @@ app.on(["POST", "GET"], "/api/auth/**", (c) => {
 
 // ─── File uploads ────────────────────────────────────────
 app.route("/api/upload", uploadApp);
+
+// ─── Jawwal Pay Webhook ──────────────────────────────────
+app.route("/api/jawwalpay/webhook", jawwalPayWebhookApp);
 
 // ─── tRPC ────────────────────────────────────────────────
 app.use(

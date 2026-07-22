@@ -13,6 +13,11 @@ const sqlite = new Database(dbPath);
 // Performance pragmas for SQLite
 sqlite.run("PRAGMA journal_mode = WAL");
 sqlite.run("PRAGMA foreign_keys = ON");
+try {
+  sqlite.run('ALTER TABLE "order" ADD COLUMN "gateway_tx_id" TEXT;');
+} catch (_e) {
+  // Column already exists
+}
 
 export const db = drizzle(sqlite, { schema });
 export { schema };

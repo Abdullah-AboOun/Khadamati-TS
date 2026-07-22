@@ -238,6 +238,7 @@ export const ordersRouter = router({
           paymentProof: schema.order.paymentProof,
           accountNumber: schema.order.accountNumber,
           paymentStatus: schema.order.paymentStatus,
+          gatewayTxId: schema.order.gatewayTxId,
           serviceId: schema.service.id,
           serviceTitle: schema.service.title,
           categoryName: schema.category.name,

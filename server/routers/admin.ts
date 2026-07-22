@@ -26,7 +26,9 @@ export const adminRouter = router({
         total: sql<number>`COALESCE(SUM(${schema.order.amount}), 0)`,
       })
       .from(schema.order)
-      .where(eq(schema.order.status, "completed"));
+      .where(
+        or(eq(schema.order.status, "completed"), eq(schema.order.paymentStatus, "completed")),
+      );
 
     const [commissionSetting] = await db
       .select()
@@ -112,7 +114,9 @@ export const adminRouter = router({
         .optional(),
     )
     .query(async ({ input }) => {
-      const conditions = [eq(schema.order.status, "completed")];
+      const conditions = [
+        or(eq(schema.order.status, "completed"), eq(schema.order.paymentStatus, "completed")),
+      ];
 
       if (input?.year !== undefined && input?.month !== undefined) {
         const startDate = new Date(input.year, input.month - 1, 1);

@@ -29,6 +29,7 @@ import {
   Shield,
   MessageSquare,
   Wallet,
+  Smartphone,
 } from "lucide-react";
 import { formatPrice, STATUS_LABELS } from "../../shared/constants";
 import { useState } from "react";
@@ -270,7 +271,32 @@ function OrderDetailComponent() {
                 </div>
               )}
 
-              {order.paymentProof && (
+              {order.paymentMethod === "jawwal_pay" || order.gatewayTxId ? (
+                <div className="rounded-xl bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-teal-500/10 border border-emerald-500/30 p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                      <Smartphone className="size-4 text-emerald-600" />
+                      مدفوع عبر بوابة جوال باي Merchant API (آلي ومباشر)
+                    </span>
+                    <Badge className="bg-emerald-600 text-white font-mono text-[11px]">
+                      {order.paymentStatus === "completed" ? "دفع مؤكَّد ⚡" : order.paymentStatus}
+                    </Badge>
+                  </div>
+                  {order.gatewayTxId && (
+                    <div className="flex items-center gap-2 pt-1">
+                      <span className="text-xs text-muted-foreground font-semibold">رقم العملية (Gateway Tx ID):</span>
+                      <span className="font-mono font-black text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                        {order.gatewayTxId}
+                      </span>
+                    </div>
+                  )}
+                  {order.paymentProof && (
+                    <p className="text-xs text-muted-foreground pt-1 border-t border-emerald-500/20">
+                      {order.paymentProof}
+                    </p>
+                  )}
+                </div>
+              ) : order.paymentProof ? (
                 <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/10 p-4">
                   <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 mb-2">
                     <Wallet className="size-4" />
@@ -280,7 +306,7 @@ function OrderDetailComponent() {
                     {order.paymentProof}
                   </p>
                 </div>
-              )}
+              ) : null}
 
               {order.notes && (
                 <div className="rounded-lg bg-amber-500/5 border border-amber-500/10 p-4">

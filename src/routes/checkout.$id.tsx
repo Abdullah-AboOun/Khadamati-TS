@@ -12,19 +12,19 @@ import {
   Calendar,
   Key,
   User,
-  Smartphone,
-  Wallet,
-  Landmark,
-  FileText,
   Lock,
+  Zap,
+  Check,
 } from "lucide-react";
 import { formatPrice } from "../../shared/constants";
+import { JawwalPayModal } from "@/components/jawwal-pay-modal";
+import { JawwalPayLogo } from "@/components/jawwal-pay-logo";
 
 export const Route = createFileRoute("/checkout/$id")({
   component: CheckoutComponent,
 });
 
-type PaymentMethod = "card" | "jawwal_pay" | "paypal" | "bank_transfer";
+type PaymentMethod = "jawwal_pay_api" | "card";
 
 function CheckoutComponent() {
   const { id } = Route.useParams();
@@ -32,17 +32,14 @@ function CheckoutComponent() {
   const parsedOrderId = parseInt(id);
   const { data: session } = useSession();
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("jawwal_pay_api");
+  const [jawwalPayModalOpen, setJawwalPayModalOpen] = useState(false);
 
   // Credit Card Form States
   const [cardNumber, setCardNumber] = useState("4111 1111 1111 1111");
   const [expiryDate, setExpiryDate] = useState("12/28");
   const [cvv, setCvv] = useState("123");
   const [cardHolder, setCardHolder] = useState("");
-
-  // Wire/App Form States
-  const [accountNumber, setAccountNumber] = useState("");
-  const [details, setDetails] = useState("");
 
   const [isPaying, setIsPaying] = useState(false);
 
@@ -62,15 +59,6 @@ function CheckoutComponent() {
         toast.error("الرجاء تعبئة جميع معلومات البطاقة");
         return;
       }
-    } else {
-      if (!accountNumber.trim()) {
-        toast.error("الرجاء إدخال رقم الحساب أو الهاتف");
-        return;
-      }
-      if (!details.trim()) {
-        toast.error("الرجاء تعبئة متطلبات الطلب وملاحظاتك");
-        return;
-      }
     }
 
     setIsPaying(true);
@@ -84,29 +72,11 @@ function CheckoutComponent() {
           orderId: parsedOrderId,
           status: "accepted", // Client accepts and pays order directly
           paymentStatus: "completed",
+          paymentMethod: "card",
         });
-        toast.success("تمت عملية الدفع بالبطاقة الافتراضية بنجاح!");
-      } else {
-        const methodLabels: Record<string, string> = {
-          jawwal_pay: "جوال باي",
-          paypal: "Palpay",
-          bank_transfer: "تحويل بنكي",
-        };
-        const label = methodLabels[paymentMethod];
-        const paymentProof = `الطريقة: ${label} - رقم تأكيد العميل: ${accountNumber}`;
-
-        await updateStatusMutation.mutateAsync({
-          orderId: parsedOrderId,
-          status: "pending", // Keep order status pending as per user request
-          paymentMethod,
-          paymentProof,
-          accountNumber,
-          details,
-          paymentStatus: "pending_verification",
-        });
-        toast.success("تم إرسال تفاصيل الدفع والطلب بنجاح! بانتظار تأكيد مزود الخدمة.");
+        toast.success("تمت عملية الدفع بالبطاقة بنجاح!");
+        navigate({ to: `/orders/${parsedOrderId}` });
       }
-      navigate({ to: "/my-orders" });
     } catch (err) {
       const error = err as Error;
       toast.error(error.message || "حدث خطأ أثناء إتمام الدفع");
@@ -135,32 +105,6 @@ function CheckoutComponent() {
     );
   }
 
-  const getDynamicPlaceholder = () => {
-    switch (paymentMethod) {
-      case "jawwal_pay":
-        return "أدخل رقم الهاتف لمحفظة جوال باي (مثال: 059xxxxxxx)";
-      case "paypal":
-        return "أدخل رقم الحساب أو البريد الإلكتروني الخاص بـ Palpay";
-      case "bank_transfer":
-        return "أدخل رقم الحساب البنكي أو رقم التحويل / رقم العملية";
-      default:
-        return "أدخل رقم الحساب أو الهاتف";
-    }
-  };
-
-  const getDynamicLabel = () => {
-    switch (paymentMethod) {
-      case "jawwal_pay":
-        return "رقم الهاتف لمحفظة جوال باي";
-      case "paypal":
-        return "رقم الحساب / البريد الإلكتروني لـ Palpay";
-      case "bank_transfer":
-        return "رقم الحساب البنكي / الحوالة";
-      default:
-        return "رقم الحساب / الهاتف";
-    }
-  };
-
   return (
     <div
       className="container mx-auto max-w-xl px-4 py-8 sm:px-6 text-right animate-in fade-in duration-300"
@@ -186,70 +130,89 @@ function CheckoutComponent() {
           </div>
 
           {/* Payment Method Selector Grid */}
-          <div className="space-y-2">
-            <h4 className="text-xs font-bold text-muted-foreground mb-3">اختر طريقة الدفع</h4>
-            <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-muted-foreground">اختر طريقة الدفع</h4>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Jawwal Pay Merchant API */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("jawwal_pay_api")}
+                className={`p-3.5 sm:p-4 border rounded-2xl transition-all cursor-pointer text-right flex items-center justify-between gap-3 ${
+                  paymentMethod === "jawwal_pay_api"
+                    ? "border-emerald-500 bg-emerald-500/10 ring-2 ring-emerald-500/30 shadow-md"
+                    : "border-border bg-card hover:bg-secondary/20"
+                }`}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <JawwalPayLogo className="size-11 shrink-0 aspect-square" />
+                  <div className="flex flex-col text-right min-w-0">
+                    <span className="font-extrabold text-sm text-foreground leading-tight">جوال باي</span>
+                    <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">Jawwal Pay</span>
+                  </div>
+                </div>
+                <div
+                  className={`size-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
+                    paymentMethod === "jawwal_pay_api"
+                      ? "border-emerald-600 bg-emerald-600 text-white"
+                      : "border-muted-foreground/30"
+                  }`}
+                >
+                  {paymentMethod === "jawwal_pay_api" && <Check className="size-3.5 stroke-[3]" />}
+                </div>
+              </button>
+
               {/* Credit Card */}
               <button
                 type="button"
                 onClick={() => setPaymentMethod("card")}
-                className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all cursor-pointer gap-2 hover:bg-secondary/20 ${
+                className={`p-3.5 sm:p-4 border rounded-2xl transition-all cursor-pointer text-right flex items-center justify-between gap-3 ${
                   paymentMethod === "card"
-                    ? "border-primary bg-primary/5 text-primary shadow-sm ring-1 ring-primary"
-                    : "border-border bg-card text-muted-foreground"
+                    ? "border-primary bg-primary/10 ring-2 ring-primary/30 shadow-md"
+                    : "border-border bg-card hover:bg-secondary/20"
                 }`}
               >
-                <CreditCard className="size-6 shrink-0" />
-                <span className="text-xs font-bold">بطاقة دفع</span>
-              </button>
-
-              {/* Jawwal Pay */}
-              <button
-                type="button"
-                onClick={() => setPaymentMethod("jawwal_pay")}
-                className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all cursor-pointer gap-2 hover:bg-secondary/20 ${
-                  paymentMethod === "jawwal_pay"
-                    ? "border-primary bg-primary/5 text-primary shadow-sm ring-1 ring-primary"
-                    : "border-border bg-card text-muted-foreground"
-                }`}
-              >
-                <Smartphone className="size-6 shrink-0" />
-                <span className="text-xs font-bold">جوال باي</span>
-              </button>
-
-              {/* Palpay */}
-              <button
-                type="button"
-                onClick={() => setPaymentMethod("paypal")}
-                className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all cursor-pointer gap-2 hover:bg-secondary/20 ${
-                  paymentMethod === "paypal"
-                    ? "border-primary bg-primary/5 text-primary shadow-sm ring-1 ring-primary"
-                    : "border-border bg-card text-muted-foreground"
-                }`}
-              >
-                <Wallet className="size-6 shrink-0" />
-                <span className="text-xs font-bold">Palpay</span>
-              </button>
-
-              {/* Bank Transfer */}
-              <button
-                type="button"
-                onClick={() => setPaymentMethod("bank_transfer")}
-                className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all cursor-pointer gap-2 hover:bg-secondary/20 ${
-                  paymentMethod === "bank_transfer"
-                    ? "border-primary bg-primary/5 text-primary shadow-sm ring-1 ring-primary"
-                    : "border-border bg-card text-muted-foreground"
-                }`}
-              >
-                <Landmark className="size-6 shrink-0" />
-                <span className="text-xs font-bold">تحويل بنكي</span>
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="size-11 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 aspect-square shadow-xs">
+                    <CreditCard className="size-6" />
+                  </div>
+                  <div className="flex flex-col text-right min-w-0">
+                    <span className="font-extrabold text-sm text-foreground leading-tight">بطاقة دفع</span>
+                    <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">Credit Card</span>
+                  </div>
+                </div>
+                <div
+                  className={`size-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
+                    paymentMethod === "card"
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-muted-foreground/30"
+                  }`}
+                >
+                  {paymentMethod === "card" && <Check className="size-3.5 stroke-[3]" />}
+                </div>
               </button>
             </div>
           </div>
 
-          {/* Payment Form */}
+          {/* Payment Form / Interactive Modal Launcher */}
           <form onSubmit={handlePayment} className="space-y-5 border-t border-border/50 pt-5">
-            {paymentMethod === "card" ? (
+            {paymentMethod === "jawwal_pay_api" ? (
+              <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 p-4 space-y-3">
+                <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-sm">
+                  <Zap className="size-4 text-emerald-600" />
+                  <span>دفع إلكتروني مباشر عبر Jawwal Pay</span>
+                </div>
+                <Button
+                  type="button"
+                  onClick={() => setJawwalPayModalOpen(true)}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer gap-2.5 h-12 rounded-xl text-base shadow-sm hover:shadow-md transition-all flex items-center justify-center"
+                  size="lg"
+                >
+                  <JawwalPayLogo className="size-6" />
+                  <span>فتح نافذة الدفع (بوابة جوال باي)</span>
+                </Button>
+              </div>
+            ) : (
               <>
                 <h4 className="flex items-center gap-2 text-sm font-bold text-foreground">
                   <CreditCard className="size-4 text-muted-foreground" />
@@ -321,65 +284,38 @@ function CheckoutComponent() {
                     <User className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
                   </div>
                 </div>
-              </>
-            ) : (
-              <>
-                <h4 className="flex items-center gap-2 text-sm font-bold text-foreground">
-                  <FileText className="size-4 text-muted-foreground" />
-                  معلومات التحويل وتفاصيل الطلب
-                </h4>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground">
-                    {getDynamicLabel()}
-                  </label>
-                  <div className="relative">
-                    <Input
-                      type="text"
-                      value={accountNumber}
-                      onChange={(e) => setAccountNumber(e.target.value)}
-                      className="pr-10 text-right bg-background font-semibold"
-                      placeholder={getDynamicPlaceholder()}
-                      required
-                    />
-                    <User className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground">
-                    متطلبات الطلب وملاحظاتك للمزود
-                  </label>
-                  <textarea
-                    value={details}
-                    onChange={(e) => setDetails(e.target.value)}
-                    className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-right text-sm shadow-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-                    placeholder="الموقع، وقت التنفيذ، تفاصيل إضافية للمزود..."
-                    rows={4}
-                    required
-                  />
-                </div>
+                <Button
+                  type="submit"
+                  className="mt-8 w-full font-bold cursor-pointer flex items-center justify-center gap-2"
+                  size="lg"
+                  disabled={isPaying}
+                >
+                  <Lock className="size-4" />
+                  <span>
+                    {isPaying
+                      ? "جاري معالجة الطلب والدفع..."
+                      : `دفع ${order.amount ? formatPrice(order.amount) : "0 ₪"}`}
+                  </span>
+                </Button>
               </>
             )}
-
-            <Button
-              type="submit"
-              className="mt-8 w-full font-bold cursor-pointer flex items-center justify-center gap-2"
-              size="lg"
-              disabled={isPaying}
-            >
-              <Lock className="size-4" />
-              <span>
-                {isPaying
-                  ? "جاري معالجة الطلب والدفع..."
-                  : paymentMethod === "card"
-                    ? `دفع ${order.amount ? formatPrice(order.amount) : "0 ₪"}`
-                    : `إتمام الطلب وتأكيد التحويل (${order.amount ? formatPrice(order.amount) : "0 ₪"})`}
-              </span>
-            </Button>
           </form>
         </CardContent>
       </Card>
+
+      {/* Jawwal Pay Merchant API Interactive Modal */}
+      <JawwalPayModal
+        open={jawwalPayModalOpen}
+        onOpenChange={setJawwalPayModalOpen}
+        orderId={parsedOrderId}
+        amount={order.amount ?? 0}
+        serviceTitle={order.serviceTitle}
+        defaultPhone={(session?.user as { phone?: string })?.phone || "0599000000"}
+        onSuccess={() => {
+          navigate({ to: `/orders/${parsedOrderId}` });
+        }}
+      />
     </div>
   );
 }

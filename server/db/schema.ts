@@ -81,6 +81,7 @@ export const order = sqliteTable("order", {
   paymentMethod: text("payment_method"),
   paymentProof: text("payment_proof"),
   accountNumber: text("account_number"),
+  gatewayTxId: text("gateway_tx_id"),
   notes: text("notes"),
   details: text("details"),
   createdAt: integer("created_at", { mode: "timestamp" })

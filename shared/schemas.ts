@@ -75,8 +75,27 @@ export const updateOrderStatusSchema = z.object({
   paymentMethod: z.string().optional(),
   paymentProof: z.string().optional(),
   accountNumber: z.string().optional(),
+  gatewayTxId: z.string().optional(),
   details: z.string().optional(),
   paymentStatus: z.string().optional(),
+});
+
+// ─── Jawwal Pay Merchant API Schemas ─────────────────────
+
+export const initiateJawwalPaySchema = z.object({
+  orderId: z.number().int().positive(),
+  phone: z.string().min(9, "رقم الهاتف يجب أن يكون 9 أرقام على الأقل").max(15),
+});
+
+export const jawwalPayWebhookSchema = z.object({
+  sessionId: z.string(),
+  orderId: z.number().int().positive(),
+  amount: z.number().positive(),
+  phone: z.string(),
+  status: z.enum(["SUCCESS", "FAILED"]),
+  gatewayTxId: z.string(),
+  timestamp: z.number().optional(),
+  signature: z.string(),
 });
 
 // ─── Reviews ─────────────────────────────────────────────
@@ -157,6 +176,8 @@ export type CreateOrderInput = z.infer<typeof createOrderSchema>;
 export type RequestQuoteInput = z.infer<typeof requestQuoteSchema>;
 export type RespondToQuoteInput = z.infer<typeof respondToQuoteSchema>;
 export type UpdateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;
+export type InitiateJawwalPayInput = z.infer<typeof initiateJawwalPaySchema>;
+export type JawwalPayWebhookInput = z.infer<typeof jawwalPayWebhookSchema>;
 export type CreateReviewInput = z.infer<typeof createReviewSchema>;
 export type AdminUpdateUserInput = z.infer<typeof adminUpdateUserSchema>;
 export type AdminUpdateSettingsInput = z.infer<typeof adminUpdateSettingsSchema>;
