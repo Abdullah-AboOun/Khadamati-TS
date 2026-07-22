@@ -40,7 +40,7 @@ import {
   X,
 } from "lucide-react";
 import { formatPrice, STATUS_LABELS, CITIES, DEFAULT_CATEGORIES } from "../../../shared/constants";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -101,15 +101,32 @@ function ProviderDashboardComponent() {
   const { data: services, isLoading: isServicesLoading, refetch: refetchServices } =
     trpc.services.getMyServices.useQuery();
 
-  // Statistics
-  const totalOrders = orders?.length ?? 0;
-  const activeOrders =
-    orders?.filter((o) => ["pending", "quoted", "accepted", "in_progress"].includes(o.status))
-      .length ?? 0;
-  const completedOrders = orders?.filter((o) => o.status === "completed").length ?? 0;
-  const totalEarnings =
-    orders?.filter((o) => o.status === "completed").reduce((sum, o) => sum + (o.amount ?? 0), 0) ??
-    0;
+  // Statistics memoized in a single pass
+  const { totalOrders, activeOrders, completedOrders, totalEarnings } = useMemo(() => {
+    if (!orders || orders.length === 0) {
+      return { totalOrders: 0, activeOrders: 0, completedOrders: 0, totalEarnings: 0 };
+    }
+    let active = 0;
+    let completed = 0;
+    let earnings = 0;
+
+    for (let i = 0; i < orders.length; i++) {
+      const o = orders[i];
+      if (["pending", "quoted", "accepted", "in_progress"].includes(o.status)) {
+        active++;
+      } else if (o.status === "completed") {
+        completed++;
+        earnings += o.amount ?? 0;
+      }
+    }
+
+    return {
+      totalOrders: orders.length,
+      activeOrders: active,
+      completedOrders: completed,
+      totalEarnings: earnings,
+    };
+  }, [orders]);
 
   // --- Services tab state and mutations ---
   const categories = DEFAULT_CATEGORIES;

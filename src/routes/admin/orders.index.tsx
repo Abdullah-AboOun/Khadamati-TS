@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { formatPrice, STATUS_LABELS } from "../../../shared/constants";
 import { Search, ClipboardList, Wallet, Landmark, Eye, ArrowUpRight } from "lucide-react";
 
@@ -68,30 +68,51 @@ function AdminOrdersComponent() {
     );
   }
 
-  const allOrders = (data?.orders as unknown as OrderItem[]) || [];
+  const ordersList = useMemo(
+    () => (data?.orders as unknown as OrderItem[]) || [],
+    [data?.orders],
+  );
   const commissionRate = stats?.commissionRate ?? 0.15;
 
-  // Calculations
-  const totalOrdersCount = allOrders.length;
-  const totalRevenueVal = allOrders
-    .filter((o) => o.status === "completed")
-    .reduce((sum, o) => sum + (o.amount ?? 0), 0);
-  const totalCommissionsVal = totalRevenueVal * commissionRate;
-  const pendingOrdersCount = allOrders.filter(
-    (o) => !["completed", "cancelled"].includes(o.status),
-  ).length;
+  // Calculations memoized
+  const { totalOrdersCount, totalRevenueVal, totalCommissionsVal, pendingOrdersCount } = useMemo(() => {
+    const totalOrdersCount = ordersList.length;
+    let totalRevenueVal = 0;
+    let pendingOrdersCount = 0;
 
-  // Filtering
-  const filteredOrders = allOrders.filter((ord) => {
-    const matchSearch =
-      ord.serviceTitle.toLowerCase().includes(search.toLowerCase()) ||
-      ord.clientName.toLowerCase().includes(search.toLowerCase()) ||
-      ord.id.toString().includes(search);
+    for (let i = 0; i < ordersList.length; i++) {
+      const o = ordersList[i];
+      if (o.status === "completed") {
+        totalRevenueVal += o.amount ?? 0;
+      }
+      if (!["completed", "cancelled"].includes(o.status)) {
+        pendingOrdersCount++;
+      }
+    }
 
-    const matchStatus = statusFilter === "all" || ord.status === statusFilter;
+    return {
+      totalOrdersCount,
+      totalRevenueVal,
+      totalCommissionsVal: totalRevenueVal * commissionRate,
+      pendingOrdersCount,
+    };
+  }, [ordersList, commissionRate]);
 
-    return matchSearch && matchStatus;
-  });
+  // Filtering memoized
+  const filteredOrders = useMemo(() => {
+    const q = search.toLowerCase();
+    return ordersList.filter((ord) => {
+      const matchSearch =
+        !q ||
+        ord.serviceTitle.toLowerCase().includes(q) ||
+        ord.clientName.toLowerCase().includes(q) ||
+        ord.id.toString().includes(q);
+
+      const matchStatus = statusFilter === "all" || ord.status === statusFilter;
+
+      return matchSearch && matchStatus;
+    });
+  }, [ordersList, search, statusFilter]);
 
   return (
     <div className="container mx-auto space-y-6 px-4 py-8 sm:px-6 text-right" dir="rtl">

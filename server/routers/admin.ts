@@ -15,26 +15,33 @@ import { z } from "zod";
 export const adminRouter = router({
   // Dashboard stats
   stats: adminProcedure.query(async () => {
-    const [usersCount] = await db.select({ total: count() }).from(schema.user);
-    const [servicesCount] = await db
-      .select({ total: count() })
-      .from(schema.service)
-      .where(eq(schema.service.isDeleted, false));
-    const [ordersCount] = await db.select({ total: count() }).from(schema.order);
-    const [completedRevenue] = await db
-      .select({
-        total: sql<number>`COALESCE(SUM(${schema.order.amount}), 0)`,
-      })
-      .from(schema.order)
-      .where(
-        or(eq(schema.order.status, "completed"), eq(schema.order.paymentStatus, "completed")),
-      );
-
-    const [commissionSetting] = await db
-      .select()
-      .from(schema.setting)
-      .where(eq(schema.setting.key, "commission_rate"))
-      .limit(1);
+    const [
+      [usersCount],
+      [servicesCount],
+      [ordersCount],
+      [completedRevenue],
+      [commissionSetting],
+    ] = await Promise.all([
+      db.select({ total: count() }).from(schema.user),
+      db
+        .select({ total: count() })
+        .from(schema.service)
+        .where(eq(schema.service.isDeleted, false)),
+      db.select({ total: count() }).from(schema.order),
+      db
+        .select({
+          total: sql<number>`COALESCE(SUM(${schema.order.amount}), 0)`,
+        })
+        .from(schema.order)
+        .where(
+          or(eq(schema.order.status, "completed"), eq(schema.order.paymentStatus, "completed")),
+        ),
+      db
+        .select()
+        .from(schema.setting)
+        .where(eq(schema.setting.key, "commission_rate"))
+        .limit(1),
+    ]);
 
     const commissionRate = commissionSetting ? parseFloat(commissionSetting.value) : 0.1;
     const commission = (completedRevenue?.total ?? 0) * commissionRate;
