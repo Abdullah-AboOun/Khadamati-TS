@@ -1,4 +1,4 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Link, Outlet, ScrollRestoration } from "@tanstack/react-router";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Footer } from "@/components/Footer";
 import { useSession, signOut, type AuthUser } from "@/lib/auth-client";
@@ -169,6 +169,9 @@ function RootLayout() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Scroll Restoration */}
+      <ScrollRestoration />
 
       {/* Toasts */}
       <Toaster position="top-center" dir="rtl" />
