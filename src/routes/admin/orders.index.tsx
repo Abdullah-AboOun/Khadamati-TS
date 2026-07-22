@@ -68,35 +68,33 @@ function AdminOrdersComponent() {
     );
   }
 
-  const ordersList = useMemo(
-    () => (data?.orders as unknown as OrderItem[]) || [],
-    [data?.orders],
-  );
+  const ordersList = useMemo(() => (data?.orders as unknown as OrderItem[]) || [], [data?.orders]);
   const commissionRate = stats?.commissionRate ?? 0.15;
 
   // Calculations memoized
-  const { totalOrdersCount, totalRevenueVal, totalCommissionsVal, pendingOrdersCount } = useMemo(() => {
-    const totalOrdersCount = ordersList.length;
-    let totalRevenueVal = 0;
-    let pendingOrdersCount = 0;
+  const { totalOrdersCount, totalRevenueVal, totalCommissionsVal, pendingOrdersCount } =
+    useMemo(() => {
+      const totalOrdersCount = ordersList.length;
+      let totalRevenueVal = 0;
+      let pendingOrdersCount = 0;
 
-    for (let i = 0; i < ordersList.length; i++) {
-      const o = ordersList[i];
-      if (o.status === "completed") {
-        totalRevenueVal += o.amount ?? 0;
+      for (let i = 0; i < ordersList.length; i++) {
+        const o = ordersList[i];
+        if (o.status === "completed") {
+          totalRevenueVal += o.amount ?? 0;
+        }
+        if (!["completed", "cancelled"].includes(o.status)) {
+          pendingOrdersCount++;
+        }
       }
-      if (!["completed", "cancelled"].includes(o.status)) {
-        pendingOrdersCount++;
-      }
-    }
 
-    return {
-      totalOrdersCount,
-      totalRevenueVal,
-      totalCommissionsVal: totalRevenueVal * commissionRate,
-      pendingOrdersCount,
-    };
-  }, [ordersList, commissionRate]);
+      return {
+        totalOrdersCount,
+        totalRevenueVal,
+        totalCommissionsVal: totalRevenueVal * commissionRate,
+        pendingOrdersCount,
+      };
+    }, [ordersList, commissionRate]);
 
   // Filtering memoized
   const filteredOrders = useMemo(() => {

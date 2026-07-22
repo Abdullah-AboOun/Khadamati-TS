@@ -14,7 +14,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Settings, BarChart3, Users, Landmark, TrendingUp, PieChart as PieChartIcon, Activity } from "lucide-react";
+import {
+  Settings,
+  BarChart3,
+  Users,
+  Landmark,
+  TrendingUp,
+  PieChart as PieChartIcon,
+  Activity,
+} from "lucide-react";
 import { formatPrice, STATUS_LABELS } from "../../../shared/constants";
 import { MonthPicker } from "@/components/ui/month-picker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -193,7 +201,8 @@ function AdminFinanceComponent() {
   // Commission split doughnut data
   const totalRevenueAllTime = charts?.monthlyTrends.reduce((sum, m) => sum + m.revenue, 0) ?? 0;
   const totalCommissionAllTime = charts?.monthlyTrends.reduce((sum, m) => sum + m.adminCut, 0) ?? 0;
-  const totalProviderNetAllTime = charts?.monthlyTrends.reduce((sum, m) => sum + m.providerNet, 0) ?? 0;
+  const totalProviderNetAllTime =
+    charts?.monthlyTrends.reduce((sum, m) => sum + m.providerNet, 0) ?? 0;
 
   const commissionSplitData = [
     { name: "عمولة المنصة", value: totalCommissionAllTime, fill: "#eab308" },
@@ -225,7 +234,9 @@ function AdminFinanceComponent() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-muted/40 p-4 rounded-xl border border-border">
             <div className="space-y-1">
               <h2 className="text-lg font-bold">فلترة التقارير المالية</h2>
-              <p className="text-xs text-muted-foreground">اختر الشهر لعرض الإحصائيات وجدول المتصدرين</p>
+              <p className="text-xs text-muted-foreground">
+                اختر الشهر لعرض الإحصائيات وجدول المتصدرين
+              </p>
             </div>
             <MonthPicker value={selectedMonthStr} onChange={setSelectedMonthStr} />
           </div>
@@ -524,7 +535,9 @@ function AdminFinanceComponent() {
                   <BarChart3 className="size-5 text-muted-foreground" />
                   الإيرادات والعمولات الشهرية
                 </CardTitle>
-                <CardDescription>مقارنة بين إجمالي الإيرادات، عمولات المنصة، وأرباح المزودين</CardDescription>
+                <CardDescription>
+                  مقارنة بين إجمالي الإيرادات، عمولات المنصة، وأرباح المزودين
+                </CardDescription>
               </div>
               <div className="flex items-center gap-1.5 bg-muted p-1 rounded-md">
                 <Button
@@ -548,14 +561,12 @@ function AdminFinanceComponent() {
             <CardContent className="px-2 sm:px-6">
               <ChartContainer config={barChartConfig} className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyTrendsData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                  <BarChart
+                    data={monthlyTrendsData}
+                    margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis
-                      dataKey="label"
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={8}
-                    />
+                    <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={8} />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
@@ -563,16 +574,8 @@ function AdminFinanceComponent() {
                       tickFormatter={(v) => `${v} ₪`}
                     />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar
-                      dataKey="revenue"
-                      fill="var(--color-revenue)"
-                      radius={[4, 4, 0, 0]}
-                    />
-                    <Bar
-                      dataKey="adminCut"
-                      fill="var(--color-adminCut)"
-                      radius={[4, 4, 0, 0]}
-                    />
+                    <Bar dataKey="revenue" fill="var(--color-revenue)" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="adminCut" fill="var(--color-adminCut)" radius={[4, 4, 0, 0]} />
                     <Bar
                       dataKey="providerNet"
                       fill="var(--color-providerNet)"
@@ -592,19 +595,19 @@ function AdminFinanceComponent() {
                 <TrendingUp className="size-5 text-muted-foreground" />
                 منحنى نمو الإيرادات
               </CardTitle>
-              <CardDescription>متابعة النمو التراكمي والتغيير في الإيرادات والعمولات شهراً بعد شهر</CardDescription>
+              <CardDescription>
+                متابعة النمو التراكمي والتغيير في الإيرادات والعمولات شهراً بعد شهر
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ChartContainer config={lineChartConfig} className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={charts?.monthlyTrends ?? []} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                  <LineChart
+                    data={charts?.monthlyTrends ?? []}
+                    margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis
-                      dataKey="label"
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={8}
-                    />
+                    <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={8} />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
@@ -645,7 +648,9 @@ function AdminFinanceComponent() {
               </CardHeader>
               <CardContent className="flex flex-col items-center justify-center min-h-[320px]">
                 {statusData.length === 0 ? (
-                  <div className="text-center text-muted-foreground text-sm py-12">لا توجد طلبات لعرضها</div>
+                  <div className="text-center text-muted-foreground text-sm py-12">
+                    لا توجد طلبات لعرضها
+                  </div>
                 ) : (
                   <div className="w-full flex justify-center">
                     <ResponsiveContainer width="100%" height={260}>
@@ -683,7 +688,9 @@ function AdminFinanceComponent() {
               </CardHeader>
               <CardContent className="min-h-[320px]">
                 {charts?.topServices.length === 0 ? (
-                  <div className="text-center text-muted-foreground text-sm py-12">لا توجد خدمات مكتملة المبيعات</div>
+                  <div className="text-center text-muted-foreground text-sm py-12">
+                    لا توجد خدمات مكتملة المبيعات
+                  </div>
                 ) : (
                   <ChartContainer config={topServicesConfig} className="h-[260px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
@@ -708,11 +715,7 @@ function AdminFinanceComponent() {
                           fontSize={11}
                         />
                         <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar
-                          dataKey="revenue"
-                          fill="var(--color-revenue)"
-                          radius={[0, 4, 4, 0]}
-                        />
+                        <Bar dataKey="revenue" fill="var(--color-revenue)" radius={[0, 4, 4, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </ChartContainer>
@@ -725,11 +728,15 @@ function AdminFinanceComponent() {
           <Card className="border border-border shadow-sm max-w-xl mx-auto">
             <CardHeader className="text-center">
               <CardTitle>توزيع الإيرادات الكلية</CardTitle>
-              <CardDescription>النسبة المئوية لحصة عمولة النظام مقابل أرباح مقدمي الخدمات الكلية</CardDescription>
+              <CardDescription>
+                النسبة المئوية لحصة عمولة النظام مقابل أرباح مقدمي الخدمات الكلية
+              </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center min-h-[300px]">
               {commissionSplitData.length === 0 ? (
-                <div className="text-center text-muted-foreground text-sm py-12">لا توجد إيرادات مسجلة بالمنصة</div>
+                <div className="text-center text-muted-foreground text-sm py-12">
+                  لا توجد إيرادات مسجلة بالمنصة
+                </div>
               ) : (
                 <div className="w-full flex justify-center">
                   <ResponsiveContainer width="100%" height={260}>
@@ -747,7 +754,9 @@ function AdminFinanceComponent() {
                           <Cell key={`cell-${index}`} fill={entry.fill} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value) => [`${formatPrice(value as number)}`, "المجموع"]} />
+                      <Tooltip
+                        formatter={(value) => [`${formatPrice(value as number)}`, "المجموع"]}
+                      />
                       <Legend verticalAlign="bottom" height={36} iconType="circle" />
                     </PieChart>
                   </ResponsiveContainer>

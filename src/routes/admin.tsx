@@ -102,7 +102,6 @@ function AdminLayout() {
             );
           })}
         </nav>
-
       </aside>
 
       {/* ─── MOBILE DRAWER SIDEBAR ─── */}
@@ -136,7 +135,6 @@ function AdminLayout() {
                 );
               })}
             </nav>
-
           </aside>
           <div className="flex-1" onClick={() => setMobileOpen(false)} />
         </div>

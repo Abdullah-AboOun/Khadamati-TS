@@ -121,7 +121,6 @@ export const adminUpdateSettingsSchema = z.object({
     .max(1, "نسبة العمولة يجب أن تكون أقل من 100%"),
 });
 
-
 export const contactFormSchema = z.object({
   name: z.string().min(2, "الاسم يجب أن يكون حرفين على الأقل").max(100),
   email: z.email({ message: "البريد الإلكتروني غير صالح" }),

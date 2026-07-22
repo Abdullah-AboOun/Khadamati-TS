@@ -5,8 +5,7 @@ import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { createHmac } from "node:crypto";
 
-export const JAWWAL_PAY_SECRET =
-  process.env.JAWWAL_PAY_SECRET || "mock_jawwal_pay_secret_key_2026";
+export const JAWWAL_PAY_SECRET = process.env.JAWWAL_PAY_SECRET || "mock_jawwal_pay_secret_key_2026";
 
 export function generateJawwalPaySignature(
   orderId: number,
@@ -32,7 +31,10 @@ export const jawwalPayRouter = router({
       }
 
       if (order.clientId !== ctx.user.id && ctx.user.role !== "admin") {
-        throw new TRPCError({ code: "FORBIDDEN", message: "غير مصرح لك بإجراء عملية الدفع لهذا الطلب" });
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "غير مصرح لك بإجراء عملية الدفع لهذا الطلب",
+        });
       }
 
       const amount = order.amount ?? 0;
@@ -59,57 +61,55 @@ export const jawwalPayRouter = router({
       };
     }),
 
-  simulateWebhook: protectedProcedure
-    .input(jawwalPayWebhookSchema)
-    .mutation(async ({ input }) => {
-      const expectedSignature = generateJawwalPaySignature(
-        input.orderId,
-        input.amount,
-        input.gatewayTxId,
-      );
+  simulateWebhook: protectedProcedure.input(jawwalPayWebhookSchema).mutation(async ({ input }) => {
+    const expectedSignature = generateJawwalPaySignature(
+      input.orderId,
+      input.amount,
+      input.gatewayTxId,
+    );
 
-      if (input.signature !== expectedSignature) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "فشل التحقق من التوقيع الرقمي لبوابة جوال باي (Invalid Webhook Signature)",
-        });
-      }
+    if (input.signature !== expectedSignature) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "فشل التحقق من التوقيع الرقمي لبوابة جوال باي (Invalid Webhook Signature)",
+      });
+    }
 
-      const [order] = await db
-        .select()
-        .from(schema.order)
+    const [order] = await db
+      .select()
+      .from(schema.order)
+      .where(eq(schema.order.id, input.orderId))
+      .limit(1);
+
+    if (!order) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "الطلب غير موجود" });
+    }
+
+    if (input.status === "SUCCESS") {
+      const [updatedOrder] = await db
+        .update(schema.order)
+        .set({
+          status: "accepted",
+          paymentStatus: "completed",
+          paymentMethod: "jawwal_pay",
+          paymentProof: `بوابة جوال باي التفاعلية (Merchant API) - رقم العملية: ${input.gatewayTxId} - محفظة: ${input.phone}`,
+          accountNumber: input.phone,
+          gatewayTxId: input.gatewayTxId,
+          updatedAt: new Date(),
+        })
         .where(eq(schema.order.id, input.orderId))
-        .limit(1);
+        .returning();
 
-      if (!order) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "الطلب غير موجود" });
-      }
-
-      if (input.status === "SUCCESS") {
-        const [updatedOrder] = await db
-          .update(schema.order)
-          .set({
-            status: "accepted",
-            paymentStatus: "completed",
-            paymentMethod: "jawwal_pay",
-            paymentProof: `بوابة جوال باي التفاعلية (Merchant API) - رقم العملية: ${input.gatewayTxId} - محفظة: ${input.phone}`,
-            accountNumber: input.phone,
-            gatewayTxId: input.gatewayTxId,
-            updatedAt: new Date(),
-          })
-          .where(eq(schema.order.id, input.orderId))
-          .returning();
-
-        return {
-          success: true,
-          message: "تم تأكيد عملية الدفع وتحديث حالة الطلب إلى مقبول بنجاح",
-          order: updatedOrder,
-        };
-      } else {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "فشلت عملية الدفع في بوابة جوال باي",
-        });
-      }
-    }),
+      return {
+        success: true,
+        message: "تم تأكيد عملية الدفع وتحديث حالة الطلب إلى مقبول بنجاح",
+        order: updatedOrder,
+      };
+    } else {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "فشلت عملية الدفع في بوابة جوال باي",
+      });
+    }
+  }),
 });

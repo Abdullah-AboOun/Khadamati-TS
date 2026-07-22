@@ -14,10 +14,7 @@ export const servicesRouter = router({
     const { search, categoryId, city, minPrice, maxPrice, page, limit } = input;
     const offset = (page - 1) * limit;
 
-    const conditions = [
-      eq(schema.service.isActive, true),
-      eq(schema.service.isDeleted, false),
-    ];
+    const conditions = [eq(schema.service.isActive, true), eq(schema.service.isDeleted, false)];
 
     if (search) {
       conditions.push(like(schema.service.title, `%${search}%`));
@@ -116,12 +113,7 @@ export const servicesRouter = router({
         .from(schema.service)
         .leftJoin(schema.user, eq(schema.service.providerId, schema.user.id))
         .leftJoin(schema.category, eq(schema.service.categoryId, schema.category.id))
-        .where(
-          and(
-            eq(schema.service.id, input.id),
-            eq(schema.service.isDeleted, false),
-          ),
-        )
+        .where(and(eq(schema.service.id, input.id), eq(schema.service.isDeleted, false)))
         .limit(1);
 
       if (!svc) return null;
@@ -157,12 +149,7 @@ export const servicesRouter = router({
     const services = await db
       .select()
       .from(schema.service)
-      .where(
-        and(
-          eq(schema.service.providerId, ctx.user.id),
-          eq(schema.service.isDeleted, false),
-        ),
-      )
+      .where(and(eq(schema.service.providerId, ctx.user.id), eq(schema.service.isDeleted, false)))
       .orderBy(desc(schema.service.createdAt));
 
     const serviceIds = services.map((s) => s.id);

@@ -284,7 +284,9 @@ function OrderDetailComponent() {
                   </div>
                   {order.gatewayTxId && (
                     <div className="flex items-center gap-2 pt-1">
-                      <span className="text-xs text-muted-foreground font-semibold">رقم العملية (Gateway Tx ID):</span>
+                      <span className="text-xs text-muted-foreground font-semibold">
+                        رقم العملية (Gateway Tx ID):
+                      </span>
                       <span className="font-mono font-black text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
                         {order.gatewayTxId}
                       </span>

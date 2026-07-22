@@ -17,14 +17,8 @@ export const statsRouter = router({
       [todayOrdersCountResult],
       [recentProvidersCountResult],
     ] = await Promise.all([
-      db
-        .select({ total: count() })
-        .from(schema.user)
-        .where(eq(schema.user.role, "provider")),
-      db
-        .select({ total: count() })
-        .from(schema.order)
-        .where(eq(schema.order.status, "completed")),
+      db.select({ total: count() }).from(schema.user).where(eq(schema.user.role, "provider")),
+      db.select({ total: count() }).from(schema.order).where(eq(schema.order.status, "completed")),
       db
         .select({ avg: sql<number>`COALESCE(AVG(${schema.review.rating}), 0)` })
         .from(schema.review),

@@ -31,7 +31,10 @@ const t = initTRPC.context<TRPCContext>().create({
         if (issues.length > 0) {
           message = issues.map((e: any) => e.message).join("، ");
         }
-      } else if (error.cause && (error.cause.name === "ZodError" || "errors" in error.cause || "issues" in error.cause)) {
+      } else if (
+        error.cause &&
+        (error.cause.name === "ZodError" || "errors" in error.cause || "issues" in error.cause)
+      ) {
         const causeErrors = (error.cause as any).issues || (error.cause as any).errors;
         if (Array.isArray(causeErrors) && causeErrors.length > 0) {
           message = causeErrors.map((e: any) => e.message).join("، ");
@@ -39,7 +42,10 @@ const t = initTRPC.context<TRPCContext>().create({
       } else if (message.startsWith("[") && message.endsWith("]")) {
         try {
           const parsed = JSON.parse(message);
-          if (Array.isArray(parsed) && parsed.every((item) => item && typeof item === "object" && "message" in item)) {
+          if (
+            Array.isArray(parsed) &&
+            parsed.every((item) => item && typeof item === "object" && "message" in item)
+          ) {
             message = parsed.map((e: any) => e.message).join("، ");
           }
         } catch {

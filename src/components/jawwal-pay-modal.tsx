@@ -174,8 +174,12 @@ export function JawwalPayModal({
                 <JawwalPayLogo className="size-7" />
               </div>
               <div>
-                <h3 className="font-extrabold text-lg tracking-tight">بوابة جوال باي Merchant API</h3>
-                <p className="text-xs text-emerald-100/90 font-medium">الدفع الإلكتروني المباشر الآمن</p>
+                <h3 className="font-extrabold text-lg tracking-tight">
+                  بوابة جوال باي Merchant API
+                </h3>
+                <p className="text-xs text-emerald-100/90 font-medium">
+                  الدفع الإلكتروني المباشر الآمن
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-1 text-[11px] bg-black/20 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 text-emerald-200">
@@ -209,7 +213,9 @@ export function JawwalPayModal({
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">الخدمة المطلوبة:</span>
-              <span className="font-semibold text-foreground truncate max-w-[200px]">{serviceTitle}</span>
+              <span className="font-semibold text-foreground truncate max-w-[200px]">
+                {serviceTitle}
+              </span>
             </div>
             <div className="flex items-center justify-between border-t border-border/40 pt-2 text-sm">
               <span className="font-bold text-muted-foreground">المبلغ الإجمالي:</span>
@@ -232,7 +238,9 @@ export function JawwalPayModal({
               </DialogHeader>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-foreground">رقم الهاتف (محفظة جوال باي)</label>
+                <label className="text-xs font-bold text-foreground">
+                  رقم الهاتف (محفظة جوال باي)
+                </label>
                 <div className="relative">
                   <Input
                     type="tel"
@@ -276,10 +284,13 @@ export function JawwalPayModal({
               <DialogHeader className="p-0 text-right space-y-1">
                 <DialogTitle className="text-base font-bold text-foreground flex items-center justify-between">
                   <span>تأكيد رمز الدفع (OTP)</span>
-                  <span className="text-xs font-normal text-muted-foreground">جلسة #{sessionData?.sessionId.slice(-6)}</span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    جلسة #{sessionData?.sessionId.slice(-6)}
+                  </span>
                 </DialogTitle>
                 <DialogDescription className="text-xs text-muted-foreground">
-                  أدخل رمز الأمان المؤقت المرسل إلى الهاتف <strong className="font-mono dir-ltr inline-block">{phone}</strong>
+                  أدخل رمز الأمان المؤقت المرسل إلى الهاتف{" "}
+                  <strong className="font-mono dir-ltr inline-block">{phone}</strong>
                 </DialogDescription>
               </DialogHeader>
 
@@ -345,9 +356,12 @@ export function JawwalPayModal({
                 <Smartphone className="size-8 text-emerald-600 animate-pulse" />
               </div>
               <div className="space-y-1">
-                <h4 className="font-bold text-base text-foreground">إرسال إشعار الدفع الفوري (HTTP Webhook)...</h4>
+                <h4 className="font-bold text-base text-foreground">
+                  إرسال إشعار الدفع الفوري (HTTP Webhook)...
+                </h4>
                 <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-                  تتواصل خوادم Jawwal Pay مع خادم منصة خدماتي للتحقق من التوقيع الرقمي HMAC وتأكيد العملية آلياً...
+                  تتواصل خوادم Jawwal Pay مع خادم منصة خدماتي للتحقق من التوقيع الرقمي HMAC وتأكيد
+                  العملية آلياً...
                 </p>
               </div>
               <div className="inline-flex items-center gap-2 font-mono text-[11px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-900">
@@ -366,20 +380,25 @@ export function JawwalPayModal({
               <div className="space-y-1">
                 <h3 className="text-xl font-black text-foreground">تمت عملية الدفع بنجاح!</h3>
                 <p className="text-xs text-muted-foreground">
-                  تم تأكيد المعاملة المالية عبر إشعار Jawwal Pay الفوري وتحديث حالة الطلب إلى مقبول تلقائياً.
+                  تم تأكيد المعاملة المالية عبر إشعار Jawwal Pay الفوري وتحديث حالة الطلب إلى مقبول
+                  تلقائياً.
                 </p>
               </div>
 
               <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 p-4 space-y-2 text-right">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">رقم العملية المعتمَد (Gateway Tx ID):</span>
+                  <span className="text-muted-foreground">
+                    رقم العملية المعتمَد (Gateway Tx ID):
+                  </span>
                   <span className="font-mono font-bold text-emerald-700 dark:text-emerald-300">
                     {sessionData?.gatewayTxId}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">طريقة الدفع:</span>
-                  <span className="font-semibold text-foreground">بوابة جوال باي التفاعلية (Merchant API)</span>
+                  <span className="font-semibold text-foreground">
+                    بوابة جوال باي التفاعلية (Merchant API)
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">رقم محفظة الدفع:</span>
@@ -387,7 +406,9 @@ export function JawwalPayModal({
                 </div>
                 <div className="flex items-center justify-between border-t border-emerald-200/60 dark:border-emerald-900/60 pt-2 text-sm">
                   <span className="font-bold text-foreground">المبلغ المحوَّل:</span>
-                  <span className="font-black text-emerald-600 dark:text-emerald-400">{formatPrice(amount)}</span>
+                  <span className="font-black text-emerald-600 dark:text-emerald-400">
+                    {formatPrice(amount)}
+                  </span>
                 </div>
               </div>
 

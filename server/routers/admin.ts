@@ -15,33 +15,24 @@ import { z } from "zod";
 export const adminRouter = router({
   // Dashboard stats
   stats: adminProcedure.query(async () => {
-    const [
-      [usersCount],
-      [servicesCount],
-      [ordersCount],
-      [completedRevenue],
-      [commissionSetting],
-    ] = await Promise.all([
-      db.select({ total: count() }).from(schema.user),
-      db
-        .select({ total: count() })
-        .from(schema.service)
-        .where(eq(schema.service.isDeleted, false)),
-      db.select({ total: count() }).from(schema.order),
-      db
-        .select({
-          total: sql<number>`COALESCE(SUM(${schema.order.amount}), 0)`,
-        })
-        .from(schema.order)
-        .where(
-          or(eq(schema.order.status, "completed"), eq(schema.order.paymentStatus, "completed")),
-        ),
-      db
-        .select()
-        .from(schema.setting)
-        .where(eq(schema.setting.key, "commission_rate"))
-        .limit(1),
-    ]);
+    const [[usersCount], [servicesCount], [ordersCount], [completedRevenue], [commissionSetting]] =
+      await Promise.all([
+        db.select({ total: count() }).from(schema.user),
+        db
+          .select({ total: count() })
+          .from(schema.service)
+          .where(eq(schema.service.isDeleted, false)),
+        db.select({ total: count() }).from(schema.order),
+        db
+          .select({
+            total: sql<number>`COALESCE(SUM(${schema.order.amount}), 0)`,
+          })
+          .from(schema.order)
+          .where(
+            or(eq(schema.order.status, "completed"), eq(schema.order.paymentStatus, "completed")),
+          ),
+        db.select().from(schema.setting).where(eq(schema.setting.key, "commission_rate")).limit(1),
+      ]);
 
     const commissionRate = commissionSetting ? parseFloat(commissionSetting.value) : 0.1;
     const commission = (completedRevenue?.total ?? 0) * commissionRate;
@@ -234,8 +225,21 @@ export const adminRouter = router({
       .where(gte(schema.order.createdAt, startDate));
 
     const monthsList = [];
-    const monthNamesAr = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
-    
+    const monthNamesAr = [
+      "يناير",
+      "فبراير",
+      "مارس",
+      "أبريل",
+      "مايو",
+      "يونيو",
+      "يوليو",
+      "أغسطس",
+      "سبتمبر",
+      "أكتوبر",
+      "نوفمبر",
+      "ديسمبر",
+    ];
+
     for (let i = 11; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const y = d.getFullYear();
@@ -297,7 +301,7 @@ export const adminRouter = router({
       .orderBy(desc(sql`SUM(${schema.order.amount})`))
       .limit(6);
 
-    const formattedTopServices = topServices.map(item => ({
+    const formattedTopServices = topServices.map((item) => ({
       title: item.title || "خدمة غير معروفة",
       revenue: Math.round((item.revenue || 0) * 100) / 100,
       orderCount: item.orderCount,

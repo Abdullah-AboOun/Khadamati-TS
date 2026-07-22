@@ -4,7 +4,9 @@ import { db, schema } from "./db";
 
 export const appUrl =
   process.env.APP_URL ||
-  (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : undefined) ||
+  (process.env.RAILWAY_PUBLIC_DOMAIN
+    ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+    : undefined) ||
   "http://localhost:3000";
 
 export const auth = betterAuth({
@@ -95,4 +97,3 @@ export const auth = betterAuth({
 });
 
 export type Session = typeof auth.$Infer.Session;
-

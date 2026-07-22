@@ -1,10 +1,6 @@
 import jawwalPayLogoUrl from "@/assets/Jawwal_Pay.svg";
 
-export function JawwalPayLogo({
-  className = "size-11",
-}: {
-  className?: string;
-}) {
+export function JawwalPayLogo({ className = "size-11" }: { className?: string }) {
   return (
     <img
       src={jawwalPayLogoUrl}

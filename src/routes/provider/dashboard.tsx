@@ -96,10 +96,16 @@ function ProviderDashboardComponent() {
     { label: "طلبات العملاء", value: "orders", icon: ClipboardList },
   ] as const;
 
-  const { data: orders, isLoading: isOrdersLoading, refetch: refetchOrders } =
-    trpc.orders.getProviderOrders.useQuery();
-  const { data: services, isLoading: isServicesLoading, refetch: refetchServices } =
-    trpc.services.getMyServices.useQuery();
+  const {
+    data: orders,
+    isLoading: isOrdersLoading,
+    refetch: refetchOrders,
+  } = trpc.orders.getProviderOrders.useQuery();
+  const {
+    data: services,
+    isLoading: isServicesLoading,
+    refetch: refetchServices,
+  } = trpc.services.getMyServices.useQuery();
 
   // Statistics memoized in a single pass
   const { totalOrders, activeOrders, completedOrders, totalEarnings } = useMemo(() => {
@@ -379,7 +385,9 @@ function ProviderDashboardComponent() {
                 className={`flex items-center rounded-lg text-muted-foreground hover:bg-primary/5 hover:text-primary transition-all cursor-pointer w-full text-right ${
                   isActive ? "bg-primary/10 text-primary font-bold" : ""
                 } ${
-                  collapsed ? "justify-center p-2.5 w-10 mx-auto" : "gap-3 px-3 py-2.5 justify-start"
+                  collapsed
+                    ? "justify-center p-2.5 w-10 mx-auto"
+                    : "gap-3 px-3 py-2.5 justify-start"
                 }`}
               >
                 <Icon className="size-5 flex-shrink-0" />
@@ -388,7 +396,6 @@ function ProviderDashboardComponent() {
             );
           })}
         </nav>
-
       </aside>
 
       {/* ─── MOBILE DRAWER SIDEBAR ─── */}
@@ -426,7 +433,6 @@ function ProviderDashboardComponent() {
                 );
               })}
             </nav>
-
           </aside>
           <div className="flex-1" onClick={() => setMobileOpen(false)} />
         </div>
@@ -823,7 +829,9 @@ function ProviderDashboardComponent() {
                               <img src={img} alt="" className="h-full w-full object-cover" />
                               <button
                                 type="button"
-                                onClick={() => setImages((prev) => prev.filter((_, i) => i !== idx))}
+                                onClick={() =>
+                                  setImages((prev) => prev.filter((_, i) => i !== idx))
+                                }
                                 className="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 transition-opacity group-hover:opacity-100"
                               >
                                 <Trash2 className="size-4" />
@@ -892,7 +900,9 @@ function ProviderDashboardComponent() {
                           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                             <span>
                               العميل:{" "}
-                              <span className="font-semibold text-foreground">{ord.clientName}</span>
+                              <span className="font-semibold text-foreground">
+                                {ord.clientName}
+                              </span>
                             </span>
                             <span>•</span>
                             <span>

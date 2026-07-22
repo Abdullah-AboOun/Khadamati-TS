@@ -7,15 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import { toast } from "sonner";
-import {
-  CreditCard,
-  Calendar,
-  Key,
-  User,
-  Lock,
-  Zap,
-  Check,
-} from "lucide-react";
+import { CreditCard, Calendar, Key, User, Lock, Zap, Check } from "lucide-react";
 import { formatPrice } from "../../shared/constants";
 import { JawwalPayModal } from "@/components/jawwal-pay-modal";
 import { JawwalPayLogo } from "@/components/jawwal-pay-logo";
@@ -147,8 +139,12 @@ function CheckoutComponent() {
                 <div className="flex items-center gap-3 min-w-0">
                   <JawwalPayLogo className="size-11 shrink-0 aspect-square" />
                   <div className="flex flex-col text-right min-w-0">
-                    <span className="font-extrabold text-sm text-foreground leading-tight">جوال باي</span>
-                    <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">Jawwal Pay</span>
+                    <span className="font-extrabold text-sm text-foreground leading-tight">
+                      جوال باي
+                    </span>
+                    <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
+                      Jawwal Pay
+                    </span>
                   </div>
                 </div>
                 <div
@@ -177,8 +173,12 @@ function CheckoutComponent() {
                     <CreditCard className="size-6" />
                   </div>
                   <div className="flex flex-col text-right min-w-0">
-                    <span className="font-extrabold text-sm text-foreground leading-tight">بطاقة دفع</span>
-                    <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">Credit Card</span>
+                    <span className="font-extrabold text-sm text-foreground leading-tight">
+                      بطاقة دفع
+                    </span>
+                    <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
+                      Credit Card
+                    </span>
                   </div>
                 </div>
                 <div
