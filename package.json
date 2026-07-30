@@ -20,6 +20,7 @@
     "@fontsource-variable/inter": "^5.2.8",
     "@hono/trpc-server": "^0.4.2",
     "@tailwindcss/vite": "^4",
+    "@tanstack/ai": "^0.42.0",
     "@tanstack/react-form": "^1.33.0",
     "@tanstack/react-query": "^5.101.2",
     "@tanstack/react-router": "^1.170.16",
