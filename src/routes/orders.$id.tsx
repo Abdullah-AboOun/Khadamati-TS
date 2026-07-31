@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  getOrderByIdFn,
+  updateOrderStatusFn,
+  respondToQuoteFn,
+  cancelOrderFn,
+} from "@/server/functions/orders";
+import { createReviewFn } from "@/server/functions/reviews";
 import { useSession, type AuthUser } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,20 +73,38 @@ function OrderDetailComponent() {
   const [comment, setComment] = useState("");
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
-  // tRPC query to fetch order details
   const {
     data: order,
     isLoading,
     refetch,
-  } = trpc.orders.getById.useQuery({
-    orderId: parsedOrderId,
+  } = useQuery({
+    queryKey: ["order", parsedOrderId],
+    queryFn: () => getOrderByIdFn({ data: parsedOrderId }),
   });
 
-  // tRPC mutations
-  const updateStatusMutation = trpc.orders.updateStatus.useMutation();
-  const respondToQuoteMutation = trpc.orders.respondToQuote.useMutation();
-  const cancelOrderMutation = trpc.orders.cancelOrder.useMutation();
-  const createReviewMutation = trpc.reviews.create.useMutation();
+  const updateStatusMutation = useMutation({
+    mutationFn: (data: {
+      orderId: number;
+      status: "pending" | "quoted" | "accepted" | "in_progress" | "completed" | "cancelled";
+      paymentStatus?: string;
+      paymentMethod?: string;
+      paymentProof?: string;
+      accountNumber?: string;
+      gatewayTxId?: string;
+      details?: string;
+      notes?: string;
+    }) => updateOrderStatusFn({ data }),
+  });
+  const respondToQuoteMutation = useMutation({
+    mutationFn: (data: { orderId: number; quotedPrice: number }) => respondToQuoteFn({ data }),
+  });
+  const cancelOrderMutation = useMutation({
+    mutationFn: (orderId: number) => cancelOrderFn({ data: orderId }),
+  });
+  const createReviewMutation = useMutation({
+    mutationFn: (data: { orderId: number; rating: number; comment?: string }) =>
+      createReviewFn({ data }),
+  });
 
   if (isLoading) {
     return (
@@ -146,7 +171,7 @@ function OrderDetailComponent() {
     setIsUpdatingStatus(true);
     try {
       if (isProvider) {
-        await cancelOrderMutation.mutateAsync({ orderId: parsedOrderId });
+        await cancelOrderMutation.mutateAsync(parsedOrderId);
       } else {
         await updateStatusMutation.mutateAsync({
           orderId: parsedOrderId,
@@ -558,7 +583,7 @@ function OrderDetailComponent() {
                     </form>
                   )}
 
-                  {/* Provider cancel action (only pending or quoted) */}
+                  {/* Provider cancel action */}
                   {["pending", "quoted"].includes(order.status) && (
                     <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
                       <DialogTrigger asChild>
@@ -599,7 +624,6 @@ function OrderDetailComponent() {
                     </Dialog>
                   )}
 
-                  {/* No actions message */}
                   {!["accepted", "in_progress", "pending", "quoted"].includes(order.status) && (
                     <p className="text-sm text-muted-foreground text-center">
                       لا توجد إجراءات متاحة لهذا الطلب.
@@ -611,7 +635,6 @@ function OrderDetailComponent() {
               {/* CLIENT ACTIONS */}
               {isClient && (
                 <div className="flex flex-col gap-3">
-                  {/* Quote is submitted, client needs to accept/reject */}
                   {order.status === "quoted" && (
                     <div className="space-y-3">
                       <Button
@@ -662,7 +685,6 @@ function OrderDetailComponent() {
                     </div>
                   )}
 
-                  {/* Client cancel pending (no quote submitted yet) */}
                   {order.status === "pending" && (
                     <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
                       <DialogTrigger asChild>
@@ -703,7 +725,6 @@ function OrderDetailComponent() {
                     </Dialog>
                   )}
 
-                  {/* Client leave review (completed but not yet reviewed) */}
                   {order.status === "completed" && !order.reviewId && (
                     <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
                       <DialogTrigger asChild>
@@ -775,7 +796,6 @@ function OrderDetailComponent() {
                     </Dialog>
                   )}
 
-                  {/* No actions message */}
                   {!["pending", "quoted", "completed"].includes(order.status) && (
                     <p className="text-sm text-muted-foreground text-center">
                       لا توجد إجراءات متاحة لهذا الطلب.

@@ -1,5 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  getAdminUsersFn,
+  toggleUserActiveFn,
+  adminCreateUserFn,
+  adminUpdateUserFn,
+  adminDeleteUserFn,
+} from "@/server/functions/admin";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -48,23 +55,43 @@ interface UserItem {
 }
 
 function AdminUsersComponent() {
-  const { data, isLoading, refetch } = trpc.admin.listUsers.useQuery({
-    page: 1,
-    limit: 100,
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["adminUsers"],
+    queryFn: () => getAdminUsersFn({ data: { page: 1, limit: 100 } }),
   });
 
-  // Mutations
-  const toggleUserActiveMutation = trpc.admin.toggleUserActive.useMutation();
-  const createUserMutation = trpc.admin.createUser.useMutation();
-  const updateUserMutation = trpc.admin.updateUser.useMutation();
-  const deleteUserMutation = trpc.admin.deleteUser.useMutation();
+  const toggleUserActiveMutation = useMutation({
+    mutationFn: (data: { userId: string; isActive: boolean }) => toggleUserActiveFn({ data }),
+  });
+  const createUserMutation = useMutation({
+    mutationFn: (data: {
+      name: string;
+      email: string;
+      password: string;
+      role: "provider" | "client" | "admin";
+      phone?: string;
+      city?: string;
+    }) => adminCreateUserFn({ data }),
+  });
+  const updateUserMutation = useMutation({
+    mutationFn: (data: {
+      id: string;
+      name: string;
+      email: string;
+      role: "provider" | "client" | "admin";
+      isActive: boolean;
+      phone?: string;
+      city?: string;
+    }) => adminUpdateUserFn({ data }),
+  });
+  const deleteUserMutation = useMutation({
+    mutationFn: (id: string) => adminDeleteUserFn({ data: id }),
+  });
 
-  // Filter states
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // Form states
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -100,7 +127,7 @@ function AdminUsersComponent() {
     setDialogOpen(true);
   };
 
-  const handleSave = async (e: React.SubmitEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || (!editingUserId && !password)) {
       toast.error("الرجاء إدخال الحقول الإلزامية");
@@ -149,7 +176,7 @@ function AdminUsersComponent() {
     )
       return;
     try {
-      await deleteUserMutation.mutateAsync({ id });
+      await deleteUserMutation.mutateAsync(id);
       toast.success("تم حذف حساب المستخدم بنجاح");
       refetch();
     } catch (err) {
@@ -219,7 +246,6 @@ function AdminUsersComponent() {
         </Button>
       </div>
 
-      {/* Stats block */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-6">
         <Card className="bg-card border border-border shadow-xs">
           <CardContent className="p-4 flex flex-col justify-between">
@@ -259,7 +285,6 @@ function AdminUsersComponent() {
         </Card>
       </div>
 
-      {/* Filter toolbar */}
       <div className="flex flex-col md:flex-row gap-4 bg-muted/40 p-4 rounded-xl border border-border">
         <div className="relative flex-grow">
           <Input
@@ -297,7 +322,6 @@ function AdminUsersComponent() {
         </Select>
       </div>
 
-      {/* Table */}
       <Card className="border border-border shadow-sm bg-card">
         <CardContent className="pt-6">
           <div className="overflow-x-auto">
@@ -386,7 +410,6 @@ function AdminUsersComponent() {
         </CardContent>
       </Card>
 
-      {/* CREATE / EDIT USER MODAL */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="text-right max-w-md" dir="rtl">
           <DialogHeader className="text-right">
@@ -397,7 +420,6 @@ function AdminUsersComponent() {
           </DialogHeader>
 
           <form onSubmit={handleSave} className="space-y-4 py-3">
-            {/* Name */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium">الاسم الكامل *</label>
               <Input
@@ -409,7 +431,6 @@ function AdminUsersComponent() {
               />
             </div>
 
-            {/* Email */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium">البريد الإلكتروني *</label>
               <Input
@@ -422,7 +443,6 @@ function AdminUsersComponent() {
               />
             </div>
 
-            {/* Password (Required for create only) */}
             {!editingUserId && (
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">كلمة المرور *</label>
@@ -437,7 +457,6 @@ function AdminUsersComponent() {
               </div>
             )}
 
-            {/* Role & Status */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">الدور *</label>
@@ -475,7 +494,6 @@ function AdminUsersComponent() {
               </div>
             </div>
 
-            {/* Phone & City */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">الهاتف</label>

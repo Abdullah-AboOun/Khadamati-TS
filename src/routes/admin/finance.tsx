@@ -1,5 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  getAdminStatsFn,
+  getFinancialReportFn,
+  getTopProvidersFn,
+  getFinancialChartsFn,
+  updateCommissionRateFn,
+} from "@/server/functions/admin";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
   Table,
@@ -54,14 +61,15 @@ export const Route = createFileRoute("/admin/finance")({
 });
 
 function AdminFinanceComponent() {
-  // Lifetime stats for general context
   const {
     data: stats,
     isLoading: statsLoading,
     refetch: refetchStats,
-  } = trpc.admin.stats.useQuery();
+  } = useQuery({
+    queryKey: ["adminStats"],
+    queryFn: () => getAdminStatsFn(),
+  });
 
-  // Month Picker State
   const [selectedMonthStr, setSelectedMonthStr] = useState(() => {
     const now = new Date();
     const yyyy = now.getFullYear();
@@ -73,19 +81,20 @@ function AdminFinanceComponent() {
   const year = parseInt(yearStr) || new Date().getFullYear();
   const month = parseInt(monthStr) || new Date().getMonth() + 1;
 
-  // tRPC monthly queries
-  const { data: report, isLoading: reportLoading } = trpc.admin.financialReport.useQuery({
-    year,
-    month,
+  const { data: report, isLoading: reportLoading } = useQuery({
+    queryKey: ["financialReport", year, month],
+    queryFn: () => getFinancialReportFn({ data: { year, month } }),
   });
 
-  const { data: topProviders, isLoading: topProvidersLoading } = trpc.admin.topProviders.useQuery({
-    year,
-    month,
+  const { data: topProviders, isLoading: topProvidersLoading } = useQuery({
+    queryKey: ["topProviders", year, month],
+    queryFn: () => getTopProvidersFn({ data: { year, month } }),
   });
 
-  // tRPC charts query
-  const { data: charts, isLoading: chartsLoading } = trpc.admin.financialCharts.useQuery();
+  const { data: charts, isLoading: chartsLoading } = useQuery({
+    queryKey: ["financialCharts"],
+    queryFn: () => getFinancialChartsFn(),
+  });
 
   const [monthPeriod, setMonthPeriod] = useState<6 | 12>(6);
 
@@ -98,8 +107,9 @@ function AdminFinanceComponent() {
     }
   }, [stats]);
 
-  // mutations
-  const updateCommissionMutation = trpc.admin.updateCommissionRate.useMutation();
+  const updateCommissionMutation = useMutation({
+    mutationFn: (commissionRate: number) => updateCommissionRateFn({ data: commissionRate }),
+  });
 
   const handleUpdateCommission = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -111,9 +121,7 @@ function AdminFinanceComponent() {
 
     setIsUpdating(true);
     try {
-      await updateCommissionMutation.mutateAsync({
-        commissionRate: ratePercentage / 100,
-      });
+      await updateCommissionMutation.mutateAsync(ratePercentage / 100);
       toast.success("تم تحديث نسبة عمولة النظام بنجاح!");
       refetchStats();
     } catch (err) {
@@ -138,19 +146,18 @@ function AdminFinanceComponent() {
 
   const commissionRate = stats?.commissionRate ?? 0.1;
 
-  // Monthly stats calculations
   const monthlyCompletedCount = report?.length ?? 0;
   const monthlyRevenue = report?.reduce((sum, ord) => sum + (ord.amount ?? 0), 0) ?? 0;
   const monthlyAdminCut = monthlyRevenue * commissionRate;
   const monthlyProviderNet = monthlyRevenue - monthlyAdminCut;
 
   const STATUS_COLORS: Record<string, string> = {
-    completed: "#10b981", // Emerald 500
-    cancelled: "#f43f5e", // Rose 500
-    in_progress: "#3b82f6", // Blue 500
-    accepted: "#60a5fa", // Blue 400
-    quoted: "#eab308", // Yellow 500
-    pending: "#f97316", // Orange 500
+    completed: "#10b981",
+    cancelled: "#f43f5e",
+    in_progress: "#3b82f6",
+    accepted: "#60a5fa",
+    quoted: "#eab308",
+    pending: "#f97316",
   };
 
   const barChartConfig = {
@@ -186,10 +193,8 @@ function AdminFinanceComponent() {
     },
   };
 
-  // Filter monthlyTrends data for BarChart based on monthly period state
   const monthlyTrendsData = charts?.monthlyTrends.slice(-monthPeriod) ?? [];
 
-  // Order statuses breakdown data
   const statusData = Object.entries(charts?.orderStatuses ?? {})
     .map(([key, val]) => ({
       name: STATUS_LABELS[key as keyof typeof STATUS_LABELS] || key,
@@ -198,7 +203,6 @@ function AdminFinanceComponent() {
     }))
     .filter((d) => d.value > 0);
 
-  // Commission split doughnut data
   const totalRevenueAllTime = charts?.monthlyTrends.reduce((sum, m) => sum + m.revenue, 0) ?? 0;
   const totalCommissionAllTime = charts?.monthlyTrends.reduce((sum, m) => sum + m.adminCut, 0) ?? 0;
   const totalProviderNetAllTime =
@@ -228,9 +232,7 @@ function AdminFinanceComponent() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Tab 1: Reports & Settings */}
         <TabsContent value="reports" className="space-y-6 outline-hidden">
-          {/* Month Filter Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-muted/40 p-4 rounded-xl border border-border">
             <div className="space-y-1">
               <h2 className="text-lg font-bold">فلترة التقارير المالية</h2>
@@ -242,9 +244,7 @@ function AdminFinanceComponent() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {/* Statistics and Ledger */}
             <div className="space-y-6 md:col-span-2">
-              {/* Filtered Monthly Stats Cards */}
               <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
                 <Card className="border border-border shadow-xs">
                   <CardContent className="p-4 space-y-1">
@@ -291,7 +291,6 @@ function AdminFinanceComponent() {
                 </Card>
               </div>
 
-              {/* Top Providers Leaderboard for the month */}
               <Card className="border border-border shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -349,7 +348,6 @@ function AdminFinanceComponent() {
                 </CardContent>
               </Card>
 
-              {/* Completed Sales Ledger for the month */}
               <Card className="border border-border shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -401,9 +399,7 @@ function AdminFinanceComponent() {
               </Card>
             </div>
 
-            {/* Sidebar settings */}
             <div className="space-y-6">
-              {/* System Settings form */}
               <Card className="border border-border shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -443,7 +439,6 @@ function AdminFinanceComponent() {
                 </CardContent>
               </Card>
 
-              {/* Lifetime Platform Overview card */}
               <Card className="border border-border shadow-sm bg-muted/20">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -472,9 +467,7 @@ function AdminFinanceComponent() {
           </div>
         </TabsContent>
 
-        {/* Tab 2: Visual Charts */}
         <TabsContent value="charts" className="space-y-6 outline-hidden">
-          {/* Quick Insights Cards */}
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
             <Card className="border border-border bg-card shadow-xs">
               <CardContent className="p-4 space-y-1">
@@ -527,7 +520,6 @@ function AdminFinanceComponent() {
             </Card>
           </div>
 
-          {/* Chart 1: Bar Chart Monthly Revenue */}
           <Card className="border border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
               <div className="space-y-1">
@@ -588,7 +580,6 @@ function AdminFinanceComponent() {
             </CardContent>
           </Card>
 
-          {/* Chart 2: Line Chart Growth */}
           <Card className="border border-border shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -635,9 +626,7 @@ function AdminFinanceComponent() {
             </CardContent>
           </Card>
 
-          {/* Row of side-by-side charts */}
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Chart 3: Order status distribution Pie Chart */}
             <Card className="border border-border shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -677,7 +666,6 @@ function AdminFinanceComponent() {
               </CardContent>
             </Card>
 
-            {/* Chart 4: Top services horizontal bar chart */}
             <Card className="border border-border shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -724,7 +712,6 @@ function AdminFinanceComponent() {
             </Card>
           </div>
 
-          {/* Chart 5: Commission Split Doughnut */}
           <Card className="border border-border shadow-sm max-w-xl mx-auto">
             <CardHeader className="text-center">
               <CardTitle>توزيع الإيرادات الكلية</CardTitle>

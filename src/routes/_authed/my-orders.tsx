@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getMyOrdersFn, updateOrderStatusFn } from "@/server/functions/orders";
+import { createReviewFn } from "@/server/functions/reviews";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,7 +36,14 @@ const STATUS_COLOR_CLASSES: Record<string, string> = {
 };
 
 function MyOrdersComponent() {
-  const { data: orders, isLoading, refetch } = trpc.orders.getMyOrders.useQuery();
+  const {
+    data: orders,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["myOrders"],
+    queryFn: () => getMyOrdersFn(),
+  });
 
   const [reviewOrderId, setReviewOrderId] = useState<number | null>(null);
   const [rating, setRating] = useState(5);
@@ -42,9 +51,23 @@ function MyOrdersComponent() {
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
-  // mutations
-  const updateStatusMutation = trpc.orders.updateStatus.useMutation();
-  const createReviewMutation = trpc.reviews.create.useMutation();
+  const updateStatusMutation = useMutation({
+    mutationFn: (data: {
+      orderId: number;
+      status: "pending" | "quoted" | "accepted" | "in_progress" | "completed" | "cancelled";
+      paymentStatus?: string;
+      paymentMethod?: string;
+      paymentProof?: string;
+      accountNumber?: string;
+      gatewayTxId?: string;
+      details?: string;
+      notes?: string;
+    }) => updateOrderStatusFn({ data }),
+  });
+  const createReviewMutation = useMutation({
+    mutationFn: (data: { orderId: number; rating: number; comment?: string }) =>
+      createReviewFn({ data }),
+  });
 
   const handleUpdateStatus = async (orderId: number, status: "accepted" | "cancelled") => {
     try {

@@ -15,10 +15,10 @@
 ### ⚡ Tech Stack & Tooling
 
 - **Runtime**: [Bun](https://bun.sh) (for fast execution, package management, and script running).
-- **Frontend**: React + Vite + Tailwind CSS v4 + [TanStack Router](https://tanstack.com/router) for type-safe routing.
-- **Backend**: Hono server hosting [tRPC v11](https://trpc.io) for type-safe client-server communications.
+- **Framework**: [TanStack Start](https://tanstack.com/start) with TanStack Router, TanStack Query, and type-safe Server Functions.
+- **Styling**: React + Vite + Tailwind CSS v4 + shadcn/ui components.
 - **Database**: SQLite (powered by the native `bun:sqlite` database driver) and Drizzle ORM for querying.
-- **Authentication**: [BetterAuth](https://better-auth.com) for role-based sessions and route guards.
+- **Authentication**: [BetterAuth](https://better-auth.com) for role-based sessions, API routes, and server-side route guards.
 - **Image Processing**: Automatic image uploads processing and WebP conversion using the native Bun.Image API.
 
 ---
@@ -26,14 +26,13 @@
 ## 🛠️ Project Structure
 
 ```bash
-├── server/               # Hono backend server, tRPC routers, database, and auth config
+├── server/               # Database schemas, seeds, and auth adapter
 │   ├── db/               # SQLite schema definition and seeding script
-│   ├── routers/          # tRPC endpoints (Categories, Services, Orders, Admin)
 │   └── auth.ts           # BetterAuth configuration and adapters
-├── src/                  # Client-side React app code
+├── src/                  # TanStack Start application code
 │   ├── components/       # Reusable layout and UI elements (shadcn/ui)
-│   ├── routes/           # File-based routes (TanStack Router)
-│   ├── lib/              # tRPC and Auth clients (trpc-client, auth-client)
+│   ├── routes/           # File-based routes & API routes (TanStack Router)
+│   ├── server/           # TanStack Server Functions & auth guards
 │   └── main.tsx          # Application entry point
 ├── shared/               # Shared validation schemas (Zod) and constants
 └── drizzle.config.ts     # Drizzle Kit configuration for DB pushes/migrations
@@ -69,9 +68,9 @@ Seed the application with default categories, initial system parameters, and an 
 bun run db:seed
 ```
 
-### 4. Run the Development Servers
+### 4. Run the Development Server
 
-Start both the Vite client frontend proxy and the Hono backend dev server concurrently:
+Start the full-stack TanStack Start application:
 
 ```bash
 bun run dev

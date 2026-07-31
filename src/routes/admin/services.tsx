@@ -1,5 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  getAdminServicesFn,
+  getAdminUsersFn,
+  toggleServiceActiveFn,
+  adminCreateServiceFn,
+  adminUpdateServiceFn,
+  adminDeleteServiceFn,
+} from "@/server/functions/admin";
+import { getServiceByIdFn } from "@/server/functions/services";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -62,30 +71,54 @@ interface ServiceItem {
 }
 
 function AdminServicesComponent() {
-  const { data, isLoading, refetch } = trpc.admin.listServices.useQuery({
-    page: 1,
-    limit: 100,
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["adminServices"],
+    queryFn: () => getAdminServicesFn({ data: { page: 1, limit: 100 } }),
   });
 
-  // Use hardcoded categories
   const categories = DEFAULT_CATEGORIES;
-  const { data: providers } = trpc.admin.listUsers.useQuery({
-    role: "provider",
-    limit: 100,
+  const { data: providers } = useQuery({
+    queryKey: ["adminProviders"],
+    queryFn: () => getAdminUsersFn({ data: { role: "provider", limit: 100 } }),
   });
 
-  // Mutations
-  const toggleActiveMutation = trpc.admin.toggleServiceActive.useMutation();
-  const createServiceMutation = trpc.admin.createService.useMutation();
-  const updateServiceMutation = trpc.admin.updateService.useMutation();
-  const deleteServiceMutation = trpc.admin.deleteService.useMutation();
+  const toggleActiveMutation = useMutation({
+    mutationFn: (data: { id: number; isActive: boolean }) => toggleServiceActiveFn({ data }),
+  });
+  const createServiceMutation = useMutation({
+    mutationFn: (data: {
+      providerId: string;
+      title: string;
+      description: string;
+      categoryId: number;
+      pricingType: "fixed" | "quote";
+      price: number | null;
+      city: string;
+      images?: string[];
+    }) => adminCreateServiceFn({ data }),
+  });
+  const updateServiceMutation = useMutation({
+    mutationFn: (data: {
+      id: number;
+      providerId?: string;
+      title?: string;
+      description?: string;
+      categoryId?: number;
+      pricingType?: "fixed" | "quote";
+      price?: number | null;
+      city?: string;
+      images?: string[];
+      isActive?: boolean;
+    }) => adminUpdateServiceFn({ data }),
+  });
+  const deleteServiceMutation = useMutation({
+    mutationFn: (id: number) => adminDeleteServiceFn({ data: id }),
+  });
 
-  // Filter states
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // Modal Form states
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
   const [title, setTitle] = useState("");
@@ -115,8 +148,6 @@ function AdminServicesComponent() {
   const handleOpenEdit = (svc: ServiceItem) => {
     setEditingServiceId(svc.id);
     setTitle(svc.title);
-    // We fetch details or populate basic info
-    // Let's find description from data details if loaded, or set empty
     setDescription("");
     setCategoryId(svc.categoryId?.toString() || "");
     setProviderId(svc.providerId || "");
@@ -126,17 +157,12 @@ function AdminServicesComponent() {
     setImages(svc.images || []);
     setDialogOpen(true);
 
-    // Async fetch additional details if needed
     fetchServiceDetail(svc.id);
   };
 
   const fetchServiceDetail = async (id: number) => {
     try {
-      const res = await fetch(
-        `/api/trpc/services.getById?batch=1&input=${encodeURIComponent(JSON.stringify({ "0": { id } }))}`,
-      );
-      const json = await res.json();
-      const details = json[0]?.result?.data;
+      const details = await getServiceByIdFn({ data: id });
       if (details) {
         setDescription(details.description || "");
         setImages(details.images?.map((img: { url: string }) => img.url) || []);
@@ -174,7 +200,7 @@ function AdminServicesComponent() {
     }
   };
 
-  const handleSave = async (e: React.SubmitEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !categoryId || !city || (!editingServiceId && !providerId)) {
       toast.error("الرجاء تعبئة جميع الحقول المطلوبة");
@@ -227,7 +253,7 @@ function AdminServicesComponent() {
   const handleDelete = async (id: number) => {
     if (!confirm("هل أنت متأكد من رغبتك في حذف هذه الخدمة نهائياً؟")) return;
     try {
-      await deleteServiceMutation.mutateAsync({ id });
+      await deleteServiceMutation.mutateAsync(id);
       toast.success("تم حذف الخدمة بنجاح");
       refetch();
     } catch (err) {
@@ -261,7 +287,6 @@ function AdminServicesComponent() {
     );
   }
 
-  // Client-side statistics & filtering
   const allServices = (data?.services as unknown as ServiceItem[]) || [];
   const totalCount = allServices.length;
   const activeCount = allServices.filter((s) => s.isActive).length;
@@ -297,7 +322,6 @@ function AdminServicesComponent() {
         </Button>
       </div>
 
-      {/* Stats row */}
       <div className="grid gap-4 sm:grid-cols-4">
         <Card className="bg-card border border-border shadow-xs">
           <CardContent className="p-5 flex items-center justify-between">
@@ -358,7 +382,6 @@ function AdminServicesComponent() {
         </Card>
       </div>
 
-      {/* Filter toolbar */}
       <div className="flex flex-col md:flex-row gap-4 bg-muted/40 p-4 rounded-xl border border-border">
         <div className="relative flex-grow">
           <Input
@@ -396,7 +419,6 @@ function AdminServicesComponent() {
         </Select>
       </div>
 
-      {/* Table */}
       <Card className="border border-border shadow-sm bg-card">
         <CardContent className="pt-6">
           <div className="overflow-x-auto">
@@ -479,7 +501,6 @@ function AdminServicesComponent() {
         </CardContent>
       </Card>
 
-      {/* CREATE / EDIT DIALOG FORM */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="text-right max-w-lg" dir="rtl">
           <DialogHeader className="text-right">
@@ -490,7 +511,6 @@ function AdminServicesComponent() {
           </DialogHeader>
 
           <form onSubmit={handleSave} className="space-y-4 py-3">
-            {/* Title */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium">عنوان الخدمة *</label>
               <Input
@@ -502,7 +522,6 @@ function AdminServicesComponent() {
               />
             </div>
 
-            {/* Provider (Only for create mode) */}
             {!editingServiceId && (
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">مزود الخدمة *</label>
@@ -521,7 +540,6 @@ function AdminServicesComponent() {
               </div>
             )}
 
-            {/* Category and City row */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">التصنيف *</label>
@@ -556,7 +574,6 @@ function AdminServicesComponent() {
               </div>
             </div>
 
-            {/* Pricing Type and Price row */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">طريقة التسعير *</label>
@@ -589,7 +606,6 @@ function AdminServicesComponent() {
               )}
             </div>
 
-            {/* Description */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium">الوصف التفصيلي *</label>
               <textarea
@@ -601,7 +617,6 @@ function AdminServicesComponent() {
               />
             </div>
 
-            {/* Image upload */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium">صور الخدمة</label>
               <div className="flex flex-wrap gap-2 items-center">

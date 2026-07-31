@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getOrderByIdFn, updateOrderStatusFn } from "@/server/functions/orders";
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,13 +36,26 @@ function CheckoutComponent() {
 
   const [isPaying, setIsPaying] = useState(false);
 
-  // tRPC query to fetch order details
-  const { data: order, isLoading } = trpc.orders.getById.useQuery({
-    orderId: parsedOrderId,
+  // Query order details
+  const { data: order, isLoading } = useQuery({
+    queryKey: ["order", parsedOrderId],
+    queryFn: () => getOrderByIdFn({ data: parsedOrderId }),
   });
 
-  // tRPC mutation to accept status/payment
-  const updateStatusMutation = trpc.orders.updateStatus.useMutation();
+  // Mutation
+  const updateStatusMutation = useMutation({
+    mutationFn: (data: {
+      orderId: number;
+      status: "pending" | "quoted" | "accepted" | "in_progress" | "completed" | "cancelled";
+      paymentStatus?: string;
+      paymentMethod?: string;
+      paymentProof?: string;
+      accountNumber?: string;
+      gatewayTxId?: string;
+      details?: string;
+      notes?: string;
+    }) => updateOrderStatusFn({ data }),
+  });
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,14 +69,13 @@ function CheckoutComponent() {
 
     setIsPaying(true);
 
-    // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     try {
       if (paymentMethod === "card") {
         await updateStatusMutation.mutateAsync({
           orderId: parsedOrderId,
-          status: "accepted", // Client accepts and pays order directly
+          status: "accepted",
           paymentStatus: "completed",
           paymentMethod: "card",
         });
@@ -304,7 +317,6 @@ function CheckoutComponent() {
         </CardContent>
       </Card>
 
-      {/* Jawwal Pay Merchant API Interactive Modal */}
       <JawwalPayModal
         open={jawwalPayModalOpen}
         onOpenChange={setJawwalPayModalOpen}

@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { getAdminOrdersFn, getAdminStatsFn } from "@/server/functions/admin";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -49,13 +50,15 @@ interface OrderItem {
 }
 
 function AdminOrdersComponent() {
-  const { data, isLoading } = trpc.admin.listOrders.useQuery({
-    page: 1,
-    limit: 100,
+  const { data, isLoading } = useQuery({
+    queryKey: ["adminOrders"],
+    queryFn: () => getAdminOrdersFn({ data: { page: 1, limit: 100 } }),
   });
-  const { data: stats } = trpc.admin.stats.useQuery();
+  const { data: stats } = useQuery({
+    queryKey: ["adminStats"],
+    queryFn: () => getAdminStatsFn(),
+  });
 
-  // Filter states
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -71,7 +74,6 @@ function AdminOrdersComponent() {
   const ordersList = useMemo(() => (data?.orders as unknown as OrderItem[]) || [], [data?.orders]);
   const commissionRate = stats?.commissionRate ?? 0.15;
 
-  // Calculations memoized
   const { totalOrdersCount, totalRevenueVal, totalCommissionsVal, pendingOrdersCount } =
     useMemo(() => {
       const totalOrdersCount = ordersList.length;
@@ -96,7 +98,6 @@ function AdminOrdersComponent() {
       };
     }, [ordersList, commissionRate]);
 
-  // Filtering memoized
   const filteredOrders = useMemo(() => {
     const q = search.toLowerCase();
     return ordersList.filter((ord) => {
@@ -121,7 +122,6 @@ function AdminOrdersComponent() {
         </p>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid gap-4 sm:grid-cols-4">
         <Card className="bg-card border border-border shadow-xs">
           <CardContent className="p-5 flex items-center justify-between">
@@ -182,7 +182,6 @@ function AdminOrdersComponent() {
         </Card>
       </div>
 
-      {/* Filter toolbar */}
       <div className="flex flex-col md:flex-row gap-4 bg-muted/40 p-4 rounded-xl border border-border">
         <div className="relative flex-grow">
           <Input
@@ -209,7 +208,6 @@ function AdminOrdersComponent() {
         </Select>
       </div>
 
-      {/* Table */}
       <Card className="border border-border shadow-sm bg-card">
         <CardContent className="pt-6">
           <div className="overflow-x-auto">

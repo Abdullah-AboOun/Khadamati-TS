@@ -1,5 +1,17 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  getMyServicesFn,
+  createServiceFn,
+  updateServiceFn,
+  deleteServiceFn,
+} from "@/server/functions/services";
+import {
+  getProviderOrdersFn,
+  respondToQuoteFn,
+  updateOrderStatusFn,
+  cancelOrderFn,
+} from "@/server/functions/orders";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -100,14 +112,20 @@ function ProviderDashboardComponent() {
     data: orders,
     isLoading: isOrdersLoading,
     refetch: refetchOrders,
-  } = trpc.orders.getProviderOrders.useQuery();
+  } = useQuery({
+    queryKey: ["providerOrders"],
+    queryFn: () => getProviderOrdersFn(),
+  });
+
   const {
     data: services,
     isLoading: isServicesLoading,
     refetch: refetchServices,
-  } = trpc.services.getMyServices.useQuery();
+  } = useQuery({
+    queryKey: ["myServices"],
+    queryFn: () => getMyServicesFn(),
+  });
 
-  // Statistics memoized in a single pass
   const { totalOrders, activeOrders, completedOrders, totalEarnings } = useMemo(() => {
     if (!orders || orders.length === 0) {
       return { totalOrders: 0, activeOrders: 0, completedOrders: 0, totalEarnings: 0 };
@@ -134,7 +152,6 @@ function ProviderDashboardComponent() {
     };
   }, [orders]);
 
-  // --- Services tab state and mutations ---
   const categories = DEFAULT_CATEGORIES;
   const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
   const [title, setTitle] = useState("");
@@ -148,9 +165,33 @@ function ProviderDashboardComponent() {
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const createServiceMutation = trpc.services.create.useMutation();
-  const updateServiceMutation = trpc.services.update.useMutation();
-  const deleteServiceMutation = trpc.services.delete.useMutation();
+  const createServiceMutation = useMutation({
+    mutationFn: (data: {
+      title: string;
+      description: string;
+      categoryId: number;
+      pricingType: "fixed" | "quote";
+      price: number | null;
+      city: string;
+      images?: string[];
+    }) => createServiceFn({ data }),
+  });
+  const updateServiceMutation = useMutation({
+    mutationFn: (data: {
+      id: number;
+      title?: string;
+      description?: string;
+      categoryId?: number;
+      pricingType?: "fixed" | "quote";
+      price?: number | null;
+      city?: string;
+      images?: string[];
+      isActive?: boolean;
+    }) => updateServiceFn({ data }),
+  });
+  const deleteServiceMutation = useMutation({
+    mutationFn: (id: number) => deleteServiceFn({ data: id }),
+  });
 
   const handleOpenCreateDialog = () => {
     setEditingServiceId(null);
@@ -255,7 +296,7 @@ function ProviderDashboardComponent() {
   const handleDelete = async (id: number) => {
     if (!confirm("هل أنت متأكد من رغبتك في حذف هذه الخدمة؟")) return;
     try {
-      await deleteServiceMutation.mutateAsync({ id });
+      await deleteServiceMutation.mutateAsync(id);
       toast.success("تم حذف الخدمة بنجاح");
       refetchServices();
     } catch (err) {
@@ -278,15 +319,30 @@ function ProviderDashboardComponent() {
     }
   };
 
-  // --- Orders tab state and mutations ---
   const [quoteOrderId, setQuoteOrderId] = useState<number | null>(null);
   const [quotedPrice, setQuotedPrice] = useState("");
   const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
   const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
 
-  const respondToQuoteMutation = trpc.orders.respondToQuote.useMutation();
-  const updateStatusMutation = trpc.orders.updateStatus.useMutation();
-  const cancelOrderMutation = trpc.orders.cancelOrder.useMutation();
+  const respondToQuoteMutation = useMutation({
+    mutationFn: (data: { orderId: number; quotedPrice: number }) => respondToQuoteFn({ data }),
+  });
+  const updateStatusMutation = useMutation({
+    mutationFn: (data: {
+      orderId: number;
+      status: "pending" | "quoted" | "accepted" | "in_progress" | "completed" | "cancelled";
+      paymentStatus?: string;
+      paymentMethod?: string;
+      paymentProof?: string;
+      accountNumber?: string;
+      gatewayTxId?: string;
+      details?: string;
+      notes?: string;
+    }) => updateOrderStatusFn({ data }),
+  });
+  const cancelOrderMutation = useMutation({
+    mutationFn: (orderId: number) => cancelOrderFn({ data: orderId }),
+  });
 
   const [cancelOrderId, setCancelOrderId] = useState<number | null>(null);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
@@ -336,7 +392,7 @@ function ProviderDashboardComponent() {
     if (!cancelOrderId) return;
     setIsCancelling(true);
     try {
-      await cancelOrderMutation.mutateAsync({ orderId: cancelOrderId });
+      await cancelOrderMutation.mutateAsync(cancelOrderId);
       toast.success("تم إلغاء الطلب بنجاح");
       setCancelDialogOpen(false);
       refetchOrders();
@@ -356,7 +412,6 @@ function ProviderDashboardComponent() {
           collapsed ? "w-20" : "w-64"
         }`}
       >
-        {/* Sidebar Header */}
         <div
           className={`flex h-16 items-center border-b border-border ${
             collapsed ? "justify-center" : "justify-start px-4"
@@ -373,7 +428,6 @@ function ProviderDashboardComponent() {
           </Button>
         </div>
 
-        {/* Navigation Items */}
         <nav className="flex-1 space-y-1 p-3">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -440,7 +494,6 @@ function ProviderDashboardComponent() {
 
       {/* ─── MAIN CONTENT CONTAINER ─── */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile / Desktop Header */}
         <header className="flex h-16 items-center border-b border-border bg-card px-6 justify-between shrink-0">
           <div className="flex items-center">
             <Button
@@ -463,9 +516,7 @@ function ProviderDashboardComponent() {
           </div>
         </header>
 
-        {/* Content Scrollable Area */}
         <main className="flex-grow overflow-y-auto p-6">
-          {/* OVERVIEW TAB */}
           {tab === "overview" && (
             <div className="space-y-8 animate-in fade-in-50 duration-200">
               {isOrdersLoading ? (
@@ -479,7 +530,6 @@ function ProviderDashboardComponent() {
                 </div>
               ) : (
                 <>
-                  {/* Stats Cards */}
                   <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
                     <Card className="border border-border shadow-sm">
                       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -532,7 +582,6 @@ function ProviderDashboardComponent() {
                     </Card>
                   </div>
 
-                  {/* Recent Orders Table */}
                   <Card className="border border-border shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between border-b border-border pb-4">
                       <div>
@@ -595,7 +644,6 @@ function ProviderDashboardComponent() {
             </div>
           )}
 
-          {/* SERVICES TAB */}
           {tab === "services" && (
             <div className="space-y-6 animate-in fade-in-50 duration-200">
               <div className="flex items-center justify-between">
@@ -694,7 +742,6 @@ function ProviderDashboardComponent() {
                 </div>
               )}
 
-              {/* Add / Edit Form Dialog */}
               <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
                 <DialogContent className="max-w-lg text-right" dir="rtl">
                   <DialogHeader className="text-right">
@@ -796,7 +843,6 @@ function ProviderDashboardComponent() {
                       )}
                     </div>
 
-                    {/* Photo Uploader */}
                     <div className="space-y-2">
                       <label className="text-sm font-medium">صور الخدمة</label>
                       <div className="flex items-center gap-4">
@@ -855,7 +901,6 @@ function ProviderDashboardComponent() {
             </div>
           )}
 
-          {/* ORDERS TAB */}
           {tab === "orders" && (
             <div className="space-y-6 animate-in fade-in-50 duration-200">
               <div>
@@ -933,7 +978,6 @@ function ProviderDashboardComponent() {
                                 عرض التفاصيل
                               </Link>
                             </Button>
-                            {/* Quote pricing response button */}
                             {ord.status === "pending" && !ord.amount && (
                               <Dialog
                                 open={quoteDialogOpen && quoteOrderId === ord.id}
@@ -981,7 +1025,6 @@ function ProviderDashboardComponent() {
                               </Dialog>
                             )}
 
-                            {/* Provider accepts a pending order that has an amount */}
                             {ord.status === "pending" && ord.amount && (
                               <Button
                                 size="sm"
@@ -992,7 +1035,6 @@ function ProviderDashboardComponent() {
                               </Button>
                             )}
 
-                            {/* State transitions managed by provider */}
                             {ord.status === "accepted" && (
                               <Button
                                 size="sm"
@@ -1013,7 +1055,6 @@ function ProviderDashboardComponent() {
                               </Button>
                             )}
 
-                            {/* Cancel order action for provider */}
                             {["pending", "quoted"].includes(ord.status) && (
                               <Dialog
                                 open={cancelDialogOpen && cancelOrderId === ord.id}

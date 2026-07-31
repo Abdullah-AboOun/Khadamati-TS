@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { getProviderProfileFn } from "@/server/functions/services";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -24,9 +25,9 @@ function ProviderProfileComponent() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
 
-  // Query provider profile details
-  const { data: profileData, isLoading } = trpc.services.getProviderProfile.useQuery({
-    providerId: id,
+  const { data: profileData, isLoading } = useQuery({
+    queryKey: ["providerProfile", id],
+    queryFn: () => getProviderProfileFn({ data: id }),
   });
 
   if (isLoading) {

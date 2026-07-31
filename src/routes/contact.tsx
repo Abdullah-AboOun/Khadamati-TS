@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useMutation } from "@tanstack/react-query";
+import { submitContactMessageFn } from "@/server/functions/contact";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,14 +20,15 @@ function ContactComponent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // tRPC mutation
-  const submitContactMutation = trpc.contact.submit.useMutation();
+  const submitContactMutation = useMutation({
+    mutationFn: (data: { name: string; email: string; subject: string; message: string }) =>
+      submitContactMessageFn({ data }),
+  });
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setValidationError(null);
 
-    // Basic frontend validation
     if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
       setValidationError("الرجاء تعبئة جميع الحقول المطلوبة.");
       return;
@@ -58,7 +60,6 @@ function ContactComponent() {
       });
       toast.success("تم إرسال رسالتك بنجاح! شكراً لك للتواصل معنا.");
 
-      // Clear form
       setName("");
       setEmail("");
       setSubject("");

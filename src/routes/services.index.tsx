@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { getServicesFn } from "@/server/functions/services";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -32,16 +33,21 @@ function ServicesBrowseComponent() {
   const navigate = useNavigate({ from: Route.fullPath });
   const searchParams = Route.useSearch();
 
-  // Use hardcoded categories
   const categories = DEFAULT_CATEGORIES;
-  const { data: servicesData, isLoading } = trpc.services.list.useQuery({
-    search: searchParams.search,
-    categoryId: searchParams.categoryId,
-    city: searchParams.city,
-    minPrice: searchParams.minPrice,
-    maxPrice: searchParams.maxPrice,
-    page: 1,
-    limit: 50,
+  const { data: servicesData, isLoading } = useQuery({
+    queryKey: ["services", searchParams],
+    queryFn: () =>
+      getServicesFn({
+        data: {
+          search: searchParams.search,
+          categoryId: searchParams.categoryId,
+          city: searchParams.city,
+          minPrice: searchParams.minPrice,
+          maxPrice: searchParams.maxPrice,
+          page: 1,
+          limit: 50,
+        },
+      }),
   });
 
   const updateSearch = (updates: Partial<z.infer<typeof serviceSearchSchema>>) => {

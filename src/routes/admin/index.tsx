@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { getAdminStatsFn } from "@/server/functions/admin";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Users, Briefcase, ClipboardList, Wallet } from "lucide-react";
@@ -10,7 +11,10 @@ export const Route = createFileRoute("/admin/")({
 });
 
 function AdminDashboardComponent() {
-  const { data: stats, isLoading } = trpc.admin.stats.useQuery();
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ["adminStats"],
+    queryFn: () => getAdminStatsFn(),
+  });
 
   if (isLoading) {
     return (
@@ -79,7 +83,6 @@ function AdminDashboardComponent() {
         })}
       </div>
 
-      {/* Financial info summary card */}
       <Card className="border border-border shadow-sm">
         <CardHeader>
           <CardTitle>أداء المبيعات والعمولات</CardTitle>
@@ -107,7 +110,6 @@ function AdminDashboardComponent() {
         </CardContent>
       </Card>
 
-      {/* Quick Actions Panel */}
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         <Link
           to="/admin/users"

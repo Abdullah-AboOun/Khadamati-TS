@@ -1,4 +1,12 @@
-import { createRootRoute, Link, Outlet, ScrollRestoration } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Link,
+  Outlet,
+  Scripts,
+} from "@tanstack/react-router";
+import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
+import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Footer } from "@/components/Footer";
 import { useSession, signOut, type AuthUser } from "@/lib/auth-client";
@@ -14,167 +22,195 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Toaster } from "sonner";
 import { LogOut, User, ClipboardList, ShieldAlert, LayoutDashboard } from "lucide-react";
+import appCss from "@/index.css?url";
+import "@/index.css";
 
-export const Route = createRootRoute({
-  component: RootLayout,
-});
-
-function RootLayout() {
-  const { data: session, isPending } = useSession();
-  const user = session?.user as AuthUser | null | undefined;
-
-  const handleLogout = async () => {
-    await signOut();
-    window.location.href = "/";
-  };
-
-  return (
-    <div className="flex min-h-screen flex-col bg-background font-sans text-foreground" dir="rtl">
-      {/* Navigation Header */}
-      <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-md">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 relative">
-          <div className="flex items-center gap-6">
-            <Link
-              to="/"
-              className="flex items-center gap-2 select-none hover:opacity-90 transition-opacity md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
-            >
-              <img src="/khadamati-icon.svg" alt="Khadamati Logo" className="size-7" />
-              <span className="text-2xl font-black tracking-tight text-primary">خدماتي</span>
-            </Link>
-
-            <nav className="hidden items-center gap-6 md:flex">
-              <Link
-                to="/"
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground [&.active]:font-semibold [&.active]:text-primary"
-              >
-                الرئيسية
-              </Link>
-              <Link
-                to="/services"
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground [&.active]:font-semibold [&.active]:text-primary"
-              >
-                تصفح الخدمات
-              </Link>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-
-            {isPending ? (
-              <div className="size-8 animate-pulse rounded-full bg-muted" />
-            ) : session?.user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative size-8 rounded-full p-0">
-                    <Avatar className="size-8">
-                      <AvatarImage src={session.user.image || ""} alt={session.user.name} />
-                      <AvatarFallback className="bg-primary/10 font-bold text-primary">
-                        {session.user.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="start">
-                  <DropdownMenuLabel className="text-right font-semibold">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm leading-none">{session.user.name}</p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {session.user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-
-                  {/* Client Roles Links */}
-                  <DropdownMenuItem asChild className="justify-end text-right">
-                    <Link to="/profile" className="flex w-full items-center justify-between">
-                      <span>الملف الشخصي</span>
-                      <User className="size-4 text-muted-foreground" />
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem asChild className="justify-end text-right">
-                    <Link to="/my-orders" className="flex w-full items-center justify-between">
-                      <span>طلباتي</span>
-                      <ClipboardList className="size-4 text-muted-foreground" />
-                    </Link>
-                  </DropdownMenuItem>
-
-                  {/* Provider Role Links */}
-                  {user && user.role === "provider" && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuLabel className="text-right text-xs font-semibold text-muted-foreground">
-                        مزود الخدمة
-                      </DropdownMenuLabel>
-                      <DropdownMenuItem asChild className="justify-end text-right">
-                        <Link
-                          to="/provider/dashboard"
-                          className="flex w-full items-center justify-between"
-                        >
-                          <span>لوحة التحكم للمزود</span>
-                          <LayoutDashboard className="size-4 text-muted-foreground" />
-                        </Link>
-                      </DropdownMenuItem>
-                    </>
-                  )}
-
-                  {/* Admin Role Links */}
-                  {user && user.role === "admin" && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuLabel className="text-right text-xs font-semibold text-muted-foreground">
-                        الإدارة
-                      </DropdownMenuLabel>
-                      <DropdownMenuItem asChild className="justify-end text-right">
-                        <Link to="/admin" className="flex w-full items-center justify-between">
-                          <span>لوحة الإدارة</span>
-                          <ShieldAlert className="size-4 text-muted-foreground" />
-                        </Link>
-                      </DropdownMenuItem>
-                    </>
-                  )}
-
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="cursor-pointer justify-end text-right font-medium text-destructive"
-                    onClick={handleLogout}
-                  >
-                    <span className="flex w-full items-center justify-between">
-                      <span>تسجيل الخروج</span>
-                      <LogOut className="size-4 text-destructive" />
-                    </span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Button asChild variant="ghost" className="text-sm font-medium">
-                  <Link to="/login">تسجيل الدخول</Link>
-                </Button>
-                <Button asChild className="text-sm font-medium">
-                  <Link to="/register">إنشاء حساب</Link>
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1">
-        <Outlet />
-      </main>
-
-      {/* Footer */}
-      <Footer />
-
-      {/* Scroll Restoration */}
-      <ScrollRestoration />
-
-      {/* Toasts */}
-      <Toaster position="top-center" dir="rtl" />
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  head: () => ({
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "خدماتي - منصة الخدمات المصغرة في فلسطين" },
+    ],
+    links: [{ rel: "stylesheet", href: appCss }],
+  }),
+  notFoundComponent: () => (
+    <div className="flex min-h-[50vh] flex-col items-center justify-center p-12 text-center">
+      <h1 className="text-4xl font-extrabold text-primary mb-2">404</h1>
+      <p className="text-lg font-medium text-muted-foreground mb-6">الصفحة المطلوبة غير موجودة</p>
+      <Button asChild variant="outline">
+        <Link to="/">العودة للرئيسية</Link>
+      </Button>
     </div>
-  );
-}
+  ),
+  component: function RootLayout() {
+    const { queryClient } = Route.useRouteContext();
+    const { data: session, isPending } = useSession();
+    const user = session?.user as AuthUser | null | undefined;
+
+    const handleLogout = async () => {
+      await signOut();
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
+    };
+
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <html lang="ar" dir="rtl">
+            <head>
+              <HeadContent />
+            </head>
+            <body className="flex min-h-screen flex-col bg-background font-sans text-foreground">
+              {/* Navigation Header */}
+              <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-md">
+                <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 relative">
+                  <div className="flex items-center gap-6">
+                    <Link
+                      to="/"
+                      className="flex items-center gap-2 select-none hover:opacity-90 transition-opacity md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
+                    >
+                      <img src="/khadamati-icon.svg" alt="Khadamati Logo" className="size-7" />
+                      <span className="text-2xl font-black tracking-tight text-primary">خدماتي</span>
+                    </Link>
+
+                    <nav className="hidden items-center gap-6 md:flex">
+                      <Link
+                        to="/"
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground [&.active]:font-semibold [&.active]:text-primary"
+                      >
+                        الرئيسية
+                      </Link>
+                      <Link
+                        to="/services"
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground [&.active]:font-semibold [&.active]:text-primary"
+                      >
+                        تصفح الخدمات
+                      </Link>
+                    </nav>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <ThemeToggle />
+
+                    {isPending ? (
+                      <div className="size-8 animate-pulse rounded-full bg-muted" />
+                    ) : session?.user ? (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="relative size-8 rounded-full p-0">
+                            <Avatar className="size-8">
+                              <AvatarImage src={session.user.image || ""} alt={session.user.name} />
+                              <AvatarFallback className="bg-primary/10 font-bold text-primary">
+                                {session.user.name.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="start">
+                          <DropdownMenuLabel className="text-right font-semibold">
+                            <div className="flex flex-col space-y-1">
+                              <p className="text-sm leading-none">{session.user.name}</p>
+                              <p className="text-xs leading-none text-muted-foreground">
+                                {session.user.email}
+                              </p>
+                            </div>
+                          </DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+
+                          {/* Client Roles Links */}
+                          <DropdownMenuItem asChild className="justify-end text-right">
+                            <Link to="/profile" className="flex w-full items-center justify-between">
+                              <span>الملف الشخصي</span>
+                              <User className="size-4 text-muted-foreground" />
+                            </Link>
+                          </DropdownMenuItem>
+
+                          <DropdownMenuItem asChild className="justify-end text-right">
+                            <Link to="/my-orders" className="flex w-full items-center justify-between">
+                              <span>طلباتي</span>
+                              <ClipboardList className="size-4 text-muted-foreground" />
+                            </Link>
+                          </DropdownMenuItem>
+
+                          {/* Provider Role Links */}
+                          {user && user.role === "provider" && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuLabel className="text-right text-xs font-semibold text-muted-foreground">
+                                مزود الخدمة
+                              </DropdownMenuLabel>
+                              <DropdownMenuItem asChild className="justify-end text-right">
+                                <Link
+                                  to="/provider/dashboard"
+                                  className="flex w-full items-center justify-between"
+                                >
+                                  <span>لوحة التحكم للمزود</span>
+                                  <LayoutDashboard className="size-4 text-muted-foreground" />
+                                </Link>
+                              </DropdownMenuItem>
+                            </>
+                          )}
+
+                          {/* Admin Role Links */}
+                          {user && user.role === "admin" && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuLabel className="text-right text-xs font-semibold text-muted-foreground">
+                                الإدارة
+                              </DropdownMenuLabel>
+                              <DropdownMenuItem asChild className="justify-end text-right">
+                                <Link to="/admin" className="flex w-full items-center justify-between">
+                                  <span>لوحة الإدارة</span>
+                                  <ShieldAlert className="size-4 text-muted-foreground" />
+                                </Link>
+                              </DropdownMenuItem>
+                            </>
+                          )}
+
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="cursor-pointer justify-end text-right font-medium text-destructive"
+                            onClick={handleLogout}
+                          >
+                            <span className="flex w-full items-center justify-between">
+                              <span>تسجيل الخروج</span>
+                              <LogOut className="size-4 text-destructive" />
+                            </span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Button asChild variant="ghost" className="text-sm font-medium">
+                          <Link to="/login">تسجيل الدخول</Link>
+                        </Button>
+                        <Button asChild className="text-sm font-medium">
+                          <Link to="/register">إنشاء حساب</Link>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </header>
+
+              {/* Main Content */}
+              <main className="flex-1">
+                <Outlet />
+              </main>
+
+              {/* Footer */}
+              <Footer />
+
+              {/* Toasts */}
+              <Toaster position="top-center" dir="rtl" />
+
+              <Scripts />
+            </body>
+          </html>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  },
+});

@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { getPublicStatsFn } from "@/server/functions/stats";
+import { getServicesFn } from "@/server/functions/services";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -61,15 +63,19 @@ function HomeComponent() {
   const [searchCity, setSearchCity] = useState("all");
 
   // Fetch live stats
-  const { data: stats, isLoading: statsLoading } = trpc.stats.publicStats.useQuery();
+  const { data: stats, isLoading: statsLoading } = useQuery({
+    queryKey: ["publicStats"],
+    queryFn: () => getPublicStatsFn(),
+  });
 
   // Use hardcoded categories
   const categories = DEFAULT_CATEGORIES;
   const catsLoading = false;
 
   // Fetch latest 6 services
-  const { data: servicesData, isLoading: servicesLoading } = trpc.services.list.useQuery({
-    limit: 6,
+  const { data: servicesData, isLoading: servicesLoading } = useQuery({
+    queryKey: ["services", { limit: 6 }],
+    queryFn: () => getServicesFn({ data: { limit: 6 } }),
   });
 
   const handleSearch = (e: React.SyntheticEvent) => {

@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getOrderByIdFn, updateOrderStatusFn } from "@/server/functions/orders";
+import { getAdminStatsFn } from "@/server/functions/admin";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -45,17 +47,46 @@ function AdminOrderDetailComponent() {
   const { id } = useParams({ from: "/admin/orders/$id/" });
   const orderId = parseInt(id);
 
-  const { data: order, isLoading, refetch } = trpc.orders.getById.useQuery({ orderId });
-  const { data: stats } = trpc.admin.stats.useQuery();
+  const {
+    data: order,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["order", orderId],
+    queryFn: () => getOrderByIdFn({ data: orderId }),
+  });
+  const { data: stats } = useQuery({
+    queryKey: ["adminStats"],
+    queryFn: () => getAdminStatsFn(),
+  });
 
-  // Mutations
-  const updateStatusMutation = trpc.orders.updateStatus.useMutation();
+  type OrderStatusType =
+    | "pending"
+    | "quoted"
+    | "accepted"
+    | "in_progress"
+    | "completed"
+    | "cancelled";
+
+  const updateStatusMutation = useMutation({
+    mutationFn: (data: {
+      orderId: number;
+      status: OrderStatusType;
+      paymentStatus?: string;
+      paymentMethod?: string;
+      paymentProof?: string;
+      accountNumber?: string;
+      gatewayTxId?: string;
+      details?: string;
+      notes?: string;
+    }) => updateOrderStatusFn({ data }),
+  });
 
   const handleStatusChange = async (newStatus: string) => {
     try {
       await updateStatusMutation.mutateAsync({
         orderId,
-        status: newStatus as Parameters<typeof updateStatusMutation.mutateAsync>[0]["status"],
+        status: newStatus as OrderStatusType,
       });
       toast.success("تم تحديث حالة الطلب بنجاح");
       refetch();
@@ -92,18 +123,15 @@ function AdminOrderDetailComponent() {
     );
   }
 
-  // Calculate pricing split
   const amount = order.amount ?? 0;
   const commissionRate = stats?.commissionRate ?? 0.15;
   const adminCommission = amount * commissionRate;
   const providerEarnings = amount - adminCommission;
 
-  // Determine valid chronological transitions based on state machine
   const currentStatus = order.status;
   const allowedTransitions: { value: string; label: string }[] = [];
 
   if (currentStatus === "pending") {
-    // If quote-based service, provider can submit quote. If fixed price, client can accept.
     allowedTransitions.push({ value: "quoted", label: "تقديم عرض سعر" });
     allowedTransitions.push({ value: "accepted", label: "قبول الطلب والبدء" });
     allowedTransitions.push({ value: "cancelled", label: "إلغاء الطلب" });
@@ -120,7 +148,6 @@ function AdminOrderDetailComponent() {
 
   return (
     <div className="container mx-auto space-y-6 px-4 py-8 sm:px-6 text-right" dir="rtl">
-      {/* Top navigation */}
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="sm" asChild className="cursor-pointer">
           <Link to="/admin/orders" className="flex items-center gap-1.5">
@@ -130,7 +157,6 @@ function AdminOrderDetailComponent() {
         </Button>
       </div>
 
-      {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border pb-6">
         <div>
           <div className="flex items-center gap-3">
@@ -145,7 +171,6 @@ function AdminOrderDetailComponent() {
           </p>
         </div>
 
-        {/* Action buttons */}
         <div className="flex gap-2">
           <Button variant="outline" asChild className="cursor-pointer">
             <a href={`/admin/orders/${order.id}/print`} target="_blank" rel="noreferrer">
@@ -157,7 +182,6 @@ function AdminOrderDetailComponent() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        {/* Main Details card */}
         <div className="md:col-span-2 space-y-6">
           <Card className="border border-border shadow-xs bg-card">
             <CardHeader>
@@ -233,9 +257,7 @@ function AdminOrderDetailComponent() {
             </CardContent>
           </Card>
 
-          {/* Client & Provider info cards */}
           <div className="grid gap-6 sm:grid-cols-2">
-            {/* Client card */}
             <Card className="border border-border shadow-xs bg-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
@@ -258,7 +280,6 @@ function AdminOrderDetailComponent() {
               </CardContent>
             </Card>
 
-            {/* Provider card */}
             <Card className="border border-border shadow-xs bg-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
@@ -283,9 +304,7 @@ function AdminOrderDetailComponent() {
           </div>
         </div>
 
-        {/* Side Panel: Order Actions and Finances */}
         <div className="space-y-6">
-          {/* Order Actions */}
           <Card className="border border-border shadow-xs bg-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
@@ -324,7 +343,6 @@ function AdminOrderDetailComponent() {
             </CardContent>
           </Card>
 
-          {/* Financial Breakdown */}
           <Card className="border border-border shadow-xs bg-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">

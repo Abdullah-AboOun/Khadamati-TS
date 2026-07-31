@@ -9,7 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatPrice } from "../../shared/constants";
-import { trpc } from "@/lib/trpc";
+import { useMutation } from "@tanstack/react-query";
+import { initiateJawwalPaySessionFn } from "@/server/functions/jawwalpay";
 import { toast } from "sonner";
 import {
   Smartphone,
@@ -54,7 +55,9 @@ export function JawwalPayModal({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const initiateMutation = trpc.jawwalPay.initiateSession.useMutation();
+  const initiateMutation = useMutation({
+    mutationFn: (data: { orderId: number; phone: string }) => initiateJawwalPaySessionFn({ data }),
+  });
 
   const handleReset = () => {
     setStep(1);
@@ -63,7 +66,7 @@ export function JawwalPayModal({
   };
 
   const handleModalClose = (val: boolean) => {
-    if (!val && isLoading) return; // Prevent closing during active processing
+    if (!val && isLoading) return;
     if (!val) handleReset();
     onOpenChange(val);
   };
@@ -109,9 +112,7 @@ export function JawwalPayModal({
 
     setStep(3);
     setIsLoading(true);
-
     try {
-      // Simulate real HTTP POST server-to-server Webhook call to /api/jawwalpay/webhook
       const webhookPayload = {
         sessionId: sessionData.sessionId,
         orderId,
@@ -138,7 +139,6 @@ export function JawwalPayModal({
         throw new Error(data.error || "فشلت معالجة الإشعار البرمجي الدفعة (Webhook Error)");
       }
 
-      // Artificial short delay for smooth visual transition
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       setStep(4);
@@ -165,7 +165,6 @@ export function JawwalPayModal({
         className="sm:max-w-md bg-card border border-emerald-500/20 shadow-2xl rounded-2xl overflow-hidden p-0 text-right"
         dir="rtl"
       >
-        {/* Branded Header Banner */}
         <div className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-800 p-6 text-white relative overflow-hidden">
           <div className="absolute -right-6 -bottom-6 size-24 bg-white/10 rounded-full blur-xl pointer-events-none" />
           <div className="flex items-center justify-between relative z-10">
@@ -188,7 +187,6 @@ export function JawwalPayModal({
             </div>
           </div>
 
-          {/* Step Progress Bar */}
           <div className="flex items-center gap-1.5 mt-5">
             {[1, 2, 3, 4].map((i) => (
               <div
@@ -201,9 +199,7 @@ export function JawwalPayModal({
           </div>
         </div>
 
-        {/* Dialog Content Body */}
         <div className="p-6 space-y-5">
-          {/* Merchant & Order Info Card */}
           <div className="rounded-xl bg-secondary/30 border border-border/60 p-3.5 space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground flex items-center gap-1">
@@ -225,7 +221,6 @@ export function JawwalPayModal({
             </div>
           </div>
 
-          {/* STEP 1: Phone Input */}
           {step === 1 && (
             <form onSubmit={handleInitiate} className="space-y-4 animate-in fade-in duration-200">
               <DialogHeader className="p-0 text-right space-y-1">
@@ -278,7 +273,6 @@ export function JawwalPayModal({
             </form>
           )}
 
-          {/* STEP 2: OTP Entry */}
           {step === 2 && (
             <form onSubmit={handleVerifyOtp} className="space-y-4 animate-in fade-in duration-200">
               <DialogHeader className="p-0 text-right space-y-1">
@@ -348,7 +342,6 @@ export function JawwalPayModal({
             </form>
           )}
 
-          {/* STEP 3: Webhook Processing Indicator */}
           {step === 3 && (
             <div className="py-8 text-center space-y-4 animate-in fade-in duration-200">
               <div className="relative size-16 mx-auto flex items-center justify-center">
@@ -370,7 +363,6 @@ export function JawwalPayModal({
             </div>
           )}
 
-          {/* STEP 4: Success & Transaction Details */}
           {step === 4 && (
             <div className="py-4 text-center space-y-5 animate-in zoom-in-95 duration-300">
               <div className="size-16 bg-emerald-100 dark:bg-emerald-950/60 rounded-full flex items-center justify-center mx-auto text-emerald-600 dark:text-emerald-400 border-2 border-emerald-500/30 shadow-lg shadow-emerald-500/10">

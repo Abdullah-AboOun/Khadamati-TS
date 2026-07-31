@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getServiceByIdFn } from "@/server/functions/services";
+import { createOrderFn, requestQuoteFn } from "@/server/functions/orders";
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -34,14 +36,20 @@ function ServiceDetailComponent() {
   const [isQuoting, setIsQuoting] = useState(false);
   const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
 
-  // tRPC query
-  const { data: service, isLoading } = trpc.services.getById.useQuery({
-    id: parsedId,
+  // TanStack Query
+  const { data: service, isLoading } = useQuery({
+    queryKey: ["service", parsedId],
+    queryFn: () => getServiceByIdFn({ data: parsedId }),
   });
 
-  // tRPC mutations
-  const createOrderMutation = trpc.orders.create.useMutation();
-  const requestQuoteMutation = trpc.orders.requestQuote.useMutation();
+  // Mutations
+  const createOrderMutation = useMutation({
+    mutationFn: (data: { serviceId: number }) => createOrderFn({ data }),
+  });
+
+  const requestQuoteMutation = useMutation({
+    mutationFn: (data: { serviceId: number; description: string }) => requestQuoteFn({ data }),
+  });
 
   if (isLoading) {
     return (

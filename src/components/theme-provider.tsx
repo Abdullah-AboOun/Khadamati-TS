@@ -28,6 +28,7 @@ function isTheme(value: string | null): value is Theme {
 }
 
 function disableTransitionsTemporarily() {
+  if (typeof document === "undefined") return null;
   const style = document.createElement("style");
   style.appendChild(
     document.createTextNode(
@@ -47,7 +48,7 @@ function disableTransitionsTemporarily() {
 }
 
 function isEditableTarget(target: EventTarget | null) {
-  if (!(target instanceof HTMLElement)) {
+  if (typeof HTMLElement === "undefined" || !(target instanceof HTMLElement)) {
     return false;
   }
 
@@ -71,6 +72,9 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setThemeState] = React.useState<Theme>(() => {
+    if (typeof window === "undefined") {
+      return defaultTheme;
+    }
     const storedTheme = localStorage.getItem(storageKey);
     if (isTheme(storedTheme)) {
       return storedTheme;
@@ -81,7 +85,9 @@ export function ThemeProvider({
 
   const setTheme = React.useCallback(
     (nextTheme: Theme) => {
-      localStorage.setItem(storageKey, nextTheme);
+      if (typeof window !== "undefined") {
+        localStorage.setItem(storageKey, nextTheme);
+      }
       setThemeState(nextTheme);
     },
     [storageKey],
@@ -89,6 +95,7 @@ export function ThemeProvider({
 
   const applyTheme = React.useCallback(
     (nextTheme: Theme) => {
+      if (typeof document === "undefined") return;
       const root = document.documentElement;
       const restoreTransitions = disableTransitionOnChange ? disableTransitionsTemporarily() : null;
 
@@ -126,7 +133,9 @@ export function ThemeProvider({
 
       setThemeState((currentTheme) => {
         const nextTheme = currentTheme === "dark" ? "light" : "dark";
-        localStorage.setItem(storageKey, nextTheme);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(storageKey, nextTheme);
+        }
         return nextTheme;
       });
     };
