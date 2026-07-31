@@ -220,42 +220,30 @@ function AdminUsersComponent() {
       </div>
 
       {/* Stats block */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-6">
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-4 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">المجموع</span>
-            <span className="text-2xl font-black mt-2">{totalCount}</span>
-          </CardContent>
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
+          <span className="text-xs font-medium text-muted-foreground">المجموع</span>
+          <span className="text-2xl font-bold tracking-tight text-foreground">{totalCount}</span>
         </Card>
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-4 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">العملاء</span>
-            <span className="text-2xl font-black mt-2 text-blue-600">{clientsCount}</span>
-          </CardContent>
+        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
+          <span className="text-xs font-medium text-muted-foreground">العملاء</span>
+          <span className="text-2xl font-bold tracking-tight text-foreground">{clientsCount}</span>
         </Card>
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-4 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">المزودون</span>
-            <span className="text-2xl font-black mt-2 text-indigo-600">{providersCount}</span>
-          </CardContent>
+        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
+          <span className="text-xs font-medium text-muted-foreground">المزودون</span>
+          <span className="text-2xl font-bold tracking-tight text-foreground">{providersCount}</span>
         </Card>
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-4 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">المدراء</span>
-            <span className="text-2xl font-black mt-2 text-primary">{adminsCount}</span>
-          </CardContent>
+        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
+          <span className="text-xs font-medium text-muted-foreground">المدراء</span>
+          <span className="text-2xl font-bold tracking-tight text-foreground">{adminsCount}</span>
         </Card>
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-4 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">النشطون</span>
-            <span className="text-2xl font-black mt-2 text-emerald-600">{activeCount}</span>
-          </CardContent>
+        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
+          <span className="text-xs font-medium text-muted-foreground">النشطون</span>
+          <span className="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">{activeCount}</span>
         </Card>
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-4 flex flex-col justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">المعطلون</span>
-            <span className="text-2xl font-black mt-2 text-red-600">{bannedCount}</span>
-          </CardContent>
+        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
+          <span className="text-xs font-medium text-muted-foreground">المعطلون</span>
+          <span className="text-2xl font-bold tracking-tight text-red-600 dark:text-red-400">{bannedCount}</span>
         </Card>
       </div>
 
