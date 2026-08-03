@@ -31,7 +31,7 @@ function RootLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-background font-sans text-foreground" dir="rtl">
       {/* Navigation Header */}
-      <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/60 backdrop-blur-xl transition-colors">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 relative">
           <div className="flex items-center gap-6">
             <Link

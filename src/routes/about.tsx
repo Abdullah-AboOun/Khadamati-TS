@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useSession, type AuthUser } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Search, ClipboardList, CheckCircle2, Sparkles, Heart, ShieldCheck } from "lucide-react";
@@ -8,6 +9,9 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutComponent() {
+  const { data: session } = useSession();
+  const user = session?.user as AuthUser | null | undefined;
+
   return (
     <div className="container mx-auto px-4 py-12 sm:px-6 space-y-16" dir="rtl">
       {/* Hero Section */}
@@ -103,13 +107,29 @@ function AboutComponent() {
           سواء كنت تبحث عن فني موثوق، مصمم محترف، أو ترغب في تقديم خدماتك وزيادة دخلك، منصتنا هي
           الخيار الأمثل.
         </p>
-        <div className="flex justify-center gap-4 pt-2">
+        <div className="flex justify-center gap-4 pt-2 flex-col sm:flex-row">
           <Button asChild size="lg" className="px-8 font-bold cursor-pointer">
             <Link to="/services">تصفح الخدمات</Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="px-8 font-bold cursor-pointer">
-            <Link to="/register">إنشاء حساب جديد</Link>
-          </Button>
+          {user ? (
+            user.role === "provider" ? (
+              <Button asChild size="lg" variant="outline" className="px-8 font-bold cursor-pointer">
+                <Link to="/provider/dashboard">لوحة التحكم للمزود</Link>
+              </Button>
+            ) : user.role === "admin" ? (
+              <Button asChild size="lg" variant="outline" className="px-8 font-bold cursor-pointer">
+                <Link to="/admin">لوحة الإدارة</Link>
+              </Button>
+            ) : (
+              <Button asChild size="lg" variant="outline" className="px-8 font-bold cursor-pointer">
+                <Link to="/my-orders">متابعة طلباتي</Link>
+              </Button>
+            )
+          ) : (
+            <Button asChild size="lg" variant="outline" className="px-8 font-bold cursor-pointer">
+              <Link to="/register">إنشاء حساب جديد</Link>
+            </Button>
+          )}
         </div>
       </section>
     </div>

@@ -254,7 +254,9 @@ function AdminFinanceComponent() {
                     <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                       {formatPrice(monthlyRevenue)}
                     </span>
-                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">الشهر المحدد</p>
+                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                      الشهر المحدد
+                    </p>
                   </div>
 
                   <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -264,7 +266,9 @@ function AdminFinanceComponent() {
                     <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
                       {formatPrice(monthlyAdminCut)}
                     </span>
-                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">نسبة الاقتطاع</p>
+                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                      نسبة الاقتطاع
+                    </p>
                   </div>
 
                   <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -274,7 +278,9 @@ function AdminFinanceComponent() {
                     <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                       {formatPrice(monthlyProviderNet)}
                     </span>
-                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">مستحقات مزودي الخدمة</p>
+                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                      مستحقات مزودي الخدمة
+                    </p>
                   </div>
 
                   <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -284,7 +290,9 @@ function AdminFinanceComponent() {
                     <span className="text-2xl font-extrabold tracking-tight text-foreground text-center">
                       {monthlyCompletedCount} طلبات
                     </span>
-                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">معاملات ناجحة</p>
+                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                      معاملات ناجحة
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -482,7 +490,9 @@ function AdminFinanceComponent() {
                 <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                   {formatPrice(totalRevenueAllTime)}
                 </span>
-                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">إجمالي المبيعات التراكمية</p>
+                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                  إجمالي المبيعات التراكمية
+                </p>
               </div>
 
               <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -492,7 +502,9 @@ function AdminFinanceComponent() {
                 <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
                   {formatPrice(totalCommissionAllTime)}
                 </span>
-                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">حصة المنصة التراكمية</p>
+                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                  حصة المنصة التراكمية
+                </p>
               </div>
 
               <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -502,7 +514,9 @@ function AdminFinanceComponent() {
                 <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                   {formatPrice(totalProviderNetAllTime)}
                 </span>
-                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">مستحقات المزودين الكلية</p>
+                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                  مستحقات المزودين الكلية
+                </p>
               </div>
 
               <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -518,7 +532,9 @@ function AdminFinanceComponent() {
                     return best?.label !== "—" ? `${best?.label}` : "—";
                   })()}
                 </span>
-                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">أعلى إيراد تاريخي</p>
+                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                  أعلى إيراد تاريخي
+                </p>
               </div>
             </div>
           </Card>

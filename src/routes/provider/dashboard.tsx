@@ -349,7 +349,7 @@ function ProviderDashboardComponent() {
   };
 
   return (
-    <div className="flex min-h-screen bg-muted/20" dir="rtl">
+    <div className="flex min-h-screen bg-background" dir="rtl">
       {/* ─── DESKTOP SIDEBAR ─── */}
       <aside
         className={`hidden md:flex flex-col border-l border-border bg-card transition-all duration-300 ${
@@ -441,7 +441,7 @@ function ProviderDashboardComponent() {
       {/* ─── MAIN CONTENT CONTAINER ─── */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile / Desktop Header */}
-        <header className="flex h-16 items-center border-b border-border bg-card px-6 justify-between shrink-0">
+        <header className="flex h-16 items-center border-b border-border/50 bg-card/80 backdrop-blur-md px-6 justify-between shrink-0">
           <div className="flex items-center">
             <Button
               variant="ghost"
@@ -490,7 +490,9 @@ function ProviderDashboardComponent() {
                         <span className="text-2xl font-extrabold tracking-tight text-foreground text-center">
                           {totalOrders}
                         </span>
-                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">جميع طلبات الخدمات</p>
+                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                          جميع طلبات الخدمات
+                        </p>
                       </div>
 
                       <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -501,7 +503,9 @@ function ProviderDashboardComponent() {
                         <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
                           {activeOrders}
                         </span>
-                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">قيد التنفيذ والتسعير</p>
+                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                          قيد التنفيذ والتسعير
+                        </p>
                       </div>
 
                       <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -512,7 +516,9 @@ function ProviderDashboardComponent() {
                         <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                           {completedOrders}
                         </span>
-                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">تم إنجازها وتسليمها</p>
+                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                          تم إنجازها وتسليمها
+                        </p>
                       </div>
 
                       <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -523,7 +529,9 @@ function ProviderDashboardComponent() {
                         <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                           {formatPrice(totalEarnings)}
                         </span>
-                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">أرباحك المسجلة</p>
+                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                          أرباحك المسجلة
+                        </p>
                       </div>
                     </div>
                   </Card>
@@ -633,7 +641,9 @@ function ProviderDashboardComponent() {
                           <Badge variant={svc.isActive ? "default" : "secondary"}>
                             {svc.isActive ? "نشط" : "مخفي"}
                           </Badge>
-                          <h3 className="line-clamp-1 text-lg font-bold text-center">{svc.title}</h3>
+                          <h3 className="line-clamp-1 text-lg font-bold text-center">
+                            {svc.title}
+                          </h3>
                           <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                             <MapPin className="size-3.5" />
                             <span>{svc.city}</span>

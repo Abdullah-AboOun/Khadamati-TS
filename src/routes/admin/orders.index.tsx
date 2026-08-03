@@ -132,7 +132,9 @@ function AdminOrdersComponent() {
             <span className="text-2xl font-extrabold tracking-tight text-foreground text-center">
               {totalOrdersCount}
             </span>
-            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">جميع الطلبات بالموقع</p>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+              جميع الطلبات بالموقع
+            </p>
           </div>
 
           <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -143,7 +145,9 @@ function AdminOrdersComponent() {
             <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
               {formatPrice(totalRevenueVal)}
             </span>
-            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">إيرادات الخدمات المكتملة</p>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+              إيرادات الخدمات المكتملة
+            </p>
           </div>
 
           <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -154,7 +158,9 @@ function AdminOrdersComponent() {
             <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
               {formatPrice(totalCommissionsVal)}
             </span>
-            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">حصة المنصة المستحقة</p>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+              حصة المنصة المستحقة
+            </p>
           </div>
 
           <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -165,7 +171,9 @@ function AdminOrdersComponent() {
             <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
               {pendingOrdersCount}
             </span>
-            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">طلبات قيد التنفيذ والمتابعة</p>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+              طلبات قيد التنفيذ والمتابعة
+            </p>
           </div>
         </div>
       </Card>

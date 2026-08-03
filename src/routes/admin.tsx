@@ -61,7 +61,7 @@ function AdminLayout() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-muted/20" dir="rtl">
+    <div className="flex min-h-screen bg-background" dir="rtl">
       {/* ─── DESKTOP SIDEBAR ─── */}
       <aside
         className={`hidden md:flex flex-col border-l border-border bg-card transition-all duration-300 ${
@@ -143,7 +143,7 @@ function AdminLayout() {
       {/* ─── MAIN CONTENT CONTAINER ─── */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile Header */}
-        <header className="flex h-16 items-center border-b border-border bg-card px-4 md:hidden">
+        <header className="flex h-16 items-center border-b border-border/50 bg-card/80 backdrop-blur-md px-4 md:hidden">
           <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)}>
             <Menu className="size-6" />
           </Button>

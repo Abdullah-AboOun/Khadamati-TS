@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { trpc } from "@/lib/trpc";
+import { useSession, type AuthUser } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -56,6 +57,8 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 function HomeComponent() {
+  const { data: session } = useSession();
+  const user = session?.user as AuthUser | null | undefined;
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const [searchCity, setSearchCity] = useState("all");
@@ -84,9 +87,9 @@ function HomeComponent() {
   };
 
   return (
-    <div className="flex flex-col gap-16 pb-20 bg-background text-foreground" dir="rtl">
+    <div className="flex flex-col gap-16 pb-20 text-foreground" dir="rtl">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-background py-24 text-foreground border-b border-border">
+      <section className="relative overflow-hidden py-24 text-foreground border-b border-border">
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
             {/* Left Content Column */}
@@ -474,21 +477,79 @@ function HomeComponent() {
       {/* CTA Banner */}
       <section className="container mx-auto px-4 sm:px-6 cv-auto">
         <div className="rounded-2xl border border-border bg-card p-8 sm:p-12 text-center space-y-6 max-w-4xl mx-auto shadow-xs">
-          <h2 className="text-2xl font-bold sm:text-3xl text-foreground">
-            هل أنت خبير محترف؟ ابدأ بكسب دخل إضافي اليوم
-          </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            انضم إلى آلاف المحترفين على منصة خدماتي، واعرض مهاراتك وخدماتك للعملاء في مدينتك بكل سهولة
-            وحرية.
-          </p>
-          <div className="flex justify-center gap-3 flex-col sm:flex-row pt-2">
-            <Button asChild className="font-bold px-8 cursor-pointer">
-              <Link to="/register">سجل كمزود خدمة</Link>
-            </Button>
-            <Button asChild variant="outline" className="font-bold px-8 cursor-pointer">
-              <Link to="/about">تعرف على المزيد</Link>
-            </Button>
-          </div>
+          {user ? (
+            user.role === "provider" ? (
+              <>
+                <h2 className="text-2xl font-bold sm:text-3xl text-foreground">
+                  مرحباً بك مجدداً، {user.name}!
+                </h2>
+                <p className="text-muted-foreground max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
+                  تابع طلباتك الحالية، أدِر خدماتك المعروضة، وتواصل مع العملاء من خلال لوحة التحكم
+                  الخاصة بك.
+                </p>
+                <div className="flex justify-center gap-3 flex-col sm:flex-row pt-2">
+                  <Button asChild className="font-bold px-8 cursor-pointer">
+                    <Link to="/provider/dashboard">لوحة التحكم للمزود</Link>
+                  </Button>
+                  <Button asChild variant="outline" className="font-bold px-8 cursor-pointer">
+                    <Link to="/services">تصفح جميع الخدمات</Link>
+                  </Button>
+                </div>
+              </>
+            ) : user.role === "admin" ? (
+              <>
+                <h2 className="text-2xl font-bold sm:text-3xl text-foreground">
+                  مرحباً بك مجدداً، {user.name}!
+                </h2>
+                <p className="text-muted-foreground max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
+                  أهلاً بك في منصة خدماتي. يمكنك إدارة الطلبات والخدمات والمستخدمين عبر لوحة الإدارة.
+                </p>
+                <div className="flex justify-center gap-3 flex-col sm:flex-row pt-2">
+                  <Button asChild className="font-bold px-8 cursor-pointer">
+                    <Link to="/admin">لوحة الإدارة</Link>
+                  </Button>
+                  <Button asChild variant="outline" className="font-bold px-8 cursor-pointer">
+                    <Link to="/services">تصفح جميع الخدمات</Link>
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold sm:text-3xl text-foreground">
+                  جاهز لإنجاز أعمالك اليوم؟
+                </h2>
+                <p className="text-muted-foreground max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
+                  استكشف أفضل الخبراء المحليين في مدينتك، اطلب الخدمات بكل سهولة، وتابع حالة طلباتك.
+                </p>
+                <div className="flex justify-center gap-3 flex-col sm:flex-row pt-2">
+                  <Button asChild className="font-bold px-8 cursor-pointer">
+                    <Link to="/services">تصفح جميع الخدمات</Link>
+                  </Button>
+                  <Button asChild variant="outline" className="font-bold px-8 cursor-pointer">
+                    <Link to="/my-orders">متابعة طلباتي</Link>
+                  </Button>
+                </div>
+              </>
+            )
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold sm:text-3xl text-foreground">
+                هل أنت خبير محترف؟ ابدأ بكسب دخل إضافي اليوم
+              </h2>
+              <p className="text-muted-foreground max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
+                انضم إلى آلاف المحترفين على منصة خدماتي، واعرض مهاراتك وخدماتك للعملاء في مدينتك بكل
+                سهولة وحرية.
+              </p>
+              <div className="flex justify-center gap-3 flex-col sm:flex-row pt-2">
+                <Button asChild className="font-bold px-8 cursor-pointer">
+                  <Link to="/register">سجل كمزود خدمة</Link>
+                </Button>
+                <Button asChild variant="outline" className="font-bold px-8 cursor-pointer">
+                  <Link to="/about">تعرف على المزيد</Link>
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </section>
     </div>

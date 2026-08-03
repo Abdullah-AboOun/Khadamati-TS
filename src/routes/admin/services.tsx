@@ -308,7 +308,9 @@ function AdminServicesComponent() {
             <span className="text-2xl font-extrabold tracking-tight text-foreground text-center">
               {totalCount}
             </span>
-            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">جميع الخدمات المسجلة</p>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+              جميع الخدمات المسجلة
+            </p>
           </div>
 
           <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -319,7 +321,9 @@ function AdminServicesComponent() {
             <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
               {activeCount}
             </span>
-            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">معروضة للعملاء بالمنصة</p>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+              معروضة للعملاء بالمنصة
+            </p>
           </div>
 
           <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -330,7 +334,9 @@ function AdminServicesComponent() {
             <span className="text-2xl font-extrabold tracking-tight text-red-600 dark:text-red-400 text-center">
               {inactiveCount}
             </span>
-            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">مخفية أو غير مفعّلة</p>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+              مخفية أو غير مفعّلة
+            </p>
           </div>
 
           <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
@@ -341,7 +347,9 @@ function AdminServicesComponent() {
             <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
               {filteredServices.length}
             </span>
-            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">طابقت خيارات التصفية</p>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+              طابقت خيارات التصفية
+            </p>
           </div>
         </div>
       </Card>

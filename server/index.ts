@@ -4,7 +4,7 @@ import { serveStatic } from "hono/bun";
 import { trpcServer } from "@hono/trpc-server";
 import { appRouter } from "./router";
 import { createContext } from "./trpc";
-import { auth, appUrl } from "./auth";
+import { auth } from "./auth";
 import { uploadApp } from "./upload";
 import { jawwalPayWebhookApp } from "./jawwalpay-webhook";
 import { existsSync } from "fs";
@@ -21,14 +21,12 @@ app.use("*", async (c, next) => {
   c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 });
 
-// ─── CORS (dev only) ─────────────────────────────────────
+// ─── CORS ────────────────────────────────────────────────
 app.use(
   "/api/*",
   cors({
-    origin: appUrl,
+    origin: (origin) => origin || "*",
     credentials: true,
-    allowMethods: ["GET", "POST"],
-    allowHeaders: ["Content-Type", "Authorization"],
   }),
 );
 

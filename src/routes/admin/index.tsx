@@ -80,10 +80,14 @@ function AdminDashboardComponent() {
                   <Icon className={`size-4 shrink-0 ${item.iconColorClass}`} />
                   <span>{item.title}</span>
                 </span>
-                <span className={`text-2xl font-extrabold tracking-tight text-center ${item.colorClass}`}>
+                <span
+                  className={`text-2xl font-extrabold tracking-tight text-center ${item.colorClass}`}
+                >
                   {item.value}
                 </span>
-                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">{item.desc}</p>
+                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">
+                  {item.desc}
+                </p>
               </div>
             );
           })}
@@ -94,7 +98,9 @@ function AdminDashboardComponent() {
       <Card className="border border-border shadow-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-center">أداء المبيعات والعمولات</CardTitle>
-          <CardDescription className="text-center">الملخص المالي للمبيعات المكتملة وعمولات المنصة</CardDescription>
+          <CardDescription className="text-center">
+            الملخص المالي للمبيعات المكتملة وعمولات المنصة
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between border-b border-border/50 py-2">
