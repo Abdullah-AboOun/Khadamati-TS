@@ -245,51 +245,49 @@ function AdminFinanceComponent() {
             {/* Statistics and Ledger */}
             <div className="space-y-6 md:col-span-2">
               {/* Filtered Monthly Stats Cards */}
-              <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
-                <Card className="border border-border shadow-xs">
-                  <CardContent className="p-4 space-y-1">
-                    <span className="text-xs font-semibold text-muted-foreground block">
+              <Card className="bg-card border border-border shadow-xs rounded-xl overflow-hidden p-0">
+                <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-border/60">
+                  <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                    <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
                       مبيعات الشهر
                     </span>
-                    <span className="text-lg sm:text-xl font-extrabold text-foreground block">
+                    <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                       {formatPrice(monthlyRevenue)}
                     </span>
-                  </CardContent>
-                </Card>
+                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">الشهر المحدد</p>
+                  </div>
 
-                <Card className="border border-border shadow-xs">
-                  <CardContent className="p-4 space-y-1">
-                    <span className="text-xs font-semibold text-muted-foreground block">
+                  <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                    <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
                       عمولة المنصة
                     </span>
-                    <span className="text-lg sm:text-xl font-extrabold text-primary block">
+                    <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
                       {formatPrice(monthlyAdminCut)}
                     </span>
-                  </CardContent>
-                </Card>
+                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">نسبة الاقتطاع</p>
+                  </div>
 
-                <Card className="border border-border shadow-xs">
-                  <CardContent className="p-4 space-y-1">
-                    <span className="text-xs font-semibold text-muted-foreground block">
+                  <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                    <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
                       صافي المزودين
                     </span>
-                    <span className="text-lg sm:text-xl font-extrabold text-emerald-600 dark:text-emerald-400 block">
+                    <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                       {formatPrice(monthlyProviderNet)}
                     </span>
-                  </CardContent>
-                </Card>
+                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">مستحقات مزودي الخدمة</p>
+                  </div>
 
-                <Card className="border border-border shadow-xs">
-                  <CardContent className="p-4 space-y-1">
-                    <span className="text-xs font-semibold text-muted-foreground block">
+                  <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                    <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
                       الطلبات المكتملة
                     </span>
-                    <span className="text-lg sm:text-xl font-extrabold text-foreground block">
+                    <span className="text-2xl font-extrabold tracking-tight text-foreground text-center">
                       {monthlyCompletedCount} طلبات
                     </span>
-                  </CardContent>
-                </Card>
-              </div>
+                    <p className="text-[11px] text-muted-foreground text-center line-clamp-1">معاملات ناجحة</p>
+                  </div>
+                </div>
+              </Card>
 
               {/* Top Providers Leaderboard for the month */}
               <Card className="border border-border shadow-sm">
@@ -475,46 +473,43 @@ function AdminFinanceComponent() {
         {/* Tab 2: Visual Charts */}
         <TabsContent value="charts" className="space-y-6 outline-hidden">
           {/* Quick Insights Cards */}
-          <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
-            <Card className="border border-border bg-card shadow-xs">
-              <CardContent className="p-4 space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground block">
+          <Card className="bg-card border border-border shadow-xs rounded-xl overflow-hidden p-0">
+            <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-border/60">
+              <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
                   إجمالي المبيعات (12 شهر)
                 </span>
-                <span className="text-lg sm:text-xl font-extrabold text-foreground block">
+                <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                   {formatPrice(totalRevenueAllTime)}
                 </span>
-              </CardContent>
-            </Card>
+                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">إجمالي المبيعات التراكمية</p>
+              </div>
 
-            <Card className="border border-border bg-card shadow-xs">
-              <CardContent className="p-4 space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground block">
+              <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
                   عمولة النظام التراكمية
                 </span>
-                <span className="text-lg sm:text-xl font-extrabold text-primary block">
+                <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
                   {formatPrice(totalCommissionAllTime)}
                 </span>
-              </CardContent>
-            </Card>
+                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">حصة المنصة التراكمية</p>
+              </div>
 
-            <Card className="border border-border bg-card shadow-xs">
-              <CardContent className="p-4 space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground block">
+              <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
                   صافي أرباح المزودين
                 </span>
-                <span className="text-lg sm:text-xl font-extrabold text-emerald-600 dark:text-emerald-400 block">
+                <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                   {formatPrice(totalProviderNetAllTime)}
                 </span>
-              </CardContent>
-            </Card>
+                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">مستحقات المزودين الكلية</p>
+              </div>
 
-            <Card className="border border-border bg-card shadow-xs">
-              <CardContent className="p-4 space-y-1">
-                <span className="text-xs font-semibold text-muted-foreground block">
+              <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
                   أفضل شهر إيراداً
                 </span>
-                <span className="text-lg sm:text-xl font-extrabold text-foreground block truncate">
+                <span className="text-2xl font-extrabold tracking-tight text-foreground text-center truncate">
                   {(() => {
                     const best = charts?.monthlyTrends.reduce(
                       (max, m) => (m.revenue > max.revenue ? m : max),
@@ -523,9 +518,10 @@ function AdminFinanceComponent() {
                     return best?.label !== "—" ? `${best?.label}` : "—";
                   })()}
                 </span>
-              </CardContent>
-            </Card>
-          </div>
+                <p className="text-[11px] text-muted-foreground text-center line-clamp-1">أعلى إيراد تاريخي</p>
+              </div>
+            </div>
+          </Card>
 
           {/* Chart 1: Bar Chart Monthly Revenue */}
           <Card className="border border-border shadow-sm">

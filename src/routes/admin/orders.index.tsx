@@ -122,65 +122,53 @@ function AdminOrdersComponent() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 sm:grid-cols-4">
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-medium text-muted-foreground block">
-                إجمالي الطلبات
-              </span>
-              <span className="text-2xl font-extrabold text-foreground mt-1 block">
-                {totalOrdersCount}
-              </span>
-            </div>
-            <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <ClipboardList className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
+      <Card className="bg-card border border-border shadow-xs rounded-xl overflow-hidden p-0">
+        <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-border/60">
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+              <ClipboardList className="size-4 shrink-0 text-muted-foreground" />
+              <span>إجمالي الطلبات</span>
+            </span>
+            <span className="text-2xl font-extrabold tracking-tight text-foreground text-center">
+              {totalOrdersCount}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">جميع الطلبات بالموقع</p>
+          </div>
 
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-medium text-muted-foreground block">مبيعات مكتملة</span>
-              <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1 block">
-                {formatPrice(totalRevenueVal)}
-              </span>
-            </div>
-            <div className="size-10 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-              <Wallet className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+              <Wallet className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span>مبيعات مكتملة</span>
+            </span>
+            <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
+              {formatPrice(totalRevenueVal)}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">إيرادات الخدمات المكتملة</p>
+          </div>
 
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-medium text-muted-foreground block">عمولات المنصة</span>
-              <span className="text-2xl font-extrabold text-primary mt-1 block">
-                {formatPrice(totalCommissionsVal)}
-              </span>
-            </div>
-            <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <Landmark className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+              <Landmark className="size-4 shrink-0 text-primary" />
+              <span>عمولات المنصة</span>
+            </span>
+            <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
+              {formatPrice(totalCommissionsVal)}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">حصة المنصة المستحقة</p>
+          </div>
 
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-medium text-muted-foreground block">طلبات نشطة</span>
-              <span className="text-2xl font-extrabold text-primary mt-1 block">
-                {pendingOrdersCount}
-              </span>
-            </div>
-            <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <ArrowUpRight className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+              <ArrowUpRight className="size-4 shrink-0 text-primary" />
+              <span>طلبات نشطة</span>
+            </span>
+            <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
+              {pendingOrdersCount}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">طلبات قيد التنفيذ والمتابعة</p>
+          </div>
+        </div>
+      </Card>
 
       {/* Filter toolbar */}
       <div className="flex flex-col md:flex-row gap-4 bg-muted/40 p-4 rounded-xl border border-border">

@@ -480,57 +480,53 @@ function ProviderDashboardComponent() {
               ) : (
                 <>
                   {/* Stats Cards */}
-                  <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-                    <Card className="border border-border shadow-sm">
-                      <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-semibold text-muted-foreground">
-                          إجمالي الطلبات
-                        </CardTitle>
-                        <ClipboardList className="size-4 text-muted-foreground" />
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-2xl font-bold">{totalOrders}</div>
-                      </CardContent>
-                    </Card>
+                  <Card className="bg-card border border-border shadow-xs rounded-xl overflow-hidden p-0">
+                    <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-border/60">
+                      <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                        <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+                          <ClipboardList className="size-4 shrink-0 text-muted-foreground" />
+                          <span>إجمالي الطلبات</span>
+                        </span>
+                        <span className="text-2xl font-extrabold tracking-tight text-foreground text-center">
+                          {totalOrders}
+                        </span>
+                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">جميع طلبات الخدمات</p>
+                      </div>
 
-                    <Card className="border border-border shadow-sm">
-                      <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-semibold text-muted-foreground">
-                          الطلبات النشطة
-                        </CardTitle>
-                        <Hourglass className="size-4 text-muted-foreground" />
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-2xl font-bold">{activeOrders}</div>
-                      </CardContent>
-                    </Card>
+                      <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                        <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+                          <Hourglass className="size-4 shrink-0 text-primary" />
+                          <span>الطلبات النشطة</span>
+                        </span>
+                        <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
+                          {activeOrders}
+                        </span>
+                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">قيد التنفيذ والتسعير</p>
+                      </div>
 
-                    <Card className="border border-border shadow-sm">
-                      <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-semibold text-muted-foreground">
-                          الطلبات المكتملة
-                        </CardTitle>
-                        <CheckCircle className="size-4 text-muted-foreground" />
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-2xl font-bold">{completedOrders}</div>
-                      </CardContent>
-                    </Card>
+                      <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                        <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+                          <CheckCircle className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                          <span>الطلبات المكتملة</span>
+                        </span>
+                        <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
+                          {completedOrders}
+                        </span>
+                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">تم إنجازها وتسليمها</p>
+                      </div>
 
-                    <Card className="border border-border shadow-sm">
-                      <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-semibold text-muted-foreground">
-                          إجمالي الأرباح
-                        </CardTitle>
-                        <TrendingUp className="size-4 text-primary" />
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-2xl font-bold text-primary">
+                      <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+                        <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+                          <TrendingUp className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                          <span>إجمالي الأرباح</span>
+                        </span>
+                        <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
                           {formatPrice(totalEarnings)}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
+                        </span>
+                        <p className="text-[11px] text-muted-foreground text-center line-clamp-1">أرباحك المسجلة</p>
+                      </div>
+                    </div>
+                  </Card>
 
                   {/* Recent Orders Table */}
                   <Card className="border border-border shadow-sm">
@@ -632,29 +628,27 @@ function ProviderDashboardComponent() {
                       key={svc.id}
                       className={`overflow-hidden border border-border bg-card shadow-sm transition-all duration-200 ${!svc.isActive && "opacity-75"}`}
                     >
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="space-y-1">
-                            <h3 className="line-clamp-1 text-lg font-bold">{svc.title}</h3>
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <MapPin className="size-3.5" />
-                              <span>{svc.city}</span>
-                            </div>
-                          </div>
+                      <CardContent className="p-6 text-center flex flex-col items-center">
+                        <div className="flex flex-col items-center gap-2">
                           <Badge variant={svc.isActive ? "default" : "secondary"}>
                             {svc.isActive ? "نشط" : "مخفي"}
                           </Badge>
+                          <h3 className="line-clamp-1 text-lg font-bold text-center">{svc.title}</h3>
+                          <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                            <MapPin className="size-3.5" />
+                            <span>{svc.city}</span>
+                          </div>
                         </div>
-                        <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">
+                        <p className="mt-3 line-clamp-2 text-sm text-muted-foreground text-center">
                           {svc.description}
                         </p>
-                        <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-                          <span className="text-lg font-extrabold text-primary">
+                        <div className="mt-4 flex flex-col items-center justify-center gap-3 border-t border-border pt-4 w-full">
+                          <span className="text-lg font-extrabold text-primary text-center">
                             {svc.pricingType === "fixed" && svc.price
                               ? formatPrice(svc.price)
                               : "طلب تسعير"}
                           </span>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center justify-center gap-2">
                             <Button
                               size="icon"
                               variant="ghost"

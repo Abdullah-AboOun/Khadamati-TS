@@ -220,38 +220,46 @@ function AdminUsersComponent() {
       </div>
 
       {/* Stats block */}
-      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
-          <span className="text-xs font-medium text-muted-foreground">المجموع</span>
-          <span className="text-2xl font-bold tracking-tight text-foreground">{totalCount}</span>
-        </Card>
-        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
-          <span className="text-xs font-medium text-muted-foreground">العملاء</span>
-          <span className="text-2xl font-bold tracking-tight text-foreground">{clientsCount}</span>
-        </Card>
-        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
-          <span className="text-xs font-medium text-muted-foreground">المزودون</span>
-          <span className="text-2xl font-bold tracking-tight text-foreground">
-            {providersCount}
-          </span>
-        </Card>
-        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
-          <span className="text-xs font-medium text-muted-foreground">المدراء</span>
-          <span className="text-2xl font-bold tracking-tight text-foreground">{adminsCount}</span>
-        </Card>
-        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
-          <span className="text-xs font-medium text-muted-foreground">النشطون</span>
-          <span className="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
-            {activeCount}
-          </span>
-        </Card>
-        <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
-          <span className="text-xs font-medium text-muted-foreground">المعطلون</span>
-          <span className="text-2xl font-bold tracking-tight text-red-600 dark:text-red-400">
-            {bannedCount}
-          </span>
-        </Card>
-      </div>
+      <Card className="bg-card border border-border shadow-xs rounded-xl overflow-hidden p-0">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 divide-y lg:divide-y-0 divide-x lg:divide-x-reverse divide-border/60">
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground text-center">المجموع</span>
+            <span className="text-2xl font-extrabold tracking-tight text-foreground text-center">{totalCount}</span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">إجمالي المسجلين</p>
+          </div>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground text-center">العملاء</span>
+            <span className="text-2xl font-extrabold tracking-tight text-foreground text-center">{clientsCount}</span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">طالبو الخدمات</p>
+          </div>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground text-center">المزودون</span>
+            <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
+              {providersCount}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">مقدمو الخدمات</p>
+          </div>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground text-center">المدراء</span>
+            <span className="text-2xl font-extrabold tracking-tight text-primary text-center">{adminsCount}</span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">مشرفو النظام</p>
+          </div>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground text-center">النشطون</span>
+            <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
+              {activeCount}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">حسابات مفعّلة</p>
+          </div>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground text-center">المعطلون</span>
+            <span className="text-2xl font-extrabold tracking-tight text-red-600 dark:text-red-400 text-center">
+              {bannedCount}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">حسابات موقوفة</p>
+          </div>
+        </div>
+      </Card>
 
       {/* Filter toolbar */}
       <div className="flex flex-col md:flex-row gap-4 bg-muted/40 p-4 rounded-xl border border-border">

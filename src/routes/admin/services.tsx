@@ -298,65 +298,53 @@ function AdminServicesComponent() {
       </div>
 
       {/* Stats row */}
-      <div className="grid gap-4 sm:grid-cols-4">
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-medium text-muted-foreground block">
-                إجمالي الخدمات
-              </span>
-              <span className="text-2xl font-extrabold text-foreground mt-1 block">
-                {totalCount}
-              </span>
-            </div>
-            <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <Briefcase className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
+      <Card className="bg-card border border-border shadow-xs rounded-xl overflow-hidden p-0">
+        <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-border/60">
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+              <Briefcase className="size-4 shrink-0 text-muted-foreground" />
+              <span>إجمالي الخدمات</span>
+            </span>
+            <span className="text-2xl font-extrabold tracking-tight text-foreground text-center">
+              {totalCount}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">جميع الخدمات المسجلة</p>
+          </div>
 
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-medium text-muted-foreground block">خدمات نشطة</span>
-              <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1 block">
-                {activeCount}
-              </span>
-            </div>
-            <div className="size-10 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-              <CheckCircle className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+              <CheckCircle className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span>خدمات نشطة</span>
+            </span>
+            <span className="text-2xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 text-center">
+              {activeCount}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">معروضة للعملاء بالمنصة</p>
+          </div>
 
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-medium text-muted-foreground block">خدمات معطلة</span>
-              <span className="text-2xl font-extrabold text-destructive mt-1 block">
-                {inactiveCount}
-              </span>
-            </div>
-            <div className="size-10 rounded-lg bg-destructive/10 text-destructive flex items-center justify-center">
-              <Ban className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+              <Ban className="size-4 shrink-0 text-red-600 dark:text-red-400" />
+              <span>خدمات معطلة</span>
+            </span>
+            <span className="text-2xl font-extrabold tracking-tight text-red-600 dark:text-red-400 text-center">
+              {inactiveCount}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">مخفية أو غير مفعّلة</p>
+          </div>
 
-        <Card className="bg-card border border-border shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-medium text-muted-foreground block">نتائج التصفية</span>
-              <span className="text-2xl font-extrabold text-primary mt-1 block">
-                {filteredServices.length}
-              </span>
-            </div>
-            <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <Filter className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          <div className="p-4 flex flex-col items-center justify-center text-center gap-1.5 min-h-[96px]">
+            <span className="text-xs font-semibold text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+              <Filter className="size-4 shrink-0 text-primary" />
+              <span>نتائج التصفية</span>
+            </span>
+            <span className="text-2xl font-extrabold tracking-tight text-primary text-center">
+              {filteredServices.length}
+            </span>
+            <p className="text-[11px] text-muted-foreground text-center line-clamp-1">طابقت خيارات التصفية</p>
+          </div>
+        </div>
+      </Card>
 
       {/* Filter toolbar */}
       <div className="flex flex-col md:flex-row gap-4 bg-muted/40 p-4 rounded-xl border border-border">
