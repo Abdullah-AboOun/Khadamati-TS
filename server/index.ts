@@ -65,16 +65,19 @@ app.use(
 
 // ─── Serve static frontend (production / built) ──────────
 const distPath = resolve(process.cwd(), "dist");
-if (process.env.NODE_ENV === "production" && existsSync(distPath)) {
+if (existsSync(distPath)) {
   app.use(
     "/*",
     serveStatic({
       root: "./dist",
+      rewriteRequestPath: (path) => {
+        if (path === "/" || !path.includes(".")) {
+          return "/index.html";
+        }
+        return path;
+      },
     }),
   );
-
-  // SPA fallback
-  app.get("*", serveStatic({ path: "./dist/index.html" }));
 }
 
 // ─── Start server ────────────────────────────────────────

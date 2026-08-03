@@ -307,7 +307,7 @@ function HomeComponent() {
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {servicesData.services.map((svc) => (
+            {servicesData.services.map((svc, index) => (
               <Card
                 key={svc.id}
                 className="relative overflow-hidden border border-border bg-card shadow-xs transition-all duration-200 hover:shadow-sm group pt-0"
@@ -317,6 +317,9 @@ function HomeComponent() {
                     <img
                       src={svc.mainImage}
                       alt={svc.title}
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      {...(index === 0 ? { fetchPriority: "high" } : {})}
                       className="absolute inset-0 h-full w-full object-cover"
                     />
                   ) : (
@@ -367,7 +370,7 @@ function HomeComponent() {
       </section>
 
       {/* "Why Us" Section */}
-      <section className="container mx-auto px-4 sm:px-6">
+      <section className="container mx-auto px-4 sm:px-6 cv-auto">
         <div className="text-center space-y-1 mb-12">
           <h2 className="text-2xl font-bold tracking-tight">لماذا منصة خدماتي؟</h2>
           <p className="text-sm text-muted-foreground">
@@ -469,7 +472,7 @@ function HomeComponent() {
       </section>
 
       {/* CTA Banner */}
-      <section className="container mx-auto px-4 sm:px-6">
+      <section className="container mx-auto px-4 sm:px-6 cv-auto">
         <div className="rounded-2xl border border-border bg-card p-8 sm:p-12 text-center space-y-6 max-w-4xl mx-auto shadow-xs">
           <h2 className="text-2xl font-bold sm:text-3xl text-foreground">
             هل أنت خبير محترف؟ ابدأ بكسب دخل إضافي اليوم

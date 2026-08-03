@@ -7,6 +7,7 @@ import { trpc } from "@/lib/trpc";
 import { ThemeProvider } from "@/components/theme-provider";
 import superjson from "superjson";
 
+import "@fontsource-variable/inter/index.css";
 import "./index.css";
 
 // Import the auto-generated route tree

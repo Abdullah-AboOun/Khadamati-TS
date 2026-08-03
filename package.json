@@ -8,7 +8,7 @@
     "dev:frontend": "vite",
     "dev:server": "bun run --hot server/index.ts",
     "build": "tsc -b && vite build",
-    "start": "NODE_ENV=production bun run db:push && (bun run db:seed &) && bun run server/index.ts",
+    "start": "NODE_ENV=production bun run db:push && (NODE_ENV=production bun run db:seed &) && NODE_ENV=production bun run server/index.ts",
     "lint": "oxlint",
     "format": "oxfmt --write",
     "typecheck": "tsc --noEmit",
