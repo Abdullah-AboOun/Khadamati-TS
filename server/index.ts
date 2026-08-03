@@ -65,7 +65,7 @@ app.use(
 
 // ─── Serve static frontend (production / built) ──────────
 const distPath = resolve(process.cwd(), "dist");
-if (existsSync(distPath)) {
+if (process.env.NODE_ENV === "production" && existsSync(distPath)) {
   app.use(
     "/*",
     serveStatic({

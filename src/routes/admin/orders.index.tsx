@@ -59,15 +59,6 @@ function AdminOrdersComponent() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto space-y-4 p-6" dir="rtl">
-        <Skeleton className="h-10 w-1/4" />
-        <Skeleton className="h-64 w-full rounded-xl" />
-      </div>
-    );
-  }
-
   const ordersList = useMemo(() => (data?.orders as unknown as OrderItem[]) || [], [data?.orders]);
   const commissionRate = stats?.commissionRate ?? 0.15;
 
@@ -111,6 +102,15 @@ function AdminOrdersComponent() {
       return matchSearch && matchStatus;
     });
   }, [ordersList, search, statusFilter]);
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto space-y-4 p-6" dir="rtl">
+        <Skeleton className="h-10 w-1/4" />
+        <Skeleton className="h-64 w-full rounded-xl" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto space-y-6 px-4 py-8 sm:px-6 text-right" dir="rtl">

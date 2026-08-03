@@ -231,7 +231,9 @@ function AdminUsersComponent() {
         </Card>
         <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
           <span className="text-xs font-medium text-muted-foreground">المزودون</span>
-          <span className="text-2xl font-bold tracking-tight text-foreground">{providersCount}</span>
+          <span className="text-2xl font-bold tracking-tight text-foreground">
+            {providersCount}
+          </span>
         </Card>
         <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
           <span className="text-xs font-medium text-muted-foreground">المدراء</span>
@@ -239,11 +241,15 @@ function AdminUsersComponent() {
         </Card>
         <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
           <span className="text-xs font-medium text-muted-foreground">النشطون</span>
-          <span className="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">{activeCount}</span>
+          <span className="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
+            {activeCount}
+          </span>
         </Card>
         <Card className="bg-card border border-border/80 shadow-xs py-3.5 px-4 flex flex-col gap-1 text-center items-center justify-center">
           <span className="text-xs font-medium text-muted-foreground">المعطلون</span>
-          <span className="text-2xl font-bold tracking-tight text-red-600 dark:text-red-400">{bannedCount}</span>
+          <span className="text-2xl font-bold tracking-tight text-red-600 dark:text-red-400">
+            {bannedCount}
+          </span>
         </Card>
       </div>
 
