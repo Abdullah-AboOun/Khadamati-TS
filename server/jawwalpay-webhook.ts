@@ -24,6 +24,10 @@ jawwalPayWebhookApp.post("/", async (c) => {
 
     const { sessionId, orderId, amount, phone, status, gatewayTxId, signature } = parseResult.data;
 
+    if (!orderId) {
+      return c.json({ success: false, error: "رقم الطلب مفقود" }, 400);
+    }
+
     // Check header signature if provided, otherwise fallback to signature field in payload
     const headerSignature = c.req.header("X-JawwalPay-Signature");
     const signatureToVerify = headerSignature || signature;

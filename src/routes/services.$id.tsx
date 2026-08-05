@@ -30,7 +30,6 @@ function ServiceDetailComponent() {
 
   const [activeImage, setActiveImage] = useState<string | null>(null);
   const [quoteDesc, setQuoteDesc] = useState("");
-  const [isOrdering, setIsOrdering] = useState(false);
   const [isQuoting, setIsQuoting] = useState(false);
   const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
 
@@ -40,7 +39,6 @@ function ServiceDetailComponent() {
   });
 
   // tRPC mutations
-  const createOrderMutation = trpc.orders.create.useMutation();
   const requestQuoteMutation = trpc.orders.requestQuote.useMutation();
 
   if (isLoading) {
@@ -69,26 +67,13 @@ function ServiceDetailComponent() {
     );
   }
 
-  const handleOrder = async () => {
+  const handleOrder = () => {
     if (!session?.user) {
-      toast.error("الرجاء تسجيل الدخول أولاً للطلب");
+      toast.error("الرجاء تسجيل الدخول أولاً للطلب والدفع");
       navigate({ to: "/login" });
       return;
     }
-
-    setIsOrdering(true);
-    try {
-      const order = await createOrderMutation.mutateAsync({
-        serviceId: parsedId,
-      });
-      toast.success("تم إنشاء الطلب بنجاح! جاري تحويلك للدفع...");
-      navigate({ to: `/checkout/${order.id}` });
-    } catch (err) {
-      const error = err as Error;
-      toast.error(error.message || "حدث خطأ أثناء تقديم الطلب");
-    } finally {
-      setIsOrdering(false);
-    }
+    navigate({ to: `/checkout/service/${parsedId}` });
   };
 
   const handleRequestQuote = async () => {
@@ -260,13 +245,8 @@ function ServiceDetailComponent() {
 
               {/* Action Button */}
               {service.pricingType === "fixed" ? (
-                <Button
-                  onClick={handleOrder}
-                  className="w-full font-bold"
-                  size="lg"
-                  disabled={isOrdering}
-                >
-                  {isOrdering ? "جاري إعداد الطلب..." : "اطلب الخدمة الآن"}
+                <Button onClick={handleOrder} className="w-full font-bold" size="lg">
+                  اطلب ودفع الخدمة الآن
                 </Button>
               ) : (
                 <Dialog open={quoteDialogOpen} onOpenChange={setQuoteDialogOpen}>

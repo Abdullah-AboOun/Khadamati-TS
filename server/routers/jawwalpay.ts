@@ -20,6 +20,10 @@ export const jawwalPayRouter = router({
   initiateSession: protectedProcedure
     .input(initiateJawwalPaySchema)
     .mutation(async ({ ctx, input }) => {
+      if (!input.orderId) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "رقم الطلب مطلوب" });
+      }
+
       const [order] = await db
         .select()
         .from(schema.order)
@@ -62,6 +66,10 @@ export const jawwalPayRouter = router({
     }),
 
   simulateWebhook: protectedProcedure.input(jawwalPayWebhookSchema).mutation(async ({ input }) => {
+    if (!input.orderId) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "رقم الطلب مطلوب" });
+    }
+
     const expectedSignature = generateJawwalPaySignature(
       input.orderId,
       input.amount,

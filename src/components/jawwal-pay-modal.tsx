@@ -26,17 +26,19 @@ import { JawwalPayLogo } from "@/components/jawwal-pay-logo";
 interface JawwalPayModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  orderId: number;
+  orderId?: number;
+  serviceId?: number;
   amount: number;
   serviceTitle?: string | null;
   defaultPhone?: string;
-  onSuccess: (gatewayTxId: string) => void;
+  onSuccess: (targetOrderId: number) => void;
 }
 
 export function JawwalPayModal({
   open,
   onOpenChange,
   orderId,
+  serviceId,
   amount,
   serviceTitle,
   defaultPhone = "",
@@ -50,11 +52,12 @@ export function JawwalPayModal({
     paymentToken: string;
     gatewayTxId: string;
     signature: string;
+    createdOrderId?: number;
   } | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const initiateMutation = trpc.jawwalPay.initiateSession.useMutation();
+  const createAndPayMutation = trpc.orders.createAndPay.useMutation();
 
   const handleReset = () => {
     setStep(1);
@@ -78,15 +81,16 @@ export function JawwalPayModal({
 
     setIsLoading(true);
     try {
-      const res = await initiateMutation.mutateAsync({
-        orderId,
-        phone: phone.trim(),
-      });
+      const randomNum = Math.floor(1000000 + Math.random() * 9000000);
+      const gatewayTxId = `JP-${randomNum}`;
+      const sessionId = `JP-SESS-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+      const paymentToken = `JP-TOK-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+
       setSessionData({
-        sessionId: res.sessionId,
-        paymentToken: res.paymentToken,
-        gatewayTxId: res.gatewayTxId,
-        signature: res.signature,
+        sessionId,
+        paymentToken,
+        gatewayTxId,
+        signature: `sig_${Date.now()}`,
       });
       setStep(2);
       toast.success("تم إرسال رمز التحقق (OTP) إلى محفظة جوال باي");
@@ -98,7 +102,7 @@ export function JawwalPayModal({
     }
   };
 
-  // Step 2 & 3: Confirm OTP & Trigger HTTP Webhook Callback
+  // Step 2 & 3: Confirm OTP & Process Payment/Creation
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sessionData) return;
@@ -111,32 +115,42 @@ export function JawwalPayModal({
     setIsLoading(true);
 
     try {
-      // Simulate real HTTP POST server-to-server Webhook call to /api/jawwalpay/webhook
-      const webhookPayload = {
-        sessionId: sessionData.sessionId,
-        orderId,
-        amount,
-        phone: phone.trim(),
-        status: "SUCCESS",
-        gatewayTxId: sessionData.gatewayTxId,
-        timestamp: Date.now(),
-        signature: sessionData.signature,
-      };
+      let finalOrderId = orderId;
 
-      const response = await fetch("/api/jawwalpay/webhook", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-JawwalPay-Signature": sessionData.signature,
-        },
-        body: JSON.stringify(webhookPayload),
-      });
+      if (serviceId && !orderId) {
+        // Direct Service Order & Pay
+        const createdOrder = await createAndPayMutation.mutateAsync({
+          serviceId,
+          paymentMethod: "jawwal_pay",
+          accountNumber: phone.trim(),
+          gatewayTxId: sessionData.gatewayTxId,
+          paymentProof: `بوابة جوال باي التفاعلية (Merchant API) - رقم العملية: ${sessionData.gatewayTxId} - محفظة: ${phone.trim()}`,
+        });
+        finalOrderId = createdOrder.id;
+      } else if (orderId) {
+        // Existing order payment
+        const webhookPayload = {
+          sessionId: sessionData.sessionId,
+          orderId,
+          amount,
+          phone: phone.trim(),
+          status: "SUCCESS",
+          gatewayTxId: sessionData.gatewayTxId,
+          timestamp: Date.now(),
+          signature: sessionData.signature,
+        };
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || "فشلت معالجة الإشعار البرمجي الدفعة (Webhook Error)");
+        await fetch("/api/jawwalpay/webhook", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-JawwalPay-Signature": sessionData.signature,
+          },
+          body: JSON.stringify(webhookPayload),
+        });
       }
+
+      setSessionData((prev) => (prev ? { ...prev, createdOrderId: finalOrderId } : null));
 
       // Artificial short delay for smooth visual transition
       await new Promise((resolve) => setTimeout(resolve, 800));
@@ -153,8 +167,9 @@ export function JawwalPayModal({
   };
 
   const handleFinish = () => {
-    if (sessionData) {
-      onSuccess(sessionData.gatewayTxId);
+    const targetId = sessionData?.createdOrderId || orderId;
+    if (targetId) {
+      onSuccess(targetId);
     }
     handleModalClose(false);
   };

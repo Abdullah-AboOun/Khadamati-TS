@@ -11,7 +11,61 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 export const ordersRouter = router({
-  // Client places a fixed-price order
+  // Client places and pays a fixed-price order in 1 step (status: accepted, paymentStatus: completed)
+  createAndPay: protectedProcedure
+    .input(
+      createOrderSchema.extend({
+        paymentMethod: z.string(),
+        paymentProof: z.string().optional(),
+        accountNumber: z.string().optional(),
+        gatewayTxId: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const [svc] = await db
+        .select()
+        .from(schema.service)
+        .where(eq(schema.service.id, input.serviceId))
+        .limit(1);
+
+      if (!svc || !svc.isActive) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "الخدمة غير متاحة" });
+      }
+      if (svc.pricingType !== "fixed" || !svc.price) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "هذه الخدمة تتطلب طلب تسعير",
+        });
+      }
+      if (svc.providerId === ctx.user.id) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "لا يمكنك طلب خدمتك الخاصة",
+        });
+      }
+
+      const [order] = await db
+        .insert(schema.order)
+        .values({
+          clientId: ctx.user.id,
+          providerId: svc.providerId,
+          serviceId: input.serviceId,
+          amount: svc.price,
+          status: "accepted",
+          paymentStatus: "completed",
+          paymentMethod: input.paymentMethod,
+          paymentProof: input.paymentProof,
+          accountNumber: input.accountNumber,
+          gatewayTxId: input.gatewayTxId,
+          details: input.details,
+          notes: input.notes,
+        })
+        .returning();
+
+      return order;
+    }),
+
+  // Client places a fixed-price order (fallback)
   create: protectedProcedure.input(createOrderSchema).mutation(async ({ ctx, input }) => {
     const [svc] = await db
       .select()
@@ -164,6 +218,7 @@ export const ordersRouter = router({
       if (input.paymentMethod !== undefined) updateData.paymentMethod = input.paymentMethod;
       if (input.paymentProof !== undefined) updateData.paymentProof = input.paymentProof;
       if (input.accountNumber !== undefined) updateData.accountNumber = input.accountNumber;
+      if (input.gatewayTxId !== undefined) updateData.gatewayTxId = input.gatewayTxId;
       if (input.details !== undefined) updateData.details = input.details;
       if (input.paymentStatus !== undefined) updateData.paymentStatus = input.paymentStatus;
 
@@ -275,26 +330,42 @@ export const ordersRouter = router({
       return order;
     }),
 
-  cancelOrder: providerProcedure
+  cancelOrder: protectedProcedure
     .input(z.object({ orderId: z.number().int().positive() }))
     .mutation(async ({ ctx, input }) => {
       const [order] = await db
         .select()
         .from(schema.order)
-        .where(and(eq(schema.order.id, input.orderId), eq(schema.order.providerId, ctx.user.id)))
+        .where(eq(schema.order.id, input.orderId))
         .limit(1);
 
       if (!order) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "الطلب غير موجود أو لا يخصك",
+          message: "الطلب غير موجود",
         });
       }
 
-      if (!["pending", "quoted"].includes(order.status)) {
+      const isClient = order.clientId === ctx.user.id;
+      const isProvider = order.providerId === ctx.user.id;
+      const isAdmin = ctx.user.role === "admin";
+
+      if (!isClient && !isProvider && !isAdmin) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "غير مصرح لك بإلغاء هذا الطلب" });
+      }
+
+      if (order.status === "completed" || order.status === "cancelled") {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "لا يمكن إلغاء الطلب في هذه الحالة",
+          message: "لا يمكن إلغاء الطلب المكتمل أو الملغي مسبقاً",
+        });
+      }
+
+      // Client cannot cancel once provider has set order to in_progress
+      if (isClient && !isProvider && !isAdmin && order.status === "in_progress") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "لا يمكن للعميل إلغاء الطلب بعد بدء التنفيذ، يرجى التواصل مع مزود الخدمة أو الإدارة",
         });
       }
 

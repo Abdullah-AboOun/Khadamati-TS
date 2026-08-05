@@ -5,7 +5,7 @@ import { db, schema } from "./db";
 export const appUrl =
   process.env.APP_URL ||
   process.env.BETTER_AUTH_URL ||
-  (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : undefined);
+  (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : "http://localhost:3000");
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -18,6 +18,14 @@ export const auth = betterAuth({
     },
   }),
   baseURL: appUrl,
+  trustedOrigins: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:5173",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+    "http://127.0.0.1:5173",
+  ],
   secret:
     process.env.BETTER_AUTH_SECRET || "development-secret-key-for-khadamati-local-marketplace",
   emailAndPassword: {

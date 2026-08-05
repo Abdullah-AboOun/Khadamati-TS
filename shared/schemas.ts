@@ -83,13 +83,15 @@ export const updateOrderStatusSchema = z.object({
 // ─── Jawwal Pay Merchant API Schemas ─────────────────────
 
 export const initiateJawwalPaySchema = z.object({
-  orderId: z.number().int().positive(),
+  orderId: z.number().int().positive().optional(),
+  serviceId: z.number().int().positive().optional(),
   phone: z.string().min(9, "رقم الهاتف يجب أن يكون 9 أرقام على الأقل").max(15),
 });
 
 export const jawwalPayWebhookSchema = z.object({
   sessionId: z.string(),
-  orderId: z.number().int().positive(),
+  orderId: z.number().int().positive().optional(),
+  serviceId: z.number().int().positive().optional(),
   amount: z.number().positive(),
   phone: z.string(),
   status: z.enum(["SUCCESS", "FAILED"]),

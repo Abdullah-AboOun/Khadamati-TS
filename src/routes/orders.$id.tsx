@@ -558,14 +558,14 @@ function OrderDetailComponent() {
                     </form>
                   )}
 
-                  {/* Provider cancel action (only pending or quoted) */}
-                  {["pending", "quoted"].includes(order.status) && (
+                  {/* Provider cancel action (accepted, in_progress, pending, quoted) */}
+                  {["accepted", "in_progress", "pending", "quoted"].includes(order.status) && (
                     <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
                       <DialogTrigger asChild>
                         <Button
-                          variant="destructive"
+                          variant="outline"
                           disabled={isUpdatingStatus}
-                          className="w-full font-bold flex items-center justify-center gap-2 cursor-pointer"
+                          className="w-full font-semibold border-destructive text-destructive hover:bg-destructive/10 cursor-pointer flex items-center justify-center gap-2"
                         >
                           <XCircle className="size-4" />
                           إلغاء الطلب
@@ -575,7 +575,7 @@ function OrderDetailComponent() {
                         <DialogHeader>
                           <DialogTitle>هل أنت متأكد من إلغاء الطلب؟</DialogTitle>
                           <DialogDescription>
-                            سيتم إلغاء الطلب نهائياً ولا يمكن التراجع عن هذا الإجراء.
+                            سيتم إلغاء الطلب وإعادة توجيهه. هل تريد الاستمرار؟
                           </DialogDescription>
                         </DialogHeader>
                         <div className="mt-4 flex justify-end gap-3">
@@ -662,14 +662,14 @@ function OrderDetailComponent() {
                     </div>
                   )}
 
-                  {/* Client cancel pending (no quote submitted yet) */}
-                  {order.status === "pending" && (
+                  {/* Client cancel allowed if accepted (before in_progress) or pending */}
+                  {["accepted", "pending"].includes(order.status) && (
                     <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
                       <DialogTrigger asChild>
                         <Button
-                          variant="destructive"
+                          variant="outline"
                           disabled={isUpdatingStatus}
-                          className="w-full font-bold flex items-center justify-center gap-2 cursor-pointer"
+                          className="w-full font-semibold border-destructive text-destructive hover:bg-destructive/10 flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <XCircle className="size-4" />
                           إلغاء الطلب

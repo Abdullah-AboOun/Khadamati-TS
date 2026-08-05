@@ -12,16 +12,16 @@ import { formatPrice } from "../../shared/constants";
 import { JawwalPayModal } from "@/components/jawwal-pay-modal";
 import { JawwalPayLogo } from "@/components/jawwal-pay-logo";
 
-export const Route = createFileRoute("/checkout/$id")({
-  component: CheckoutComponent,
+export const Route = createFileRoute("/checkout/service/$id")({
+  component: ServiceCheckoutComponent,
 });
 
 type PaymentMethod = "jawwal_pay_api" | "card";
 
-function CheckoutComponent() {
+function ServiceCheckoutComponent() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
-  const parsedOrderId = parseInt(id);
+  const parsedServiceId = parseInt(id);
   const { data: session } = useSession();
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("jawwal_pay_api");
@@ -35,16 +35,22 @@ function CheckoutComponent() {
 
   const [isPaying, setIsPaying] = useState(false);
 
-  // tRPC query to fetch order details
-  const { data: order, isLoading } = trpc.orders.getById.useQuery({
-    orderId: parsedOrderId,
+  // tRPC query to fetch service details
+  const { data: service, isLoading } = trpc.services.getById.useQuery({
+    id: parsedServiceId,
   });
 
-  // tRPC mutation to accept status/payment
-  const updateStatusMutation = trpc.orders.updateStatus.useMutation();
+  // tRPC mutation to create and pay order in 1 step
+  const createAndPayMutation = trpc.orders.createAndPay.useMutation();
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!session?.user) {
+      toast.error("الرجاء تسجيل الدخول أولاً لإتمام الطلب والدفع");
+      navigate({ to: "/login" });
+      return;
+    }
 
     if (paymentMethod === "card") {
       if (!cardNumber || !expiryDate || !cvv) {
@@ -55,7 +61,7 @@ function CheckoutComponent() {
 
     setIsPaying(true);
 
-    // Simulate network processing delay for smooth feedback
+    // Simulate network processing delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
@@ -65,21 +71,19 @@ function CheckoutComponent() {
         const gatewayTxId = `CC-TX-${randomTx}`;
         const nameToUse = cardHolder.trim() || session?.user?.name || "عميل منصة خدماتي";
 
-        await updateStatusMutation.mutateAsync({
-          orderId: parsedOrderId,
-          status: "accepted", // Automatically accept and mark as paid
-          paymentStatus: "completed",
+        const newOrder = await createAndPayMutation.mutateAsync({
+          serviceId: parsedServiceId,
           paymentMethod: "card",
           gatewayTxId,
           accountNumber: `**** **** **** ${last4}`,
           paymentProof: `بطاقة دفع إلكترونية (Visa/Mastercard) - اسم حامل البطاقة: ${nameToUse} - رقم المعاملة: ${gatewayTxId}`,
         });
         toast.success("تمت عملية الدفع بالبطاقة بنجاح وتأكيد الطلب تلقائياً!");
-        navigate({ to: `/orders/${parsedOrderId}` });
+        navigate({ to: `/orders/${newOrder.id}` });
       }
     } catch (err) {
       const error = err as Error;
-      toast.error(error.message || "حدث خطأ أثناء إتمام الدفع");
+      toast.error(error.message || "حدث خطأ أثناء إتمام الدفع والطلب");
     } finally {
       setIsPaying(false);
     }
@@ -94,12 +98,12 @@ function CheckoutComponent() {
     );
   }
 
-  if (!order) {
+  if (!service) {
     return (
       <div className="container mx-auto p-16 text-center">
-        <h2 className="text-xl font-bold text-destructive">الطلب غير موجود</h2>
-        <Button onClick={() => navigate({ to: "/" })} className="mt-4 cursor-pointer">
-          العودة للرئيسية
+        <h2 className="text-xl font-bold text-destructive">الخدمة غير موجودة</h2>
+        <Button onClick={() => navigate({ to: "/services" })} className="mt-4 cursor-pointer">
+          العودة للخدمات
         </Button>
       </div>
     );
@@ -112,19 +116,19 @@ function CheckoutComponent() {
     >
       <Card className="border border-border shadow-lg bg-card rounded-2xl overflow-hidden">
         <CardHeader className="border-b border-border bg-secondary/10 pb-6 pt-8">
-          <CardTitle className="text-2xl font-black text-foreground">إتمام الدفع</CardTitle>
+          <CardTitle className="text-2xl font-black text-foreground">طلب ودفع الخدمة</CardTitle>
           <CardDescription className="text-sm mt-1 text-muted-foreground">
-            الخطوة الأخيرة لبدء تنفيذ طلبك
+            إتمام الدفع في خطوة واحدة لبدء تنفيذ طلبك فوراً
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 pt-6">
-          {/* Order Summary */}
+          {/* Service Summary */}
           <div className="space-y-3 rounded-xl bg-secondary/20 p-4 border border-border/40">
-            <h4 className="text-xs font-bold text-muted-foreground">ملخص الطلب</h4>
+            <h4 className="text-xs font-bold text-muted-foreground">تفاصيل الخدمة</h4>
             <div className="flex items-center justify-between border-t border-border/40 pt-3 text-sm">
-              <span className="font-semibold text-foreground">{order.serviceTitle}</span>
+              <span className="font-semibold text-foreground">{service.title}</span>
               <span className="font-black text-primary text-base">
-                {order.amount ? formatPrice(order.amount) : "0 ₪"}
+                {service.price ? formatPrice(service.price) : "0 ₪"}
               </span>
             </div>
           </div>
@@ -302,7 +306,7 @@ function CheckoutComponent() {
                   <span>
                     {isPaying
                       ? "جاري معالجة الطلب والدفع..."
-                      : `دفع ${order.amount ? formatPrice(order.amount) : "0 ₪"}`}
+                      : `دفع وتأكيد الطلب (${service.price ? formatPrice(service.price) : "0 ₪"})`}
                   </span>
                 </Button>
               </>
@@ -315,12 +319,12 @@ function CheckoutComponent() {
       <JawwalPayModal
         open={jawwalPayModalOpen}
         onOpenChange={setJawwalPayModalOpen}
-        orderId={parsedOrderId}
-        amount={order.amount ?? 0}
-        serviceTitle={order.serviceTitle}
+        serviceId={parsedServiceId}
+        amount={service.price ?? 0}
+        serviceTitle={service.title}
         defaultPhone={(session?.user as { phone?: string })?.phone || "0599000000"}
-        onSuccess={() => {
-          navigate({ to: `/orders/${parsedOrderId}` });
+        onSuccess={(createdOrderId) => {
+          navigate({ to: `/orders/${createdOrderId}` });
         }}
       />
     </div>
